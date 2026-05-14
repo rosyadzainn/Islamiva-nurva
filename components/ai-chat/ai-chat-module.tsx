@@ -200,6 +200,7 @@ function SidebarContent({
   onNewSession,
   onSelectSession,
   onDeleteSession,
+  onClearAll,
   onClose,
   mobile,
   isLight,
@@ -209,6 +210,7 @@ function SidebarContent({
   onNewSession: () => void;
   onSelectSession: (id: string) => void;
   onDeleteSession: (id: string) => void;
+  onClearAll: () => void;
   onClose?: () => void;
   mobile?: boolean;
   isLight: boolean;
@@ -300,7 +302,7 @@ function SidebarContent({
 
       {/* Sessions label */}
       {sessions.length > 0 && (
-        <div style={{ padding: "14px 16px 6px", flexShrink: 0 }}>
+        <div style={{ padding: "14px 16px 6px", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <span
             style={{
               fontSize: 9,
@@ -313,6 +315,23 @@ function SidebarContent({
           >
             Riwayat
           </span>
+          <button
+            onClick={onClearAll}
+            style={{
+              fontSize: 10,
+              fontFamily: "'Geist', sans-serif",
+              color: "var(--islamiva-fg-dim)",
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              padding: "2px 6px",
+              borderRadius: 5,
+              opacity: 0.7,
+            }}
+            title="Hapus semua riwayat"
+          >
+            Hapus semua
+          </button>
         </div>
       )}
 
@@ -485,8 +504,32 @@ export function AiChatModule() {
   const { theme } = useTheme();
   const isLight = mounted && theme === "light";
 
-  useEffect(() => { setMounted(true); }, []);
+  // Load sessions from localStorage on mount
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("islamiva-chat-sessions");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        const loadedSessions: ChatSession[] = parsed.map((s: ChatSession & { createdAt: string; messages: (Message & { timestamp: string })[] }) => ({
+          ...s,
+          createdAt: new Date(s.createdAt),
+          messages: s.messages.map((m) => ({ ...m, timestamp: new Date(m.timestamp) })),
+        }));
+        if (loadedSessions.length > 0) {
+          setSessions(loadedSessions);
+          setCurrentSessionId(loadedSessions[0].id);
+        }
+      }
+    } catch { /* ignore */ }
+    setMounted(true);
+  }, []);
 
+  // Save sessions to localStorage whenever they change
+  useEffect(() => {
+    if (mounted) {
+      localStorage.setItem("islamiva-chat-sessions", JSON.stringify(sessions));
+    }
+  }, [sessions, mounted]);
 
   const currentSession = sessions.find((s) => s.id === currentSessionId);
   const messages = currentSession?.messages || [];
@@ -643,6 +686,12 @@ export function AiChatModule() {
     }
   };
 
+  const handleClearAll = () => {
+    setSessions([]);
+    setCurrentSessionId(null);
+    localStorage.removeItem("islamiva-chat-sessions");
+  };
+
   return (
     <>
       {/* ── Mobile sidebar backdrop ── */}
@@ -697,6 +746,7 @@ export function AiChatModule() {
                 setMobileSidebarOpen(false);
               }}
               onDeleteSession={handleDeleteSession}
+              onClearAll={handleClearAll}
               onClose={() => setMobileSidebarOpen(false)}
               mobile
               isLight={isLight}
@@ -743,6 +793,7 @@ export function AiChatModule() {
             onNewSession={createNewSession}
             onSelectSession={setCurrentSessionId}
             onDeleteSession={handleDeleteSession}
+            onClearAll={handleClearAll}
             isLight={isLight}
           />
         </aside>
