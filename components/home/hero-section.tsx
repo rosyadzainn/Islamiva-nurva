@@ -210,7 +210,7 @@ export function HeroSection() {
           className="flex items-center justify-center flex-wrap"
           style={{ gap: 12, marginBottom: 64 }}
         >
-          <Link href="/ai-chat">
+          <Link href="/sign-up">
             <button
               className="inline-flex items-center gap-2 transition-transform hover:-translate-y-px active:scale-95"
               style={{
@@ -224,7 +224,7 @@ export function HeroSection() {
                   "inset 0 1px 0 rgba(255,255,255,0.25), 0 1px 0 rgba(0,0,0,0.4), 0 12px 28px -12px oklch(0.62 0.13 155 / 0.55)",
               }}
             >
-              Mulai Bertanya
+              Mulai Sekarang
               <ArrowRight size={16} />
             </button>
           </Link>
