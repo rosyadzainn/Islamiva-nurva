@@ -554,42 +554,10 @@ export function Navbar() {
                 }}
               />
 
-              {/* CTA button */}
-              <Link
-                href="/ai-chat"
-                className="hidden md:inline-flex"
-                style={{
-                  alignItems: "center",
-                  gap: 6,
-                  height: 32,
-                  padding: "0 12px",
-                  borderRadius: 8,
-                  fontSize: 12.5,
-                  fontWeight: 500,
-                  fontFamily: "'Geist', sans-serif",
-                  textDecoration: "none",
-                  background:
-                    "linear-gradient(180deg, oklch(0.68 0.13 155) 0%, oklch(0.52 0.12 155) 100%)",
-                  color: "#08110b",
-                  boxShadow:
-                    "inset 0 1px 0 rgba(255,255,255,0.22), 0 4px 16px -8px oklch(0.62 0.13 155 / 0.5)",
-                  transition: "transform 0.15s ease, box-shadow 0.15s ease",
-                  whiteSpace: "nowrap",
-                }}
-                onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLElement).style.transform = "translateY(-1px)";
-                  (e.currentTarget as HTMLElement).style.boxShadow =
-                    "inset 0 1px 0 rgba(255,255,255,0.22), 0 8px 20px -8px oklch(0.62 0.13 155 / 0.65)";
-                }}
-                onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLElement).style.transform = "translateY(0)";
-                  (e.currentTarget as HTMLElement).style.boxShadow =
-                    "inset 0 1px 0 rgba(255,255,255,0.22), 0 4px 16px -8px oklch(0.62 0.13 155 / 0.5)";
-                }}
-              >
-                <Sparkles size={12} />
-                Mulai Gratis
-              </Link>
+              {/* Auth indicator */}
+              <div className="hidden md:flex items-center">
+                <AuthButton />
+              </div>
 
               {/* Mobile hamburger */}
               <button
