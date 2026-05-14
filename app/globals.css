@@ -1,26 +1,331 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
+  /* Colors */
+  --color-emerald-50: #ecfdf5;
+  --color-emerald-100: #d1fae5;
+  --color-emerald-200: #a7f3d0;
+  --color-emerald-300: #6ee7b7;
+  --color-emerald-400: #34d399;
+  --color-emerald-500: #10b981;
+  --color-emerald-600: #059669;
+  --color-emerald-700: #047857;
+  --color-emerald-800: #065f46;
+  --color-emerald-900: #064e3b;
+  --color-emerald-950: #022c22;
+
+  --color-gold-50: #fefce8;
+  --color-gold-100: #fef9c3;
+  --color-gold-200: #fef08a;
+  --color-gold-300: #fde047;
+  --color-gold-400: #facc15;
+  --color-gold-500: #eab308;
+  --color-gold-600: #ca8a04;
+  --color-gold-700: #a16207;
+  --color-gold-800: #854d0e;
+  --color-gold-900: #713f12;
+
+  /* Fonts */
+  --font-sans: var(--font-inter);
+  --font-poppins: var(--font-poppins);
+  --font-arabic: "Amiri", "Scheherazade New", serif;
+
+  /* Custom */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-surface: var(--surface);
+  --color-border: var(--border-color);
+  --color-muted: var(--muted);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+:root {
+  --background: #ffffff;
+  --foreground: #0f1117;
+  --surface: #f1f5f9;
+  --border-color: #e2e8f0;
+  --muted: #64748b;
+  --card: #ffffff;
+  --card-foreground: #0f1117;
+  --primary: #059669;
+  --primary-foreground: #ffffff;
+  --secondary: #f1f5f9;
+  --accent: #ca8a04;
+  --radius: 0.75rem;
+}
+
+.dark {
+  --background: #080e0a;
+  --foreground: #f0fdf4;
+  --surface: #0d1710;
+  --border-color: #1a3324;
+  --muted: #8fa89a;
+  --card: #111f15;
+  --card-foreground: #f0fdf4;
+  --primary: #10b981;
+  --primary-foreground: #022c22;
+  --secondary: #1a3324;
+  --accent: #eab308;
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  html {
+    color-scheme: dark;
+    background: var(--islamiva-bg);
+  }
+
+  [data-theme="light"] html, html[data-theme="light"] {
+    color-scheme: light;
+  }
+
+  body {
+    background: var(--islamiva-bg);
+    color: var(--islamiva-fg);
+    font-family: var(--font-inter), system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
 
-body {
-  background: var(--background);
+.font-arabic {
+  font-family: "Amiri", "Scheherazade New", serif;
+  direction: rtl;
+  line-height: 2.2;
+}
+
+/* Glassmorphism */
+.glass {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.dark .glass {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d1fae5;
+  border-radius: 3px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #065f46;
+}
+
+/* ============ Islamiva dark landing page design system ============ */
+:root {
+  --islamiva-bg: #0a0c0b;
+  --islamiva-bg-1: #0d100e;
+  --islamiva-bg-2: #11140f;
+  --islamiva-line: rgba(255, 255, 255, 0.06);
+  --islamiva-line-strong: rgba(255, 255, 255, 0.10);
+  --islamiva-fg: #f3f4ee;
+  --islamiva-fg-soft: #d8dad1;
+  --islamiva-fg-mute: #8a8e83;
+  --islamiva-fg-dim: #5a5e54;
+  --islamiva-emerald: oklch(0.62 0.13 155);
+  --islamiva-emerald-soft: oklch(0.7 0.11 155);
+  --islamiva-gold: oklch(0.82 0.08 80);
+  --islamiva-gold-soft: oklch(0.88 0.06 80);
+}
+
+/* ── Surface overlay tokens (theme-aware, usable in Server Components via CSS var) ── */
+:root {
+  --islamiva-card-overlay-sm: rgba(255,255,255,0.02);
+  --islamiva-card-overlay: rgba(255,255,255,0.03);
+  --islamiva-card-overlay-md: rgba(255,255,255,0.04);
+  --islamiva-hero-card-bg: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.005)), var(--islamiva-bg-1);
+  --islamiva-content-card-bg: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.005)), var(--islamiva-bg-1);
+  --islamiva-shimmer-top: linear-gradient(180deg, rgba(255,255,255,0.08), transparent 40%);
+}
+
+/* ── Light mode ── */
+[data-theme="light"] {
+  --islamiva-card-overlay-sm: rgba(0,0,0,0.03);
+  --islamiva-card-overlay: rgba(0,0,0,0.04);
+  --islamiva-card-overlay-md: rgba(0,0,0,0.05);
+  --islamiva-hero-card-bg: var(--islamiva-bg-1);
+  --islamiva-content-card-bg: var(--islamiva-bg-1);
+  --islamiva-shimmer-top: linear-gradient(180deg, rgba(0,0,0,0.05), transparent 40%);
+}
+
+[data-theme="light"] {
+  --islamiva-bg: #f5f5f0;
+  --islamiva-bg-1: #ffffff;
+  --islamiva-bg-2: #efefea;
+  --islamiva-line: rgba(0, 0, 0, 0.07);
+  --islamiva-line-strong: rgba(0, 0, 0, 0.12);
+  --islamiva-fg: #111210;
+  --islamiva-fg-soft: #2c2e2a;
+  --islamiva-fg-mute: #5a5e54;
+  --islamiva-fg-dim: #8a8e83;
+  --islamiva-emerald: oklch(0.48 0.14 155);
+  --islamiva-emerald-soft: oklch(0.42 0.13 155);
+  --islamiva-gold: oklch(0.6 0.1 75);
+  --islamiva-gold-soft: oklch(0.5 0.1 75);
+  color-scheme: light;
+}
+
+[data-theme="light"] body {
+  background: var(--islamiva-bg);
+  color: var(--islamiva-fg);
+}
+
+[data-theme="light"] ::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.15);
+}
+
+.font-geist { font-family: "Geist", ui-sans-serif, system-ui, sans-serif; }
+.font-geist-mono { font-family: "Geist Mono", ui-monospace, monospace; }
+.font-display { font-family: "Instrument Serif", serif; }
+
+@keyframes islamiva-float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+@keyframes islamiva-pulse-glow {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 0.9; }
+}
+@keyframes islamiva-typing {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+  30% { transform: translateY(-4px); opacity: 1; }
+}
+@keyframes islamiva-fade-up {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Footer responsive grid */
+.islamiva-footer-grid {
+  display: grid;
+  grid-template-columns: 1.4fr repeat(4, 1fr);
+  gap: 40px;
+}
+@media (max-width: 980px) {
+  .islamiva-footer-grid { grid-template-columns: 1fr 1fr; }
+  .islamiva-footer-brand { grid-column: 1 / -1; max-width: 480px; }
+}
+@media (max-width: 560px) {
+  .islamiva-footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+}
+
+/* Module grid responsive */
+.islamiva-module-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+@media (max-width: 980px) { .islamiva-module-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 620px) { .islamiva-module-grid { grid-template-columns: 1fr; } }
+
+.islamiva-footer-link:hover { color: var(--islamiva-fg); }
+
+/* Feature header responsive */
+.islamiva-feat-head {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 40px;
+  align-items: end;
+}
+@media (max-width: 760px) { .islamiva-feat-head { grid-template-columns: 1fr; } }
+
+/* Hide scrollbar utility */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, #059669, #ca8a04);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Smooth transitions */
+.transition-smooth {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Arabic text */
+.arabic-text {
+  font-family: "Amiri", "Scheherazade New", serif;
+  direction: rtl;
+  text-align: right;
+  font-size: 1.5rem;
+  line-height: 2.5;
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Loading skeleton */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--surface) 25%,
+    var(--border-color) 50%,
+    var(--surface) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 8px;
+}
+
+/* Prose for content */
+.prose-islamic {
+  max-width: 75ch;
+  line-height: 1.8;
+}
+
+.prose-islamic p {
+  margin-bottom: 1.25rem;
+  color: var(--foreground);
+}
+
+/* Focus styles */
+*:focus-visible {
+  outline: 2px solid #059669;
+  outline-offset: 2px;
+}
+
+/* Selection */
+::selection {
+  background: #a7f3d0;
+  color: #022c22;
+}
+
+.dark ::selection {
+  background: #065f46;
+  color: #d1fae5;
 }

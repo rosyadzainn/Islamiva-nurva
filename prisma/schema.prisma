@@ -1,0 +1,158 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id            String    @id @default(cuid())
+  clerkId       String    @unique
+  email         String    @unique
+  name          String?
+  imageUrl      String?
+  role          Role      @default(USER)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  bookmarks      Bookmark[]
+  chatSessions   ChatSession[]
+  readingHistory ReadingHistory[]
+
+  @@map("users")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model Bookmark {
+  id          String       @id @default(cuid())
+  userId      String
+  type        BookmarkType
+  referenceId String
+  metadata    Json?
+  createdAt   DateTime     @default(now())
+
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, type, referenceId])
+  @@map("bookmarks")
+}
+
+enum BookmarkType {
+  QURAN
+  DOA
+  HADITH
+  STORY
+  HISTORY
+}
+
+model ReadingHistory {
+  id          String   @id @default(cuid())
+  userId      String
+  type        String
+  referenceId String
+  metadata    Json?
+  lastReadAt  DateTime @default(now())
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, type, referenceId])
+  @@map("reading_history")
+}
+
+model ChatSession {
+  id        String        @id @default(cuid())
+  userId    String
+  title     String?
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages  ChatMessage[]
+
+  @@map("chat_sessions")
+}
+
+model ChatMessage {
+  id        String      @id @default(cuid())
+  sessionId String
+  role      String
+  content   String      @db.Text
+  createdAt DateTime    @default(now())
+
+  session   ChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@map("chat_messages")
+}
+
+model Article {
+  id        String   @id @default(cuid())
+  title     String
+  slug      String   @unique
+  excerpt   String?
+  content   String   @db.Text
+  imageUrl  String?
+  category  String
+  tags      String[]
+  published Boolean  @default(false)
+  seoTitle  String?
+  seoDesc   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("articles")
+}
+
+model Doa {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  arabic      String   @db.Text
+  latin       String   @db.Text
+  translation String   @db.Text
+  source      String?
+  category    String
+  audioUrl    String?
+  published   Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("doas")
+}
+
+model ProphetStory {
+  id          String   @id @default(cuid())
+  prophetName String
+  slug        String   @unique
+  title       String
+  excerpt     String?
+  content     String   @db.Text
+  imageUrl    String?
+  order       Int      @default(0)
+  published   Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("prophet_stories")
+}
+
+model IslamicHistory {
+  id        String   @id @default(cuid())
+  title     String
+  slug      String   @unique
+  excerpt   String?
+  content   String   @db.Text
+  imageUrl  String?
+  period    String?
+  year      String?
+  category  String
+  published Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("islamic_history")
+}

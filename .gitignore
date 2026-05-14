@@ -39,3 +39,14 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+/app/generated/prisma
+
+# Keep .env.example but ignore .env
+.env
+.env.local
+.env.production.local
+.env.development.local
+
+# clerk configuration (can include secrets)
+/.clerk/
