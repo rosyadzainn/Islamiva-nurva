@@ -480,6 +480,7 @@ export function AiChatModule() {
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const { theme } = useTheme();
   const isLight = mounted && theme === "light";
@@ -491,7 +492,10 @@ export function AiChatModule() {
   const messages = currentSession?.messages || [];
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    const container = scrollContainerRef.current;
+    if (container) {
+      container.scrollTop = container.scrollHeight;
+    }
   }, [messages, isLoading]);
 
   const createNewSession = useCallback(() => {
@@ -800,7 +804,7 @@ export function AiChatModule() {
           </div>
 
           {/* Messages — scrollable */}
-          <div style={{ flex: 1, overflowY: "auto", minHeight: 0 }}>
+          <div ref={scrollContainerRef} style={{ flex: 1, overflowY: "auto", minHeight: 0 }}>
             {messages.length === 0 ? (
               /* ── Empty state ── */
               <div
