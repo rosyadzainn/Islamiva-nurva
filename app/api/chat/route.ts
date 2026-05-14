@@ -2,7 +2,8 @@ import { NextRequest } from "next/server";
 import OpenAI from "openai";
 
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+  apiKey: process.env.GROQ_API_KEY,
+  baseURL: "https://api.groq.com/openai/v1",
 });
 
 const SYSTEM_PROMPT = `Kamu adalah AI asisten Islami yang berpengetahuan luas bernama "Islamiva AI".
@@ -73,7 +74,7 @@ export async function POST(req: NextRequest) {
       }));
 
     const stream = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
+      model: "llama-3.3-70b-versatile",
       messages: [
         { role: "system", content: SYSTEM_PROMPT },
         ...sanitizedMessages,
