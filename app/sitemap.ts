@@ -3,7 +3,7 @@ import { SURAH_LIST } from "@/data/quran-data";
 import { DAILY_DUAS } from "@/data/doa-data";
 import { PROPHETS } from "@/data/prophet-stories";
 
-const BASE_URL = "https://islametra.com";
+const BASE_URL = "https://www.islametra.com";
 
 const SEJARAH_SLUGS = [
   "abu-bakar-ash-shiddiq",

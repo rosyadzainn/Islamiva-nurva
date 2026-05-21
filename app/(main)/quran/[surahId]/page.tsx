@@ -17,8 +17,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   return {
-    title: `${surah.name} - Surah ${surah.number} Al-Quran`,
-    description: `Baca Surah ${surah.name} (${surah.nameTranslation}) dengan ${surah.numberOfAyahs} ayat beserta terjemahan dan tafsir.`,
+    title: `Surah ${surah.name} (${surah.number}) — Al-Quran Online | Islametra`,
+    description: `Baca Surah ${surah.name} (${surah.nameTranslation}) dengan ${surah.numberOfAyahs} ayat beserta terjemahan bahasa Indonesia.`,
+    keywords: [`surah ${surah.name.toLowerCase()}`, `surah ke-${surah.number}`, "al-quran online", "baca quran", "terjemahan quran indonesia", "quran digital"],
+    openGraph: {
+      title: `Surah ${surah.name} — Al-Quran Online`,
+      description: `Baca Surah ${surah.name} (${surah.nameTranslation}) · ${surah.numberOfAyahs} ayat · Terjemahan Indonesia`,
+      url: `https://www.islametra.com/quran/${surah.number}`,
+      type: "article",
+    },
   };
 }
 
@@ -33,7 +40,22 @@ export default async function SurahPage({ params }: Props) {
   const surah = SURAH_LIST.find((s) => s.number === surahNumber);
   if (!surah) notFound();
 
-  return <SurahReader surah={surah} />;
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Islametra", item: "https://www.islametra.com" },
+      { "@type": "ListItem", position: 2, name: "Al-Quran", item: "https://www.islametra.com/quran" },
+      { "@type": "ListItem", position: 3, name: `Surah ${surah.name}`, item: `https://www.islametra.com/quran/${surah.number}` },
+    ],
+  };
+
+  return (
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <SurahReader surah={surah} />
+    </>
+  );
 }
 
 export async function generateStaticParams() {

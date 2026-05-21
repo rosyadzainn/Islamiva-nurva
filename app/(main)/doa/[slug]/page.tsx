@@ -17,8 +17,21 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const doa = DAILY_DUAS.find((d) => d.slug === slug);
   return {
-    title: doa ? `${doa.title} — Doa Islami` : "Doa Islami",
-    description: doa ? doa.translation : "Koleksi doa-doa islami dengan teks Arab, transliterasi Latin, dan terjemahan.",
+    title: doa ? `${doa.title} — Doa Islam | Islametra` : "Doa Islam | Islametra",
+    description: doa
+      ? `${doa.title}: ${doa.translation.slice(0, 140)}`
+      : "Koleksi doa-doa islami dengan teks Arab, transliterasi Latin, dan terjemahan bahasa Indonesia.",
+    keywords: doa
+      ? [doa.title.toLowerCase(), "doa islam", "doa sehari-hari", "doa arab latin terjemahan"]
+      : ["doa islam", "doa sehari-hari"],
+    openGraph: doa
+      ? {
+          title: `${doa.title} — Doa Islam`,
+          description: doa.translation.slice(0, 160),
+          url: `https://www.islametra.com/doa/${doa.slug}`,
+          type: "article",
+        }
+      : undefined,
   };
 }
 
@@ -56,8 +69,19 @@ export default async function DoaDetailPage({ params }: Props) {
   const nextDoa = currentIndex < sameCategoryDuas.length - 1 ? sameCategoryDuas[currentIndex + 1] : null;
   const related = sameCategoryDuas.filter((d) => d.slug !== slug).slice(0, 3);
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Islametra", item: "https://www.islametra.com" },
+      { "@type": "ListItem", position: 2, name: "Doa", item: "https://www.islametra.com/doa" },
+      { "@type": "ListItem", position: 3, name: doa.title, item: `https://www.islametra.com/doa/${doa.slug}` },
+    ],
+  };
+
   return (
     <div style={{ backgroundColor: "var(--islametra-bg)", minHeight: "100vh" }}>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <div style={{ maxWidth: 760, margin: "0 auto", padding: "clamp(32px, 5vw, 64px) 28px" }}>
 
         {/* Back */}

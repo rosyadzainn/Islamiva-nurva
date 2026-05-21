@@ -529,8 +529,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const prophet = PROPHETS.find((p) => p.slug === slug);
   if (!prophet) return { title: "Kisah tidak ditemukan" };
   return {
-    title: `${prophet.prophetName} — Kisah Para Nabi`,
+    title: `Kisah Nabi ${prophet.prophetName} AS — Islametra`,
     description: prophet.excerpt,
+    keywords: [`nabi ${prophet.prophetName.toLowerCase()}`, "kisah nabi", "kisah para nabi", "25 nabi", "islametra"],
+    openGraph: {
+      title: `Kisah Nabi ${prophet.prophetName} AS`,
+      description: prophet.excerpt,
+      url: `https://www.islametra.com/kisah-nabi/${slug}`,
+      type: "article",
+    },
   };
 }
 
@@ -548,8 +555,19 @@ export default async function ProphetStoryPage({ params }: Props) {
 
   const related = PROPHETS.filter((p) => p.slug !== slug).slice(0, 3);
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Islametra", item: "https://www.islametra.com" },
+      { "@type": "ListItem", position: 2, name: "Kisah Para Nabi", item: "https://www.islametra.com/kisah-nabi" },
+      { "@type": "ListItem", position: 3, name: prophet.prophetName, item: `https://www.islametra.com/kisah-nabi/${slug}` },
+    ],
+  };
+
   return (
     <div style={{ backgroundColor: "var(--islametra-bg)", minHeight: "100vh" }}>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <div style={{ maxWidth: 800, margin: "0 auto", padding: "clamp(32px, 5vw, 64px) 28px" }}>
 
         {/* Back link */}

@@ -434,8 +434,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const article = HISTORY_ARTICLES[slug];
   return {
-    title: article ? `${article.title} — Sejarah Islam` : "Sejarah Islam",
-    description: article?.sections[0]?.text?.slice(0, 160),
+    title: article ? `${article.title} — Sejarah Islam | Islametra` : "Sejarah Islam | Islametra",
+    description: article?.sections[0]?.text?.slice(0, 160) ?? "Pelajari sejarah Islam dari para sahabat, dinasti, ulama, dan penyebaran Islam di seluruh dunia.",
+    keywords: article
+      ? [article.title.toLowerCase(), "sejarah islam", article.category.toLowerCase(), "islametra"]
+      : ["sejarah islam", "peradaban islam"],
+    openGraph: article
+      ? {
+          title: `${article.title} — Sejarah Islam`,
+          description: article.sections[0]?.text?.slice(0, 160),
+          url: `https://www.islametra.com/sejarah/${slug}`,
+          type: "article",
+        }
+      : undefined,
   };
 }
 
@@ -539,8 +550,19 @@ export default async function SejarahDetailPage({ params }: Props) {
 
   const related = RELATED_ARTICLES.filter((a) => a.slug !== slug).slice(0, 3);
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Islametra", item: "https://www.islametra.com" },
+      { "@type": "ListItem", position: 2, name: "Sejarah Islam", item: "https://www.islametra.com/sejarah" },
+      { "@type": "ListItem", position: 3, name: article.title, item: `https://www.islametra.com/sejarah/${slug}` },
+    ],
+  };
+
   return (
     <div style={{ backgroundColor: "var(--islametra-bg)", minHeight: "100vh" }}>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <div style={{ maxWidth: 800, margin: "0 auto", padding: "clamp(32px, 5vw, 64px) 28px" }}>
 
         {/* Back link */}
