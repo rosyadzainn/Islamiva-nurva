@@ -168,7 +168,7 @@ export default async function Image() {
             letterSpacing: "0.08em",
           }}
         >
-          islametra.com
+          www.islametra.com
         </div>
       </div>
     ),

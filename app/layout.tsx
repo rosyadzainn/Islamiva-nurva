@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/providers/theme-provider";
 import { LanguageProvider } from "@/contexts/language-context";
 import { Toaster } from "react-hot-toast";
 import { GoogleAnalytics } from "@/components/providers/google-analytics";
+import { PwaRegister } from "@/components/shared/pwa-register";
 import "./globals.css";
 
 const geist = Geist({
@@ -130,6 +131,7 @@ const Inner = ({ children }: { children: React.ReactNode }) => (
         Skip to main content
       </a>
       <GoogleAnalytics />
+      <PwaRegister />
       <ThemeProvider>
         <LanguageProvider>
         {children}
