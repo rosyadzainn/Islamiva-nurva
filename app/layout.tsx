@@ -50,6 +50,7 @@ const scheherazade = Scheherazade_New({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? "https://www.islametra.com"),
   title: {
     default: "Islametra - Platform Islami Modern",
     template: "%s | Islametra",
@@ -125,16 +126,7 @@ const Inner = ({ children }: { children: React.ReactNode }) => (
   >
     <head />
     <body className="min-h-screen antialiased" suppressHydrationWarning>
-      <a
-        href="#main-content"
-        style={{
-          position: "absolute", top: -9999, left: 0, zIndex: 9999,
-          padding: "8px 16px", background: "oklch(0.62 0.13 155)", color: "#08110b",
-          fontFamily: "sans-serif", fontSize: 14, fontWeight: 600, borderRadius: "0 0 8px 0",
-        }}
-        onFocus={(e) => { e.currentTarget.style.top = "0"; }}
-        onBlur={(e) => { e.currentTarget.style.top = "-9999px"; }}
-      >
+      <a href="#main-content" className="skip-nav">
         Skip to main content
       </a>
       <GoogleAnalytics />
