@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight, Plus, Mic, Send } from "lucide-react";
+import { useLang } from "@/contexts/language-context";
+import { translations } from "@/lib/translations";
 
 const SparkleIcon = ({ size = 11 }: { size?: number }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
@@ -11,20 +13,16 @@ const SparkleIcon = ({ size = 11 }: { size?: number }) => (
   </svg>
 );
 
-const IslamivaLogo = ({ size = 16 }: { size?: number }) => (
+const IslametraLogo = ({ size = 16 }: { size?: number }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
     <text x="4" y="18" fontSize="18" fontFamily="'Amiri', serif">ن</text>
   </svg>
 );
 
-const chips = [
-  { icon: <SparkleIcon size={12} />, label: "Lanjutkan dengan tafsir lain" },
-  { icon: null, label: "Tampilkan ayat sebelumnya" },
-  { icon: null, label: "Doa untuk kesabaran" },
-];
-
 export function AiChatPreview() {
   const [showTyping, setShowTyping] = useState(true);
+  const { lang } = useLang();
+  const ta = translations[lang].aiChatPreview;
 
   useEffect(() => {
     const t = setTimeout(() => setShowTyping(false), 2200);
@@ -36,7 +34,7 @@ export function AiChatPreview() {
       id="chat"
       className="relative overflow-hidden"
       style={{
-        backgroundColor: "var(--islamiva-bg)",
+        backgroundColor: "var(--islametra-bg)",
         padding: "clamp(80px, 12vw, 160px) 0",
       }}
     >
@@ -45,7 +43,7 @@ export function AiChatPreview() {
         className="absolute top-0 left-0 right-0 h-px"
         style={{
           background:
-            "linear-gradient(90deg, transparent, var(--islamiva-line-strong), transparent)",
+            "linear-gradient(90deg, transparent, var(--islametra-line-strong), transparent)",
         }}
       />
 
@@ -82,8 +80,8 @@ export function AiChatPreview() {
               letterSpacing: "0.08em",
               textTransform: "uppercase",
               background: "rgba(255,255,255,0.03)",
-              border: "1px solid var(--islamiva-line)",
-              color: "var(--islamiva-fg-soft)",
+              border: "1px solid var(--islametra-line)",
+              color: "var(--islametra-fg-soft)",
               display: "inline-flex",
               alignItems: "center",
               gap: 8,
@@ -95,7 +93,7 @@ export function AiChatPreview() {
             }}
           >
             <SparkleIcon size={11} />
-            Islamiva AI
+            {ta.badge}
           </motion.span>
           <motion.h2
             initial={{ opacity: 0, y: 10 }}
@@ -108,23 +106,23 @@ export function AiChatPreview() {
               fontSize: "clamp(34px, 4.6vw, 56px)",
               lineHeight: 1.02,
               letterSpacing: "-0.03em",
-              color: "var(--islamiva-fg)",
+              color: "var(--islametra-fg)",
               marginTop: 14,
               marginBottom: 14,
               maxWidth: 820,
               marginInline: "auto",
             }}
           >
-            Bertanya, dijawab dengan{" "}
+            {ta.title1}{" "}
             <em
               style={{
                 fontFamily: "'Instrument Serif', serif",
                 fontStyle: "italic",
                 fontWeight: 400,
-                color: "var(--islamiva-gold)",
+                color: "var(--islametra-gold)",
               }}
             >
-              rujukan
+              {ta.titleEm}
             </em>
             .
           </motion.h2>
@@ -136,13 +134,12 @@ export function AiChatPreview() {
             style={{
               fontSize: "clamp(16px, 1.4vw, 19px)",
               lineHeight: 1.55,
-              color: "var(--islamiva-fg-mute)",
+              color: "var(--islametra-fg-mute)",
               maxWidth: "60ch",
               margin: "0 auto",
             }}
           >
-            Asisten percakapan yang berakar pada sumber otentik —
-            setiap jawaban menyertakan ayat, hadits, atau pendapat ulama.
+            {ta.sub}
           </motion.p>
         </div>
 
@@ -176,7 +173,7 @@ export function AiChatPreview() {
               borderRadius: 26,
               background:
                 "linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.005)), rgba(13, 16, 14, 0.7)",
-              border: "1px solid var(--islamiva-line-strong)",
+              border: "1px solid var(--islametra-line-strong)",
               backdropFilter: "blur(24px)",
               boxShadow:
                 "0 1px 0 rgba(255,255,255,0.06) inset, 0 50px 120px -40px rgba(0,0,0,0.8), 0 0 80px -20px oklch(0.62 0.13 155 / 0.3)",
@@ -189,7 +186,7 @@ export function AiChatPreview() {
                 display: "flex", alignItems: "center",
                 justifyContent: "space-between",
                 padding: "14px 18px",
-                borderBottom: "1px solid var(--islamiva-line)",
+                borderBottom: "1px solid var(--islametra-line)",
                 background: "linear-gradient(180deg, rgba(255,255,255,0.02), transparent)",
               }}
             >
@@ -210,11 +207,11 @@ export function AiChatPreview() {
                 <span
                   style={{
                     fontFamily: "'Geist Mono', monospace",
-                    fontSize: 13, color: "var(--islamiva-fg-mute)",
+                    fontSize: 13, color: "var(--islametra-fg-mute)",
                     letterSpacing: "0.02em",
                   }}
                 >
-                  islamiva.ai · session
+                  islametra.ai · session
                 </span>
               </div>
               <div
@@ -233,11 +230,11 @@ export function AiChatPreview() {
                     width: 6, height: 6, borderRadius: "50%",
                     background: "oklch(0.78 0.13 155)",
                     boxShadow: "0 0 8px oklch(0.78 0.13 155)",
-                    animation: "islamiva-pulse-glow 1.6s ease-in-out infinite",
+                    animation: "islametra-pulse-glow 1.6s ease-in-out infinite",
                     display: "block",
                   }}
                 />
-                Islamiva 2.0 · online
+                Islametra 2.0 · online
               </div>
             </div>
 
@@ -253,11 +250,11 @@ export function AiChatPreview() {
                     fontSize: 14.5, lineHeight: 1.55,
                     background:
                       "linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02))",
-                    border: "1px solid var(--islamiva-line-strong)",
-                    color: "var(--islamiva-fg)",
+                    border: "1px solid var(--islametra-line-strong)",
+                    color: "var(--islametra-fg)",
                   }}
                 >
-                  Apa makna sabar dalam Surah Al-Baqarah ayat 153?
+                  {ta.userMsg}
                 </div>
                 <div
                   style={{
@@ -265,8 +262,8 @@ export function AiChatPreview() {
                     borderRadius: 10,
                     display: "grid", placeItems: "center",
                     background: "rgba(255,255,255,0.06)",
-                    border: "1px solid var(--islamiva-line)",
-                    color: "var(--islamiva-fg-soft)",
+                    border: "1px solid var(--islametra-line)",
+                    color: "var(--islametra-fg-soft)",
                     fontSize: 12.5, fontWeight: 600,
                   }}
                 >
@@ -299,31 +296,30 @@ export function AiChatPreview() {
                     fontSize: 14.5, lineHeight: 1.55,
                     background:
                       "radial-gradient(ellipse 100% 100% at 0% 0%, oklch(0.62 0.13 155 / 0.08), transparent 70%), linear-gradient(180deg, rgba(255,255,255,0.025), rgba(255,255,255,0.005))",
-                    border: "1px solid var(--islamiva-line)",
-                    color: "var(--islamiva-fg-soft)",
+                    border: "1px solid var(--islametra-line)",
+                    color: "var(--islametra-fg-soft)",
                   }}
                 >
                   <div style={{ marginBottom: 10 }}>
-                    Sabar dalam ayat ini dipasangkan dengan shalat sebagai dua pilar pertolongan dari Allah.
+                    {ta.aiMsg1}
                   </div>
                   <div
                     className="font-arabic"
                     lang="ar" dir="rtl"
                     style={{
                       fontSize: 19, lineHeight: 1.85,
-                      color: "var(--islamiva-gold-soft)",
+                      color: "var(--islametra-gold-soft)",
                       padding: "4px 0",
                     }}
                   >
                     يٰٓاَيُّهَا الَّذِيْنَ اٰمَنُوا اسْتَعِيْنُوْا بِالصَّبْرِ وَالصَّلٰوةِ
                   </div>
-                  <div style={{ marginTop: 10, color: "var(--islamiva-fg-mute)", fontSize: 13.5 }}>
-                    Imam Ibnu Katsir menjelaskan bahwa sabar di sini mencakup tiga bentuk:
-                    sabar dalam ketaatan, sabar menjauhi maksiat, dan sabar atas takdir Allah.
+                  <div style={{ marginTop: 10, color: "var(--islametra-fg-mute)", fontSize: 13.5 }}>
+                    {ta.aiMsg2}
                   </div>
                   {/* Citations */}
                   <div
-                    style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 12, paddingTop: 12, borderTop: "1px dashed var(--islamiva-line)" }}
+                    style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 12, paddingTop: 12, borderTop: "1px dashed var(--islametra-line)" }}
                   >
                     {["QS. Al-Baqarah: 153", "Tafsir Ibnu Katsir", "Riyadhus Shalihin"].map((cite, i) => (
                       <span
@@ -332,9 +328,9 @@ export function AiChatPreview() {
                           display: "inline-flex", alignItems: "center", gap: 6,
                           padding: "4px 9px", borderRadius: 6,
                           background: "rgba(255,255,255,0.04)",
-                          border: "1px solid var(--islamiva-line)",
+                          border: "1px solid var(--islametra-line)",
                           fontSize: 11.5,
-                          color: "var(--islamiva-fg-soft)",
+                          color: "var(--islametra-fg-soft)",
                           fontFamily: "'Geist Mono', monospace",
                         }}
                       >
@@ -379,7 +375,7 @@ export function AiChatPreview() {
                       borderTopLeftRadius: 6,
                       background:
                         "linear-gradient(180deg, rgba(255,255,255,0.025), rgba(255,255,255,0.005))",
-                      border: "1px solid var(--islamiva-line)",
+                      border: "1px solid var(--islametra-line)",
                     }}
                   >
                     <div style={{ display: "flex", gap: 4 }}>
@@ -388,7 +384,7 @@ export function AiChatPreview() {
                           key={i}
                           style={{
                             width: 7, height: 7, borderRadius: "50%",
-                            background: "var(--islamiva-fg-mute)",
+                            background: "var(--islametra-fg-mute)",
                             display: "block",
                           }}
                           animate={{ y: [0, -4, 0], opacity: [0.4, 1, 0.4] }}
@@ -403,20 +399,20 @@ export function AiChatPreview() {
 
             {/* Suggestion chips */}
             <div style={{ display: "flex", flexWrap: "wrap", gap: 8, padding: "0 32px 16px" }}>
-              {chips.map((chip) => (
+              {ta.chips.map((label, i) => (
                 <button
-                  key={chip.label}
+                  key={label}
                   className="transition-colors"
                   style={{
                     display: "inline-flex", alignItems: "center", gap: 6,
                     padding: "8px 14px", borderRadius: 999,
-                    fontSize: 13, color: "var(--islamiva-fg-soft)",
+                    fontSize: 13, color: "var(--islametra-fg-soft)",
                     background: "rgba(255,255,255,0.025)",
-                    border: "1px solid var(--islamiva-line)",
+                    border: "1px solid var(--islametra-line)",
                   }}
                 >
-                  {chip.icon}
-                  {chip.label}
+                  {i === 0 && <SparkleIcon size={12} />}
+                  {label}
                 </button>
               ))}
             </div>
@@ -429,16 +425,16 @@ export function AiChatPreview() {
                   padding: "6px 6px 6px 18px",
                   borderRadius: 16,
                   background: "rgba(0,0,0,0.25)",
-                  border: "1px solid var(--islamiva-line-strong)",
+                  border: "1px solid var(--islametra-line-strong)",
                 }}
               >
                 <input
                   readOnly
-                  value="Tanyakan apa saja kepada Islamiva…"
+                  value={ta.inputPlaceholder}
                   style={{
                     flex: 1, background: "transparent",
                     border: 0, outline: 0,
-                    color: "var(--islamiva-fg-mute)",
+                    color: "var(--islametra-fg-mute)",
                     fontFamily: "inherit", fontSize: 14,
                     padding: "12px 0",
                   }}
@@ -450,7 +446,7 @@ export function AiChatPreview() {
                       style={{
                         width: 36, height: 36, borderRadius: 10,
                         display: "grid", placeItems: "center",
-                        color: "var(--islamiva-fg-mute)",
+                        color: "var(--islametra-fg-mute)",
                       }}
                     >
                       <Icon size={16} />
@@ -484,11 +480,11 @@ export function AiChatPreview() {
                 height: 46, padding: "0 20px",
                 borderRadius: 12, fontSize: 14, fontWeight: 500,
                 background: "rgba(255,255,255,0.04)",
-                border: "1px solid var(--islamiva-line)",
-                color: "var(--islamiva-fg-soft)",
+                border: "1px solid var(--islametra-line)",
+                color: "var(--islametra-fg-soft)",
               }}
             >
-              Coba Islamiva AI sekarang
+              {ta.cta}
               <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
             </button>
           </Link>

@@ -5,6 +5,8 @@ import { motion } from "framer-motion";
 import { useTheme } from "next-themes";
 import { ArrowRight, RefreshCw, CalendarDays, Star } from "lucide-react";
 import { toast } from "react-hot-toast";
+import { useLang } from "@/contexts/language-context";
+import { translations } from "@/lib/translations";
 
 interface HijriDate {
   date: string;
@@ -27,98 +29,6 @@ interface ConvertedDate {
   gregorian: GregorianDate;
 }
 
-const ISLAMIC_MONTHS = [
-  { number: 1, ar: "مُحَرَّم", nameId: "Muharram", desc: "Bulan pertama, salah satu bulan haram" },
-  { number: 2, ar: "صَفَر", nameId: "Safar", desc: "Bulan kedua kalender Hijriah" },
-  { number: 3, ar: "رَبِيعُ الْأَوَّل", nameId: "Rabiul Awal", desc: "Bulan kelahiran Nabi Muhammad ﷺ" },
-  { number: 4, ar: "رَبِيعُ الثَّانِي", nameId: "Rabiul Akhir", desc: "Bulan keempat kalender Hijriah" },
-  { number: 5, ar: "جُمَادَى الْأُولَى", nameId: "Jumadil Awal", desc: "Bulan kelima kalender Hijriah" },
-  { number: 6, ar: "جُمَادَى الثَّانِيَة", nameId: "Jumadil Akhir", desc: "Bulan keenam kalender Hijriah" },
-  { number: 7, ar: "رَجَب", nameId: "Rajab", desc: "Bulan haram, terjadi Isra Mi'raj" },
-  { number: 8, ar: "شَعْبَان", nameId: "Syaban", desc: "Bulan penuh keberkahan sebelum Ramadhan" },
-  { number: 9, ar: "رَمَضَان", nameId: "Ramadhan", desc: "Bulan puasa wajib dan turunnya Al-Quran" },
-  { number: 10, ar: "شَوَّال", nameId: "Syawal", desc: "Bulan Idul Fitri dan puasa 6 hari" },
-  { number: 11, ar: "ذُو الْقَعْدَة", nameId: "Dzulqadah", desc: "Bulan haram, bulan ke-11" },
-  { number: 12, ar: "ذُو الْحِجَّة", nameId: "Dzulhijjah", desc: "Bulan Idul Adha dan ibadah haji" },
-];
-
-const IMPORTANT_DATES = [
-  {
-    day: 1,
-    month: 1,
-    nameId: "Tahun Baru Islam",
-    monthName: "Muharram",
-    desc: "Awal tahun baru Hijriah, momen muhasabah dan memperbanyak ibadah.",
-    color: "gold",
-  },
-  {
-    day: 10,
-    month: 1,
-    nameId: "Hari Asyura",
-    monthName: "Muharram",
-    desc: "Hari ke-10 Muharram, disunnahkan berpuasa karena keistimewaannya.",
-    color: "emerald",
-  },
-  {
-    day: 12,
-    month: 3,
-    nameId: "Maulid Nabi ﷺ",
-    monthName: "Rabiul Awal",
-    desc: "Peringatan kelahiran Nabi Muhammad SAW, dirayakan dengan sholawat dan kajian.",
-    color: "gold",
-  },
-  {
-    day: 27,
-    month: 7,
-    nameId: "Isra Mi'raj",
-    monthName: "Rajab",
-    desc: "Peristiwa perjalanan Nabi dari Masjidil Haram ke Masjidil Aqsa dan ke Sidratul Muntaha.",
-    color: "emerald",
-  },
-  {
-    day: 1,
-    month: 9,
-    nameId: "Awal Ramadhan",
-    monthName: "Ramadhan",
-    desc: "Bulan puasa wajib bagi seluruh umat Islam yang mampu.",
-    color: "gold",
-  },
-  {
-    day: 17,
-    month: 9,
-    nameId: "Nuzulul Quran",
-    monthName: "Ramadhan",
-    desc: "Peringatan turunnya Al-Quran pertama kali kepada Nabi Muhammad SAW.",
-    color: "emerald",
-  },
-  {
-    day: 1,
-    month: 10,
-    nameId: "Idul Fitri",
-    monthName: "Syawal",
-    desc: "Hari kemenangan setelah sebulan penuh berpuasa di bulan Ramadhan.",
-    color: "gold",
-  },
-  {
-    day: 10,
-    month: 12,
-    nameId: "Idul Adha",
-    monthName: "Dzulhijjah",
-    desc: "Hari raya kurban, dirayakan bersamaan dengan puncak ibadah haji di Arafah.",
-    color: "emerald",
-  },
-];
-
-const WEEKDAYS_ID: Record<string, string> = {
-  Sunday: "Ahad",
-  Monday: "Senin",
-  Tuesday: "Selasa",
-  Wednesday: "Rabu",
-  Thursday: "Kamis",
-  Friday: "Jumat",
-  Saturday: "Sabtu",
-};
-
 function todayDDMMYYYY(): string {
   const d = new Date();
   const dd = String(d.getDate()).padStart(2, "0");
@@ -138,10 +48,10 @@ async function fetchHijri(ddmmyyyy: string): Promise<ConvertedDate | null> {
   return null;
 }
 
-function toDisplayDate(ddmmyyyy: string): string {
+function toDisplayDate(ddmmyyyy: string, lang: string = "id"): string {
   const [dd, mm, yyyy] = ddmmyyyy.split("-");
   const d = new Date(parseInt(yyyy), parseInt(mm) - 1, parseInt(dd));
-  return d.toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" });
+  return d.toLocaleDateString(lang === "en" ? "en-US" : "id-ID", { day: "numeric", month: "long", year: "numeric" });
 }
 
 function inputDateToDDMMYYYY(inputVal: string): string {
@@ -159,6 +69,8 @@ export function KalenderModule() {
   const [mounted, setMounted] = useState(false);
   const { theme } = useTheme();
   const isLight = mounted && theme === "light";
+  const { lang } = useLang();
+  const tk = translations[lang].kalender;
 
   useEffect(() => { setMounted(true); }, []);
 
@@ -174,7 +86,7 @@ export function KalenderModule() {
 
   const handleConvert = async () => {
     if (!converterInput) {
-      toast.error("Pilih tanggal terlebih dahulu");
+      toast.error(tk.toastNoDate);
       return;
     }
     setConverterLoading(true);
@@ -184,20 +96,20 @@ export function KalenderModule() {
     if (result) {
       setConverterResult(result);
     } else {
-      toast.error("Gagal mengkonversi tanggal");
+      toast.error(tk.toastConvertFail);
     }
     setConverterLoading(false);
   };
 
   const TABS = [
-    { key: "today" as const, label: "Hari Ini" },
-    { key: "months" as const, label: "12 Bulan" },
-    { key: "dates" as const, label: "Hari Penting" },
-    { key: "converter" as const, label: "Konversi" },
+    { key: "today" as const, label: tk.tabs.today },
+    { key: "months" as const, label: tk.tabs.months },
+    { key: "dates" as const, label: tk.tabs.dates },
+    { key: "converter" as const, label: tk.tabs.converter },
   ];
 
   return (
-    <div style={{ backgroundColor: "var(--islamiva-bg)", minHeight: "100vh" }}>
+    <div style={{ backgroundColor: "var(--islametra-bg)", minHeight: "100vh" }}>
       <section
         style={{
           position: "relative",
@@ -214,8 +126,7 @@ export function KalenderModule() {
             transform: "translate(-50%, -50%)",
             width: 560,
             height: 280,
-            background:
-              "radial-gradient(ellipse, oklch(0.82 0.08 80 / 0.1), transparent 70%)",
+            background: "radial-gradient(ellipse, oklch(0.82 0.08 80 / 0.1), transparent 70%)",
             filter: "blur(40px)",
             pointerEvents: "none",
           }}
@@ -231,8 +142,8 @@ export function KalenderModule() {
               padding: "6px 14px",
               borderRadius: 9999,
               background: isLight ? "rgba(0,0,0,0.04)" : "rgba(255,255,255,0.03)",
-              border: "1px solid var(--islamiva-line)",
-              color: "var(--islamiva-fg-soft)",
+              border: "1px solid var(--islametra-line)",
+              color: "var(--islametra-fg-soft)",
               fontSize: 11,
               fontWeight: 500,
               fontFamily: "'Geist Mono', monospace",
@@ -246,11 +157,11 @@ export function KalenderModule() {
                 width: 6,
                 height: 6,
                 borderRadius: "50%",
-                background: "var(--islamiva-gold)",
+                background: "var(--islametra-gold)",
                 flexShrink: 0,
               }}
             />
-            Kalender Islam
+            {tk.badge}
           </motion.div>
           <motion.h1
             initial={{ opacity: 0, y: 8 }}
@@ -262,20 +173,20 @@ export function KalenderModule() {
               fontSize: "clamp(32px, 5vw, 58px)",
               lineHeight: 1.05,
               letterSpacing: "-0.03em",
-              color: "var(--islamiva-fg)",
+              color: "var(--islametra-fg)",
               marginBottom: 16,
             }}
           >
-            Kalender{" "}
+            {tk.title}{" "}
             <em
               style={{
                 fontFamily: "'Instrument Serif', serif",
                 fontStyle: "italic",
                 fontWeight: 400,
-                color: "var(--islamiva-gold)",
+                color: "var(--islametra-gold)",
               }}
             >
-              Hijriah
+              {tk.titleEm}
             </em>
           </motion.h1>
           <motion.p
@@ -284,13 +195,13 @@ export function KalenderModule() {
             transition={{ delay: 0.1 }}
             style={{
               fontSize: 15,
-              color: "var(--islamiva-fg-mute)",
+              color: "var(--islametra-fg-mute)",
               lineHeight: 1.65,
               maxWidth: 480,
               margin: "0 auto",
             }}
           >
-            Tanggal Hijriah hari ini, konversi kalender, dan hari-hari penting dalam Islam.
+            {tk.sub}
           </motion.p>
         </div>
       </section>
@@ -298,8 +209,7 @@ export function KalenderModule() {
       <div
         style={{
           height: 1,
-          background:
-            "linear-gradient(90deg, transparent, var(--islamiva-line-strong), transparent)",
+          background: "linear-gradient(90deg, transparent, var(--islametra-line-strong), transparent)",
         }}
       />
 
@@ -314,7 +224,7 @@ export function KalenderModule() {
             padding: "4px",
             borderRadius: 14,
             background: isLight ? "rgba(0,0,0,0.03)" : "rgba(255,255,255,0.02)",
-            border: "1px solid var(--islamiva-line)",
+            border: "1px solid var(--islametra-line)",
             overflowX: "auto",
           }}
         >
@@ -338,12 +248,12 @@ export function KalenderModule() {
                       background: isLight
                         ? "linear-gradient(180deg, rgba(0,0,0,0.05), rgba(0,0,0,0.02))"
                         : "linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02))",
-                      color: "var(--islamiva-fg)",
+                      color: "var(--islametra-fg)",
                       boxShadow: "0 1px 4px rgba(0,0,0,0.2)",
                     }
                   : {
                       background: "transparent",
-                      color: "var(--islamiva-fg-dim)",
+                      color: "var(--islametra-fg-dim)",
                     }),
               }}
             >
@@ -360,14 +270,14 @@ export function KalenderModule() {
                   padding: "60px 32px",
                   borderRadius: 24,
                   background: isLight ? "rgba(0,0,0,0.03)" : "rgba(255,255,255,0.02)",
-                  border: "1px solid var(--islamiva-line)",
+                  border: "1px solid var(--islametra-line)",
                   textAlign: "center",
                 }}
               >
                 <RefreshCw
                   size={24}
                   style={{
-                    color: "var(--islamiva-fg-dim)",
+                    color: "var(--islametra-fg-dim)",
                     animation: "spin 1s linear infinite",
                     margin: "0 auto",
                   }}
@@ -375,12 +285,12 @@ export function KalenderModule() {
                 <p
                   style={{
                     fontSize: 13,
-                    color: "var(--islamiva-fg-mute)",
+                    color: "var(--islametra-fg-mute)",
                     fontFamily: "'Geist', sans-serif",
                     marginTop: 16,
                   }}
                 >
-                  Mengambil data tanggal Hijriah...
+                  {tk.loadingHijri}
                 </p>
               </div>
             ) : todayHijri ? (
@@ -389,8 +299,7 @@ export function KalenderModule() {
                   style={{
                     padding: "36px 32px",
                     borderRadius: 24,
-                    background:
-                      "linear-gradient(135deg, oklch(0.82 0.08 80 / 0.08), oklch(0.82 0.08 80 / 0.03))",
+                    background: "linear-gradient(135deg, oklch(0.82 0.08 80 / 0.08), oklch(0.82 0.08 80 / 0.03))",
                     border: "1px solid oklch(0.82 0.08 80 / 0.2)",
                     textAlign: "center",
                   }}
@@ -401,11 +310,11 @@ export function KalenderModule() {
                       fontFamily: "'Geist Mono', monospace",
                       letterSpacing: "0.08em",
                       textTransform: "uppercase",
-                      color: "var(--islamiva-gold-soft)",
+                      color: "var(--islametra-gold-soft)",
                       marginBottom: 16,
                     }}
                   >
-                    {WEEKDAYS_ID[todayHijri.gregorian.weekday.en] ?? todayHijri.gregorian.weekday.en}
+                    {tk.weekdays[todayHijri.gregorian.weekday.en as keyof typeof tk.weekdays] ?? todayHijri.gregorian.weekday.en}
                   </p>
                   <p
                     className="font-arabic"
@@ -413,7 +322,7 @@ export function KalenderModule() {
                     dir="rtl"
                     style={{
                       fontSize: "clamp(28px, 6vw, 44px)",
-                      color: "var(--islamiva-gold-soft)",
+                      color: "var(--islametra-gold-soft)",
                       lineHeight: 1.6,
                       marginBottom: 12,
                     }}
@@ -425,7 +334,7 @@ export function KalenderModule() {
                       fontFamily: "'Geist Mono', monospace",
                       fontSize: "clamp(32px, 7vw, 56px)",
                       fontWeight: 700,
-                      color: "var(--islamiva-fg)",
+                      color: "var(--islametra-fg)",
                       letterSpacing: "-0.03em",
                       lineHeight: 1,
                       marginBottom: 8,
@@ -438,7 +347,7 @@ export function KalenderModule() {
                       fontSize: "clamp(16px, 3vw, 22px)",
                       fontFamily: "'Geist', sans-serif",
                       fontWeight: 600,
-                      color: "var(--islamiva-gold)",
+                      color: "var(--islametra-gold)",
                       letterSpacing: "-0.01em",
                       marginBottom: 6,
                     }}
@@ -451,7 +360,7 @@ export function KalenderModule() {
                     dir="rtl"
                     style={{
                       fontSize: 18,
-                      color: "var(--islamiva-gold-soft)",
+                      color: "var(--islametra-gold-soft)",
                       opacity: 0.75,
                       lineHeight: 1.8,
                     }}
@@ -465,36 +374,36 @@ export function KalenderModule() {
                     padding: "20px 24px",
                     borderRadius: 16,
                     background: isLight ? "rgba(0,0,0,0.03)" : "rgba(255,255,255,0.02)",
-                    border: "1px solid var(--islamiva-line)",
+                    border: "1px solid var(--islametra-line)",
                     display: "flex",
                     alignItems: "center",
                     gap: 14,
                   }}
                 >
-                  <CalendarDays size={18} style={{ color: "var(--islamiva-fg-dim)" }} />
+                  <CalendarDays size={18} style={{ color: "var(--islametra-fg-dim)" }} />
                   <div>
                     <p
                       style={{
                         fontSize: 11,
-                        color: "var(--islamiva-fg-dim)",
+                        color: "var(--islametra-fg-dim)",
                         fontFamily: "'Geist Mono', monospace",
                         letterSpacing: "0.04em",
                         textTransform: "uppercase",
                         marginBottom: 4,
                       }}
                     >
-                      Masehi
+                      {tk.gregorian}
                     </p>
                     <p
                       style={{
                         fontSize: 16,
                         fontFamily: "'Geist', sans-serif",
                         fontWeight: 600,
-                        color: "var(--islamiva-fg-soft)",
+                        color: "var(--islametra-fg-soft)",
                         letterSpacing: "-0.01em",
                       }}
                     >
-                      {toDisplayDate(todayHijri.gregorian.date)}
+                      {toDisplayDate(todayHijri.gregorian.date, lang)}
                     </p>
                   </div>
                 </div>
@@ -503,12 +412,12 @@ export function KalenderModule() {
               <p
                 style={{
                   textAlign: "center",
-                  color: "var(--islamiva-fg-mute)",
+                  color: "var(--islametra-fg-mute)",
                   fontSize: 14,
                   padding: "60px 0",
                 }}
               >
-                Gagal memuat data
+                {tk.failedLoad}
               </p>
             )}
           </motion.div>
@@ -523,7 +432,7 @@ export function KalenderModule() {
                 gap: 12,
               }}
             >
-              {ISLAMIC_MONTHS.map((month, i) => (
+              {tk.months.map((month, i) => (
                 <motion.div
                   key={month.number}
                   initial={{ opacity: 0, y: 10 }}
@@ -532,9 +441,10 @@ export function KalenderModule() {
                   style={{
                     padding: "20px 22px",
                     borderRadius: 16,
-                    background:
-                      isLight ? "var(--islamiva-bg-1)" : "linear-gradient(180deg, rgba(255,255,255,0.025), rgba(255,255,255,0.005)), var(--islamiva-bg-1)",
-                    border: "1px solid var(--islamiva-line)",
+                    background: isLight
+                      ? "var(--islametra-bg-1)"
+                      : "linear-gradient(180deg, rgba(255,255,255,0.025), rgba(255,255,255,0.005)), var(--islametra-bg-1)",
+                    border: "1px solid var(--islametra-line)",
                     display: "flex",
                     gap: 16,
                     alignItems: "flex-start",
@@ -554,7 +464,7 @@ export function KalenderModule() {
                       fontFamily: "'Geist Mono', monospace",
                       fontSize: 12,
                       fontWeight: 600,
-                      color: "var(--islamiva-gold-soft)",
+                      color: "var(--islametra-gold-soft)",
                     }}
                   >
                     {month.number}
@@ -574,7 +484,7 @@ export function KalenderModule() {
                           fontSize: 14,
                           fontWeight: 600,
                           fontFamily: "'Geist', sans-serif",
-                          color: "var(--islamiva-fg-soft)",
+                          color: "var(--islametra-fg-soft)",
                           letterSpacing: "-0.01em",
                         }}
                       >
@@ -586,7 +496,7 @@ export function KalenderModule() {
                         dir="rtl"
                         style={{
                           fontSize: 13,
-                          color: "var(--islamiva-gold-soft)",
+                          color: "var(--islametra-gold-soft)",
                           opacity: 0.7,
                           lineHeight: 1.6,
                         }}
@@ -597,7 +507,7 @@ export function KalenderModule() {
                     <p
                       style={{
                         fontSize: 12,
-                        color: "var(--islamiva-fg-mute)",
+                        color: "var(--islametra-fg-mute)",
                         lineHeight: 1.55,
                         fontFamily: "'Geist', sans-serif",
                       }}
@@ -614,7 +524,7 @@ export function KalenderModule() {
         {activeTab === "dates" && (
           <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}>
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-              {IMPORTANT_DATES.map((item, i) => {
+              {tk.importantDates.map((item, i) => {
                 const isGold = item.color === "gold";
                 return (
                   <motion.div
@@ -636,19 +546,13 @@ export function KalenderModule() {
                       alignItems: "flex-start",
                     }}
                   >
-                    <div
-                      style={{
-                        flexShrink: 0,
-                        textAlign: "center",
-                        minWidth: 56,
-                      }}
-                    >
+                    <div style={{ flexShrink: 0, textAlign: "center", minWidth: 56 }}>
                       <p
                         style={{
                           fontFamily: "'Geist Mono', monospace",
                           fontSize: 26,
                           fontWeight: 700,
-                          color: isGold ? "var(--islamiva-gold)" : "var(--islamiva-emerald-soft)",
+                          color: isGold ? "var(--islametra-gold)" : "var(--islametra-emerald-soft)",
                           lineHeight: 1,
                           marginBottom: 4,
                         }}
@@ -659,7 +563,7 @@ export function KalenderModule() {
                         style={{
                           fontSize: 10,
                           fontFamily: "'Geist', sans-serif",
-                          color: isGold ? "var(--islamiva-gold-soft)" : "var(--islamiva-emerald-soft)",
+                          color: isGold ? "var(--islametra-gold-soft)" : "var(--islametra-emerald-soft)",
                           opacity: 0.7,
                           lineHeight: 1.3,
                         }}
@@ -672,7 +576,7 @@ export function KalenderModule() {
                         <Star
                           size={12}
                           style={{
-                            color: isGold ? "var(--islamiva-gold)" : "var(--islamiva-emerald-soft)",
+                            color: isGold ? "var(--islametra-gold)" : "var(--islametra-emerald-soft)",
                             fill: "currentColor",
                             flexShrink: 0,
                           }}
@@ -682,7 +586,7 @@ export function KalenderModule() {
                             fontSize: 14,
                             fontWeight: 600,
                             fontFamily: "'Geist', sans-serif",
-                            color: "var(--islamiva-fg-soft)",
+                            color: "var(--islametra-fg-soft)",
                             letterSpacing: "-0.01em",
                           }}
                         >
@@ -692,7 +596,7 @@ export function KalenderModule() {
                       <p
                         style={{
                           fontSize: 13,
-                          color: "var(--islamiva-fg-mute)",
+                          color: "var(--islametra-fg-mute)",
                           lineHeight: 1.6,
                           fontFamily: "'Geist', sans-serif",
                         }}
@@ -714,7 +618,7 @@ export function KalenderModule() {
                 padding: "28px 32px",
                 borderRadius: 20,
                 background: isLight ? "rgba(0,0,0,0.03)" : "rgba(255,255,255,0.02)",
-                border: "1px solid var(--islamiva-line)",
+                border: "1px solid var(--islametra-line)",
                 marginBottom: 24,
               }}
             >
@@ -722,45 +626,38 @@ export function KalenderModule() {
                 style={{
                   fontSize: 13,
                   fontWeight: 600,
-                  color: "var(--islamiva-fg-soft)",
+                  color: "var(--islametra-fg-soft)",
                   fontFamily: "'Geist', sans-serif",
                   marginBottom: 6,
                 }}
               >
-                Konversi Masehi ke Hijriah
+                {tk.converterTitle}
               </p>
               <p
                 style={{
                   fontSize: 12,
-                  color: "var(--islamiva-fg-dim)",
+                  color: "var(--islametra-fg-dim)",
                   fontFamily: "'Geist', sans-serif",
                   marginBottom: 20,
                   lineHeight: 1.55,
                 }}
               >
-                Masukkan tanggal Masehi untuk mendapatkan tanggal Hijriah yang setara.
+                {tk.converterDesc}
               </p>
-              <div
-                style={{
-                  display: "flex",
-                  gap: 10,
-                  alignItems: "flex-end",
-                  flexWrap: "wrap",
-                }}
-              >
+              <div style={{ display: "flex", gap: 10, alignItems: "flex-end", flexWrap: "wrap" }}>
                 <div style={{ flex: 1, minWidth: 180 }}>
                   <label
                     style={{
                       display: "block",
                       fontSize: 11,
-                      color: "var(--islamiva-fg-dim)",
+                      color: "var(--islametra-fg-dim)",
                       fontFamily: "'Geist Mono', monospace",
                       letterSpacing: "0.04em",
                       textTransform: "uppercase",
                       marginBottom: 8,
                     }}
                   >
-                    Tanggal Masehi
+                    {tk.gregorianLabel}
                   </label>
                   <input
                     type="date"
@@ -773,9 +670,9 @@ export function KalenderModule() {
                       width: "100%",
                       padding: "10px 14px",
                       borderRadius: 10,
-                      border: "1px solid var(--islamiva-line)",
+                      border: "1px solid var(--islametra-line)",
                       background: isLight ? "rgba(0,0,0,0.04)" : "rgba(255,255,255,0.03)",
-                      color: "var(--islamiva-fg)",
+                      color: "var(--islametra-fg)",
                       fontSize: 13,
                       fontFamily: "'Geist', sans-serif",
                       outline: "none",
@@ -794,7 +691,7 @@ export function KalenderModule() {
                     borderRadius: 10,
                     border: "1px solid oklch(0.82 0.08 80 / 0.35)",
                     background: "oklch(0.82 0.08 80 / 0.1)",
-                    color: "var(--islamiva-gold)",
+                    color: "var(--islametra-gold)",
                     fontSize: 13,
                     fontFamily: "'Geist', sans-serif",
                     fontWeight: 500,
@@ -805,14 +702,11 @@ export function KalenderModule() {
                   }}
                 >
                   {converterLoading ? (
-                    <RefreshCw
-                      size={13}
-                      style={{ animation: "spin 1s linear infinite" }}
-                    />
+                    <RefreshCw size={13} style={{ animation: "spin 1s linear infinite" }} />
                   ) : (
                     <ArrowRight size={13} />
                   )}
-                  Konversi
+                  {tk.convertBtn}
                 </button>
               </div>
             </div>
@@ -824,8 +718,7 @@ export function KalenderModule() {
                 style={{
                   padding: "28px 32px",
                   borderRadius: 20,
-                  background:
-                    "linear-gradient(135deg, oklch(0.82 0.08 80 / 0.08), oklch(0.82 0.08 80 / 0.03))",
+                  background: "linear-gradient(135deg, oklch(0.82 0.08 80 / 0.08), oklch(0.82 0.08 80 / 0.03))",
                   border: "1px solid oklch(0.82 0.08 80 / 0.25)",
                 }}
               >
@@ -835,54 +728,54 @@ export function KalenderModule() {
                     fontFamily: "'Geist Mono', monospace",
                     letterSpacing: "0.08em",
                     textTransform: "uppercase",
-                    color: "var(--islamiva-gold-soft)",
+                    color: "var(--islametra-gold-soft)",
                     marginBottom: 14,
                   }}
                 >
-                  Hasil Konversi
+                  {tk.conversionResult}
                 </p>
                 <div style={{ display: "flex", gap: 24, flexWrap: "wrap", alignItems: "center" }}>
                   <div>
                     <p
                       style={{
                         fontSize: 11,
-                        color: "var(--islamiva-fg-dim)",
+                        color: "var(--islametra-fg-dim)",
                         fontFamily: "'Geist Mono', monospace",
                         marginBottom: 6,
                       }}
                     >
-                      Masehi
+                      {tk.gregorian}
                     </p>
                     <p
                       style={{
                         fontSize: 16,
                         fontWeight: 600,
                         fontFamily: "'Geist', sans-serif",
-                        color: "var(--islamiva-fg-soft)",
+                        color: "var(--islametra-fg-soft)",
                         letterSpacing: "-0.01em",
                       }}
                     >
-                      {toDisplayDate(converterResult.gregorian.date)}
+                      {toDisplayDate(converterResult.gregorian.date, lang)}
                     </p>
                   </div>
-                  <ArrowRight size={16} style={{ color: "var(--islamiva-fg-dim)", flexShrink: 0 }} />
+                  <ArrowRight size={16} style={{ color: "var(--islametra-fg-dim)", flexShrink: 0 }} />
                   <div>
                     <p
                       style={{
                         fontSize: 11,
-                        color: "var(--islamiva-fg-dim)",
+                        color: "var(--islametra-fg-dim)",
                         fontFamily: "'Geist Mono', monospace",
                         marginBottom: 6,
                       }}
                     >
-                      Hijriah
+                      {tk.hijri}
                     </p>
                     <p
                       style={{
                         fontSize: 16,
                         fontWeight: 600,
                         fontFamily: "'Geist', sans-serif",
-                        color: "var(--islamiva-gold)",
+                        color: "var(--islametra-gold)",
                         letterSpacing: "-0.01em",
                       }}
                     >
@@ -895,7 +788,7 @@ export function KalenderModule() {
                       dir="rtl"
                       style={{
                         fontSize: 14,
-                        color: "var(--islamiva-gold-soft)",
+                        color: "var(--islametra-gold-soft)",
                         opacity: 0.7,
                         lineHeight: 1.8,
                         marginTop: 4,

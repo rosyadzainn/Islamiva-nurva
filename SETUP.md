@@ -1,9 +1,9 @@
-# Islamiva Islamic Platform - Setup Guide
+# Islametra Islamic Platform - Setup Guide
 
 ## Quick Start
 
 ```bash
-cd islamiva-islamic
+cd islametra-islamic
 npm install
 npm run dev
 ```
@@ -14,7 +14,7 @@ Copy `.env` and fill in your credentials:
 
 ```env
 # Database (PostgreSQL)
-DATABASE_URL="postgresql://USER:PASSWORD@HOST:5432/islamiva_islamic?schema=public"
+DATABASE_URL="postgresql://USER:PASSWORD@HOST:5432/islametra_islamic?schema=public"
 
 # Clerk Authentication (https://clerk.com)
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
@@ -31,7 +31,7 @@ NEXT_PUBLIC_APP_URL=https://your-domain.com
 
 1. Create PostgreSQL database:
 ```sql
-CREATE DATABASE islamiva_islamic;
+CREATE DATABASE islametra_islamic;
 ```
 
 2. Run Prisma migrations:
@@ -52,7 +52,7 @@ npx prisma db push
 1. Push to GitHub:
 ```bash
 git add .
-git commit -m "Initial Islamiva Islamic Platform"
+git commit -m "Initial Islametra Islamic Platform"
 git push
 ```
 
@@ -85,7 +85,7 @@ git push
 ## Project Structure
 
 ```
-islamiva-islamic/
+islametra-islamic/
 ├── app/
 │   ├── (main)/          # Main public pages
 │   │   ├── page.tsx     # Home

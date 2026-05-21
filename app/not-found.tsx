@@ -1,7 +1,13 @@
+"use client";
+
 import Link from "next/link";
 import { BookOpen, ArrowLeft } from "lucide-react";
+import { useLang } from "@/contexts/language-context";
+import { translations } from "@/lib/translations";
 
 export default function NotFound() {
+  const { lang } = useLang();
+  const tn = translations[lang].notFound;
   return (
     <div
       style={{
@@ -9,7 +15,7 @@ export default function NotFound() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        backgroundColor: "var(--islamiva-bg)",
+        backgroundColor: "var(--islametra-bg)",
         padding: "24px 16px",
         position: "relative",
         overflow: "hidden",
@@ -56,7 +62,7 @@ export default function NotFound() {
             fontSize: "clamp(64px, 12vw, 96px)",
             letterSpacing: "-0.05em",
             lineHeight: 1,
-            color: "var(--islamiva-fg)",
+            color: "var(--islametra-fg)",
             marginBottom: 12,
           }}
         >
@@ -66,7 +72,7 @@ export default function NotFound() {
               fontFamily: "'Instrument Serif', serif",
               fontStyle: "italic",
               fontWeight: 400,
-              color: "var(--islamiva-emerald-soft)",
+              color: "var(--islametra-emerald-soft)",
             }}
           >
             0
@@ -81,24 +87,24 @@ export default function NotFound() {
             fontWeight: 500,
             fontSize: "clamp(16px, 2.5vw, 20px)",
             letterSpacing: "-0.01em",
-            color: "var(--islamiva-fg-soft)",
+            color: "var(--islametra-fg-soft)",
             marginBottom: 10,
           }}
         >
-          Halaman Tidak Ditemukan
+          {tn.heading}
         </h1>
 
         <p
           style={{
             fontSize: 14,
-            color: "var(--islamiva-fg-mute)",
+            color: "var(--islametra-fg-mute)",
             lineHeight: 1.65,
             maxWidth: 340,
             margin: "0 auto 32px",
             fontFamily: "'Geist', sans-serif",
           }}
         >
-          Halaman yang kamu cari tidak ada. Mungkin sudah dipindahkan atau dihapus.
+          {tn.sub}
         </p>
 
         {/* CTA */}
@@ -121,7 +127,7 @@ export default function NotFound() {
           }}
         >
           <ArrowLeft size={15} />
-          Kembali ke Beranda
+          {tn.cta}
         </Link>
       </div>
     </div>

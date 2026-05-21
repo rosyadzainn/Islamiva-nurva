@@ -4,13 +4,17 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { FEATURED_HADITHS } from "@/data/hadith-data";
+import { useLang } from "@/contexts/language-context";
+import { translations } from "@/lib/translations";
 
 export function FeaturedHadith() {
+  const { lang } = useLang();
+  const th = translations[lang].featuredHadith;
   return (
     <section
       className="relative"
       style={{
-        backgroundColor: "var(--islamiva-bg-1)",
+        backgroundColor: "var(--islametra-bg-1)",
         padding: "clamp(80px, 12vw, 160px) 0",
       }}
     >
@@ -18,7 +22,7 @@ export function FeaturedHadith() {
         className="absolute top-0 left-0 right-0 h-px"
         style={{
           background:
-            "linear-gradient(90deg, transparent, var(--islamiva-line-strong), transparent)",
+            "linear-gradient(90deg, transparent, var(--islametra-line-strong), transparent)",
         }}
       />
 
@@ -35,8 +39,8 @@ export function FeaturedHadith() {
                 letterSpacing: "0.08em",
                 textTransform: "uppercase",
                 background: "rgba(255,255,255,0.03)",
-                border: "1px solid var(--islamiva-line)",
-                color: "var(--islamiva-fg-soft)",
+                border: "1px solid var(--islametra-line)",
+                color: "var(--islametra-fg-soft)",
                 display: "inline-flex",
                 alignItems: "center",
                 gap: 8,
@@ -48,9 +52,9 @@ export function FeaturedHadith() {
               }}
             >
               <span
-                style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--islamiva-gold)", flexShrink: 0 }}
+                style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--islametra-gold)", flexShrink: 0 }}
               />
-              Sabda Nabi
+              {th.badge}
             </motion.span>
             <motion.h2
               initial={{ opacity: 0, y: 8 }}
@@ -63,28 +67,28 @@ export function FeaturedHadith() {
                 fontSize: "clamp(28px, 3.6vw, 46px)",
                 lineHeight: 1.05,
                 letterSpacing: "-0.03em",
-                color: "var(--islamiva-fg)",
+                color: "var(--islametra-fg)",
               }}
             >
-              Hadits{" "}
+              {th.title}{" "}
               <em
                 style={{
                   fontFamily: "'Instrument Serif', serif",
                   fontStyle: "italic",
                   fontWeight: 400,
-                  color: "var(--islamiva-gold)",
+                  color: "var(--islametra-gold)",
                 }}
               >
-                Pilihan
+                {th.titleEm}
               </em>
             </motion.h2>
           </div>
           <Link
             href="/hadith"
             className="hidden sm:flex items-center gap-1.5 text-sm font-medium transition-colors group"
-            style={{ color: "var(--islamiva-fg-mute)", fontFamily: "'Geist', sans-serif" }}
+            style={{ color: "var(--islametra-fg-mute)", fontFamily: "'Geist', sans-serif" }}
           >
-            Semua hadits
+            {th.allLink}
             <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>
@@ -107,8 +111,8 @@ export function FeaturedHadith() {
                     minHeight: 240,
                     borderRadius: 20,
                     background:
-                      "linear-gradient(180deg, rgba(255,255,255,0.025), rgba(255,255,255,0.005)), var(--islamiva-bg-2)",
-                    border: "1px solid var(--islamiva-line)",
+                      "linear-gradient(180deg, rgba(255,255,255,0.025), rgba(255,255,255,0.005)), var(--islametra-bg-2)",
+                    border: "1px solid var(--islametra-line)",
                   }}
                 >
                   {/* Shimmer border */}
@@ -144,7 +148,7 @@ export function FeaturedHadith() {
                         fontSize: 11, letterSpacing: "0.04em",
                         background: "oklch(0.82 0.08 80 / 0.12)",
                         border: "1px solid oklch(0.82 0.08 80 / 0.2)",
-                        color: "var(--islamiva-gold-soft)",
+                        color: "var(--islametra-gold-soft)",
                       }}
                     >
                       HR. {hadith.kitab}
@@ -154,7 +158,7 @@ export function FeaturedHadith() {
                         marginLeft: "auto",
                         fontFamily: "'Geist Mono', monospace",
                         fontSize: 11,
-                        color: "var(--islamiva-fg-dim)",
+                        color: "var(--islametra-fg-dim)",
                       }}
                     >
                       No. {hadith.number}
@@ -178,7 +182,7 @@ export function FeaturedHadith() {
                       lang="ar" dir="rtl"
                       style={{
                         fontSize: 18, lineHeight: 1.9,
-                        color: "var(--islamiva-gold-soft)",
+                        color: "var(--islametra-gold-soft)",
                         display: "-webkit-box",
                         WebkitLineClamp: 3,
                         WebkitBoxOrient: "vertical",
@@ -194,7 +198,7 @@ export function FeaturedHadith() {
                     className="flex-1 relative z-10"
                     style={{
                       fontSize: 13.5, lineHeight: 1.6,
-                      color: "var(--islamiva-fg-mute)",
+                      color: "var(--islametra-fg-mute)",
                       display: "-webkit-box",
                       WebkitLineClamp: 3,
                       WebkitBoxOrient: "vertical",
@@ -207,21 +211,21 @@ export function FeaturedHadith() {
                   {/* Footer */}
                   <div
                     className="flex items-center justify-between mt-5 pt-4 relative z-10"
-                    style={{ borderTop: "1px dashed var(--islamiva-line)" }}
+                    style={{ borderTop: "1px dashed var(--islametra-line)" }}
                   >
                     <span
                       style={{
                         fontFamily: "'Geist Mono', monospace",
-                        fontSize: 11, color: "var(--islamiva-fg-dim)",
+                        fontSize: 11, color: "var(--islametra-fg-dim)",
                         letterSpacing: "0.03em",
                       }}
                     >
-                      Baca selengkapnya
+                      {th.readMore}
                     </span>
                     <ArrowUpRight
                       size={14}
                       className="transition-all duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-                      style={{ color: "var(--islamiva-fg-mute)" }}
+                      style={{ color: "var(--islametra-fg-mute)" }}
                     />
                   </div>
                 </div>

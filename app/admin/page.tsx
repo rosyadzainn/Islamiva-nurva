@@ -1,27 +1,57 @@
-import { auth } from "@clerk/nextjs/server";
-import { Users, BookOpen, MessageCircle, TrendingUp } from "lucide-react";
+import { requireAdmin } from "@/lib/admin-guard";
+import { Users, BookOpen, MessageCircle, Heart, FileText, History } from "lucide-react";
 
-const stats = [
-  { label: "Total Users", value: "1,234", change: "+12%", icon: Users },
-  { label: "Artikel", value: "56", change: "+3", icon: BookOpen },
-  { label: "Chat Sessions", value: "8,901", change: "+23%", icon: MessageCircle },
-  { label: "Pengunjung Hari Ini", value: "2,456", change: "+8%", icon: TrendingUp },
-];
+export const dynamic = "force-dynamic";
 
-const quickActions = [
-  { label: "Tambah Artikel Baru", href: "/admin/articles/new" },
-  { label: "Tambah Doa", href: "/admin/content/doa/new" },
-  { label: "Kelola Konten AI", href: "/admin/settings/ai" },
-];
+async function getStats() {
+  try {
+    const { default: prisma } = await import("@/lib/prisma");
+    const [userCount, bookmarkCount, chatSessionCount, chatMessageCount, articleCount] =
+      await Promise.all([
+        prisma.user.count(),
+        prisma.bookmark.count(),
+        prisma.chatSession.count(),
+        prisma.chatMessage.count(),
+        prisma.article.count(),
+      ]);
+    return { userCount, bookmarkCount, chatSessionCount, chatMessageCount, articleCount };
+  } catch {
+    return { userCount: 0, bookmarkCount: 0, chatSessionCount: 0, chatMessageCount: 0, articleCount: 0 };
+  }
+}
 
-const recentActivity = [
-  { text: "User baru terdaftar", time: "2 menit lalu" },
-  { text: "Artikel baru dipublikasi", time: "1 jam lalu" },
-  { text: "1.2K chat session hari ini", time: "Hari ini" },
-];
+async function getRecentUsers() {
+  try {
+    const { default: prisma } = await import("@/lib/prisma");
+    return await prisma.user.findMany({
+      orderBy: { createdAt: "desc" },
+      take: 5,
+      select: { id: true, name: true, email: true, createdAt: true, role: true },
+    });
+  } catch {
+    return [];
+  }
+}
 
 export default async function AdminDashboard() {
-  await auth();
+  await requireAdmin();
+
+  const [stats, recentUsers] = await Promise.all([getStats(), getRecentUsers()]);
+
+  const statCards = [
+    { label: "Total Users", value: stats.userCount.toLocaleString(), icon: Users, color: "oklch(0.78 0.13 155)" },
+    { label: "Bookmarks", value: stats.bookmarkCount.toLocaleString(), icon: Heart, color: "oklch(0.75 0.15 30)" },
+    { label: "Chat Sessions", value: stats.chatSessionCount.toLocaleString(), icon: MessageCircle, color: "oklch(0.72 0.12 260)" },
+    { label: "Pesan AI", value: stats.chatMessageCount.toLocaleString(), icon: History, color: "oklch(0.78 0.10 80)" },
+    { label: "Artikel DB", value: stats.articleCount.toLocaleString(), icon: FileText, color: "oklch(0.72 0.12 300)" },
+    { label: "Halaman Live", value: "190", icon: BookOpen, color: "oklch(0.78 0.13 155)" },
+  ];
+
+  const quickActions = [
+    { label: "Tambah Artikel Baru", href: "/admin/articles/new" },
+    { label: "Kelola Konten", href: "/admin/content" },
+    { label: "Lihat Users", href: "/admin/users" },
+  ];
 
   return (
     <div style={{ padding: 32 }}>
@@ -33,7 +63,7 @@ export default async function AdminDashboard() {
             fontWeight: 600,
             fontSize: 24,
             letterSpacing: "-0.02em",
-            color: "var(--islamiva-fg)",
+            color: "var(--islametra-fg)",
             marginBottom: 6,
           }}
         >
@@ -43,20 +73,14 @@ export default async function AdminDashboard() {
               fontFamily: "'Instrument Serif', serif",
               fontStyle: "italic",
               fontWeight: 400,
-              color: "var(--islamiva-emerald-soft)",
+              color: "oklch(0.78 0.13 155)",
             }}
           >
             Admin
           </em>
         </h1>
-        <p
-          style={{
-            fontSize: 13,
-            color: "var(--islamiva-fg-dim)",
-            fontFamily: "'Geist', sans-serif",
-          }}
-        >
-          Selamat datang di panel admin Islamiva
+        <p style={{ fontSize: 13, color: "var(--islametra-fg-dim)", fontFamily: "'Geist', sans-serif" }}>
+          Data real-time dari database Islametra
         </p>
       </div>
 
@@ -64,12 +88,12 @@ export default async function AdminDashboard() {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(4, 1fr)",
+          gridTemplateColumns: "repeat(3, 1fr)",
           gap: 16,
           marginBottom: 24,
         }}
       >
-        {stats.map((stat) => {
+        {statCards.map((stat) => {
           const Icon = stat.icon;
           return (
             <div
@@ -77,81 +101,54 @@ export default async function AdminDashboard() {
               style={{
                 padding: "20px 22px",
                 borderRadius: 14,
-                backgroundColor: "var(--islamiva-bg)",
-                border: "1px solid var(--islamiva-line)",
+                backgroundColor: "var(--islametra-bg)",
+                border: "1px solid var(--islametra-line)",
               }}
             >
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  marginBottom: 14,
-                }}
-              >
+              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
                 <div
                   style={{
                     width: 34,
                     height: 34,
                     borderRadius: 9,
-                    background: "oklch(0.62 0.13 155 / 0.1)",
-                    border: "1px solid oklch(0.62 0.13 155 / 0.18)",
+                    background: "rgba(255,255,255,0.04)",
+                    border: "1px solid var(--islametra-line)",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
                   }}
                 >
-                  <Icon size={16} style={{ color: "oklch(0.78 0.13 155)" }} />
+                  <Icon size={16} style={{ color: stat.color }} />
                 </div>
-                <span
-                  style={{
-                    fontSize: 11,
-                    fontWeight: 500,
-                    color: "oklch(0.78 0.13 155)",
-                    fontFamily: "'Geist Mono', monospace",
-                    padding: "3px 8px",
-                    borderRadius: 999,
-                    background: "oklch(0.62 0.13 155 / 0.1)",
-                  }}
-                >
-                  {stat.change}
-                </span>
+                <p style={{ fontSize: 12, color: "var(--islametra-fg-dim)", fontFamily: "'Geist', sans-serif" }}>
+                  {stat.label}
+                </p>
               </div>
               <p
                 style={{
                   fontFamily: "'Geist', sans-serif",
                   fontWeight: 700,
-                  fontSize: 26,
+                  fontSize: 30,
                   letterSpacing: "-0.03em",
-                  color: "var(--islamiva-fg)",
-                  marginBottom: 4,
+                  color: "var(--islametra-fg)",
                 }}
               >
                 {stat.value}
-              </p>
-              <p
-                style={{
-                  fontSize: 12,
-                  color: "var(--islamiva-fg-dim)",
-                  fontFamily: "'Geist', sans-serif",
-                }}
-              >
-                {stat.label}
               </p>
             </div>
           );
         })}
       </div>
 
-      {/* Panels grid */}
+      {/* Bottom panels */}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-        {/* Quick actions */}
+        {/* Recent users */}
         <div
           style={{
             padding: "22px 24px",
             borderRadius: 14,
-            backgroundColor: "var(--islamiva-bg)",
-            border: "1px solid var(--islamiva-line)",
+            backgroundColor: "var(--islametra-bg)",
+            border: "1px solid var(--islametra-line)",
           }}
         >
           <h2
@@ -159,7 +156,67 @@ export default async function AdminDashboard() {
               fontFamily: "'Geist', sans-serif",
               fontWeight: 500,
               fontSize: 14,
-              color: "var(--islamiva-fg-soft)",
+              color: "var(--islametra-fg-soft)",
+              marginBottom: 16,
+            }}
+          >
+            User Terbaru
+          </h2>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {recentUsers.length === 0 ? (
+              <p style={{ fontSize: 13, color: "var(--islametra-fg-dim)", fontFamily: "'Geist', sans-serif" }}>
+                Belum ada user terdaftar.
+              </p>
+            ) : (
+              recentUsers.map((user) => (
+                <div
+                  key={user.id}
+                  style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}
+                >
+                  <div>
+                    <p style={{ fontSize: 13, color: "var(--islametra-fg-soft)", fontFamily: "'Geist', sans-serif", fontWeight: 500 }}>
+                      {user.name ?? user.email.split("@")[0]}
+                    </p>
+                    <p style={{ fontSize: 11, color: "var(--islametra-fg-dim)", fontFamily: "'Geist Mono', monospace" }}>
+                      {user.email}
+                    </p>
+                  </div>
+                  <span
+                    style={{
+                      fontSize: 10,
+                      fontFamily: "'Geist Mono', monospace",
+                      padding: "2px 8px",
+                      borderRadius: 999,
+                      background: user.role === "ADMIN" ? "oklch(0.62 0.13 155 / 0.15)" : "rgba(255,255,255,0.04)",
+                      color: user.role === "ADMIN" ? "oklch(0.78 0.13 155)" : "var(--islametra-fg-dim)",
+                      border: `1px solid ${user.role === "ADMIN" ? "oklch(0.62 0.13 155 / 0.25)" : "var(--islametra-line)"}`,
+                      textTransform: "uppercase" as const,
+                      letterSpacing: "0.05em",
+                    }}
+                  >
+                    {user.role}
+                  </span>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+
+        {/* Quick actions */}
+        <div
+          style={{
+            padding: "22px 24px",
+            borderRadius: 14,
+            backgroundColor: "var(--islametra-bg)",
+            border: "1px solid var(--islametra-line)",
+          }}
+        >
+          <h2
+            style={{
+              fontFamily: "'Geist', sans-serif",
+              fontWeight: 500,
+              fontSize: 14,
+              color: "var(--islametra-fg-soft)",
               marginBottom: 16,
             }}
           >
@@ -178,11 +235,10 @@ export default async function AdminDashboard() {
                   borderRadius: 9,
                   textDecoration: "none",
                   fontSize: 13,
-                  color: "var(--islamiva-fg-mute)",
+                  color: "var(--islametra-fg-mute)",
                   fontFamily: "'Geist', sans-serif",
-                  border: "1px solid var(--islamiva-line)",
+                  border: "1px solid var(--islametra-line)",
                   background: "rgba(255,255,255,0.015)",
-                  transition: "border-color 0.15s, color 0.15s",
                 }}
               >
                 <span
@@ -198,60 +254,18 @@ export default async function AdminDashboard() {
               </a>
             ))}
           </div>
-        </div>
-
-        {/* Recent activity */}
-        <div
-          style={{
-            padding: "22px 24px",
-            borderRadius: 14,
-            backgroundColor: "var(--islamiva-bg)",
-            border: "1px solid var(--islamiva-line)",
-          }}
-        >
-          <h2
+          <div
             style={{
-              fontFamily: "'Geist', sans-serif",
-              fontWeight: 500,
-              fontSize: 14,
-              color: "var(--islamiva-fg-soft)",
-              marginBottom: 16,
+              marginTop: 20,
+              padding: "12px 14px",
+              borderRadius: 10,
+              background: "oklch(0.62 0.13 155 / 0.06)",
+              border: "1px solid oklch(0.62 0.13 155 / 0.15)",
             }}
           >
-            Aktivitas Terbaru
-          </h2>
-          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            {recentActivity.map((activity, i) => (
-              <div
-                key={i}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                }}
-              >
-                <span
-                  style={{
-                    fontSize: 13,
-                    color: "var(--islamiva-fg-mute)",
-                    fontFamily: "'Geist', sans-serif",
-                  }}
-                >
-                  {activity.text}
-                </span>
-                <span
-                  style={{
-                    fontSize: 11,
-                    color: "var(--islamiva-fg-dim)",
-                    fontFamily: "'Geist Mono', monospace",
-                    whiteSpace: "nowrap",
-                    marginLeft: 16,
-                  }}
-                >
-                  {activity.time}
-                </span>
-              </div>
-            ))}
+            <p style={{ fontSize: 12, color: "oklch(0.78 0.13 155)", fontFamily: "'Geist', sans-serif", lineHeight: 1.6 }}>
+              Data diambil langsung dari database PostgreSQL secara real-time.
+            </p>
           </div>
         </div>
       </div>

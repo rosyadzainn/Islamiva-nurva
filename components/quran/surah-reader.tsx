@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
+import { useAuth } from "@clerk/nextjs";
 import {
   ChevronLeft,
   ChevronRight,
@@ -34,8 +35,8 @@ function AyahSkeleton() {
         padding: 24,
         borderRadius: 16,
         background:
-          "linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.005)), var(--islamiva-bg-1)",
-        border: "1px solid var(--islamiva-line)",
+          "linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.005)), var(--islametra-bg-1)",
+        border: "1px solid var(--islametra-line)",
       }}
     >
       <div
@@ -70,6 +71,7 @@ export function SurahReader({ surah }: SurahReaderProps) {
   const [showResume, setShowResume] = useState(false);
   const { isBookmarked, toggle: toggleBookmark } = useBookmarks();
   const { saveProgress, getProgress } = useQuranProgress();
+  const { isSignedIn } = useAuth();
   const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
 
   const prevSurah = SURAH_LIST.find((s) => s.number === surah.number - 1);
@@ -103,6 +105,13 @@ export function SurahReader({ surah }: SurahReaderProps) {
             })
           );
           setAyahs(combined);
+          if (isSignedIn) {
+            fetch("/api/reading-history", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ type: "quran", referenceId: `surah-${surah.number}`, metadata: { surahNumber: surah.number, surahName: surah.name, totalAyahs: combined.length } }),
+            }).catch(() => {});
+          }
         }
       } catch {
         toast.error("Gagal memuat surah. Coba lagi.");
@@ -128,9 +137,8 @@ export function SurahReader({ surah }: SurahReaderProps) {
     setTimeout(() => setCopiedId(null), 2000);
   };
 
-  const handleBookmark = (ayah: Ayah) => {
-    const key = `quran-${surah.number}-${ayah.number}`;
-    const added = toggleBookmark({
+  const handleBookmark = async (ayah: Ayah) => {
+    const added = await toggleBookmark({
       type: "quran",
       surahNumber: surah.number,
       ayahNumber: ayah.number,
@@ -170,7 +178,7 @@ export function SurahReader({ surah }: SurahReaderProps) {
   };
 
   return (
-    <div style={{ backgroundColor: "var(--islamiva-bg)", minHeight: "100vh" }}>
+    <div style={{ backgroundColor: "var(--islametra-bg)", minHeight: "100vh" }}>
       <div style={{ maxWidth: 860, margin: "0 auto", padding: "clamp(32px, 5vw, 60px) 28px" }}>
 
         {/* Back link */}
@@ -181,12 +189,12 @@ export function SurahReader({ surah }: SurahReaderProps) {
             alignItems: "center",
             gap: 6,
             fontSize: 13,
-            color: "var(--islamiva-fg-dim)",
+            color: "var(--islametra-fg-dim)",
             fontFamily: "'Geist', sans-serif",
             marginBottom: 32,
             transition: "color 0.2s",
           }}
-          className="hover:text-[var(--islamiva-fg-soft)] transition-colors"
+          className="hover:text-[var(--islametra-fg-soft)] transition-colors"
         >
           <ChevronLeft size={15} />
           Kembali ke daftar surah
@@ -199,8 +207,8 @@ export function SurahReader({ surah }: SurahReaderProps) {
             padding: "40px 32px",
             borderRadius: 24,
             background:
-              "linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.005)), var(--islamiva-bg-1)",
-            border: "1px solid var(--islamiva-line-strong)",
+              "linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.005)), var(--islametra-bg-1)",
+            border: "1px solid var(--islametra-line-strong)",
             textAlign: "center",
             marginBottom: 24,
             overflow: "hidden",
@@ -244,7 +252,7 @@ export function SurahReader({ surah }: SurahReaderProps) {
               dir="rtl"
               style={{
                 fontSize: "clamp(36px, 6vw, 56px)",
-                color: "var(--islamiva-gold-soft)",
+                color: "var(--islametra-gold-soft)",
                 lineHeight: 1.5,
                 marginBottom: 12,
                 opacity: 0.9,
@@ -259,7 +267,7 @@ export function SurahReader({ surah }: SurahReaderProps) {
                 fontSize: "clamp(20px, 3vw, 28px)",
                 fontWeight: 600,
                 fontFamily: "'Geist', sans-serif",
-                color: "var(--islamiva-fg)",
+                color: "var(--islametra-fg)",
                 letterSpacing: "-0.02em",
                 marginBottom: 4,
               }}
@@ -269,7 +277,7 @@ export function SurahReader({ surah }: SurahReaderProps) {
             <p
               style={{
                 fontSize: 13,
-                color: "var(--islamiva-fg-mute)",
+                color: "var(--islametra-fg-mute)",
                 fontFamily: "'Geist', sans-serif",
                 marginBottom: 20,
               }}
@@ -309,7 +317,7 @@ export function SurahReader({ surah }: SurahReaderProps) {
                   letterSpacing: "0.04em",
                   background: "oklch(0.82 0.08 80 / 0.1)",
                   border: "1px solid oklch(0.82 0.08 80 / 0.2)",
-                  color: "var(--islamiva-gold-soft)",
+                  color: "var(--islametra-gold-soft)",
                 }}
               >
                 {surah.revelationType === "Meccan" ? "Makkiyah" : "Madaniyah"}
@@ -324,7 +332,7 @@ export function SurahReader({ surah }: SurahReaderProps) {
                 dir="rtl"
                 style={{
                   fontSize: "clamp(18px, 2.8vw, 26px)",
-                  color: "var(--islamiva-gold-soft)",
+                  color: "var(--islametra-gold-soft)",
                   lineHeight: 2,
                   marginTop: 24,
                   paddingTop: 20,
@@ -351,7 +359,7 @@ export function SurahReader({ surah }: SurahReaderProps) {
           <span
             style={{
               fontSize: 11,
-              color: "var(--islamiva-fg-dim)",
+              color: "var(--islametra-fg-dim)",
               fontFamily: "'Geist Mono', monospace",
             }}
           >
@@ -359,13 +367,14 @@ export function SurahReader({ surah }: SurahReaderProps) {
           </span>
           <button
             onClick={() => setFontSize((f) => Math.max(18, f - 2))}
+            aria-label="Perkecil font Arab"
             style={{
               width: 28,
               height: 28,
               borderRadius: 7,
               background: "rgba(255,255,255,0.04)",
-              border: "1px solid var(--islamiva-line)",
-              color: "var(--islamiva-fg-mute)",
+              border: "1px solid var(--islametra-line)",
+              color: "var(--islametra-fg-mute)",
               cursor: "pointer",
               display: "flex",
               alignItems: "center",
@@ -379,7 +388,7 @@ export function SurahReader({ surah }: SurahReaderProps) {
             style={{
               fontSize: 12,
               fontFamily: "'Geist Mono', monospace",
-              color: "var(--islamiva-fg-soft)",
+              color: "var(--islametra-fg-soft)",
               width: 28,
               textAlign: "center",
             }}
@@ -388,13 +397,14 @@ export function SurahReader({ surah }: SurahReaderProps) {
           </span>
           <button
             onClick={() => setFontSize((f) => Math.min(44, f + 2))}
+            aria-label="Perbesar font Arab"
             style={{
               width: 28,
               height: 28,
               borderRadius: 7,
               background: "rgba(255,255,255,0.04)",
-              border: "1px solid var(--islamiva-line)",
-              color: "var(--islamiva-fg-mute)",
+              border: "1px solid var(--islametra-line)",
+              color: "var(--islametra-fg-mute)",
               cursor: "pointer",
               display: "flex",
               alignItems: "center",
@@ -452,7 +462,7 @@ export function SurahReader({ surah }: SurahReaderProps) {
                     borderRadius: 8,
                     border: "1px solid oklch(0.62 0.13 155 / 0.3)",
                     background: "transparent",
-                    color: "var(--islamiva-fg-dim)",
+                    color: "var(--islametra-fg-dim)",
                     fontSize: 12,
                     cursor: "pointer",
                   }}
@@ -479,8 +489,8 @@ export function SurahReader({ surah }: SurahReaderProps) {
                   style={{
                     borderRadius: 16,
                     background:
-                      "linear-gradient(180deg, rgba(255,255,255,0.025), rgba(255,255,255,0.005)), var(--islamiva-bg-1)",
-                    border: "1px solid var(--islamiva-line)",
+                      "linear-gradient(180deg, rgba(255,255,255,0.025), rgba(255,255,255,0.005)), var(--islametra-bg-1)",
+                    border: "1px solid var(--islametra-line)",
                     overflow: "hidden",
                     transition: "border-color 0.2s",
                   }}
@@ -492,7 +502,7 @@ export function SurahReader({ surah }: SurahReaderProps) {
                       alignItems: "center",
                       justifyContent: "space-between",
                       padding: "14px 20px",
-                      borderBottom: "1px solid var(--islamiva-line)",
+                      borderBottom: "1px solid var(--islametra-line)",
                       background: "rgba(0,0,0,0.1)",
                     }}
                   >
@@ -529,6 +539,7 @@ export function SurahReader({ surah }: SurahReaderProps) {
                     >
                       <button
                         onClick={() => handlePlay(ayah)}
+                        aria-label={playingId === ayah.number ? "Pause audio" : "Putar audio"}
                         style={{
                           padding: "6px",
                           borderRadius: 7,
@@ -540,18 +551,18 @@ export function SurahReader({ surah }: SurahReaderProps) {
                           color:
                             playingId === ayah.number
                               ? "oklch(0.78 0.13 155)"
-                              : "var(--islamiva-fg-dim)",
+                              : "var(--islametra-fg-dim)",
                           cursor: "pointer",
                           display: "flex",
                           alignItems: "center",
                           transition: "all 0.2s",
                         }}
-                        title={playingId === ayah.number ? "Pause" : "Putar audio"}
                       >
                         {playingId === ayah.number ? <Pause size={13} /> : <Play size={13} />}
                       </button>
                       <button
                         onClick={() => handleBookmark(ayah)}
+                        aria-label={isBookmarked(`quran-${surah.number}-${ayah.number}`) ? "Hapus bookmark" : "Bookmark ayat"}
                         style={{
                           padding: "6px",
                           borderRadius: 7,
@@ -561,13 +572,12 @@ export function SurahReader({ surah }: SurahReaderProps) {
                             : "rgba(255,255,255,0.04)",
                           color: isBookmarked(`quran-${surah.number}-${ayah.number}`)
                             ? "oklch(0.78 0.13 155)"
-                            : "var(--islamiva-fg-dim)",
+                            : "var(--islametra-fg-dim)",
                           cursor: "pointer",
                           display: "flex",
                           alignItems: "center",
                           transition: "all 0.2s",
                         }}
-                        title="Bookmark ayat"
                       >
                         <Bookmark
                           size={13}
@@ -576,6 +586,7 @@ export function SurahReader({ surah }: SurahReaderProps) {
                       </button>
                       <button
                         onClick={() => handleCopy(ayah)}
+                        aria-label="Salin ayat"
                         style={{
                           padding: "6px",
                           borderRadius: 7,
@@ -584,13 +595,12 @@ export function SurahReader({ surah }: SurahReaderProps) {
                           color:
                             copiedId === ayah.number
                               ? "oklch(0.78 0.13 155)"
-                              : "var(--islamiva-fg-dim)",
+                              : "var(--islametra-fg-dim)",
                           cursor: "pointer",
                           display: "flex",
                           alignItems: "center",
                           transition: "all 0.2s",
                         }}
-                        title="Salin ayat"
                       >
                         {copiedId === ayah.number ? (
                           <CheckCheck size={13} />
@@ -599,17 +609,17 @@ export function SurahReader({ surah }: SurahReaderProps) {
                         )}
                       </button>
                       <button
+                        aria-label="Bagikan ayat"
                         style={{
                           padding: "6px",
                           borderRadius: 7,
                           border: "none",
                           background: "rgba(255,255,255,0.04)",
-                          color: "var(--islamiva-fg-dim)",
+                          color: "var(--islametra-fg-dim)",
                           cursor: "pointer",
                           display: "flex",
                           alignItems: "center",
                         }}
-                        title="Bagikan ayat"
                       >
                         <Share2 size={13} />
                       </button>
@@ -630,7 +640,7 @@ export function SurahReader({ surah }: SurahReaderProps) {
                       dir="rtl"
                       style={{
                         fontSize: `${fontSize}px`,
-                        color: "var(--islamiva-gold-soft)",
+                        color: "var(--islametra-gold-soft)",
                         lineHeight: 2.1,
                         textAlign: "right",
                         opacity: 0.9,
@@ -645,7 +655,7 @@ export function SurahReader({ surah }: SurahReaderProps) {
                     <div
                       style={{
                         padding: "12px 24px 14px",
-                        borderTop: "1px dashed var(--islamiva-line)",
+                        borderTop: "1px dashed var(--islametra-line)",
                         background: "rgba(255,255,255,0.01)",
                       }}
                     >
@@ -654,7 +664,7 @@ export function SurahReader({ surah }: SurahReaderProps) {
                           fontSize: 13,
                           fontStyle: "italic",
                           lineHeight: 1.75,
-                          color: "var(--islamiva-fg-dim)",
+                          color: "var(--islametra-fg-dim)",
                           fontFamily: "'Geist', sans-serif",
                           letterSpacing: "0.01em",
                         }}
@@ -668,14 +678,14 @@ export function SurahReader({ surah }: SurahReaderProps) {
                   <div
                     style={{
                       padding: "16px 24px 20px",
-                      borderTop: "1px dashed var(--islamiva-line)",
+                      borderTop: "1px dashed var(--islametra-line)",
                     }}
                   >
                     <p
                       style={{
                         fontSize: 13.5,
                         lineHeight: 1.75,
-                        color: "var(--islamiva-fg-mute)",
+                        color: "var(--islametra-fg-mute)",
                       }}
                     >
                       {ayah.translation}
@@ -693,7 +703,7 @@ export function SurahReader({ surah }: SurahReaderProps) {
             justifyContent: "space-between",
             marginTop: 48,
             paddingTop: 24,
-            borderTop: "1px solid var(--islamiva-line)",
+            borderTop: "1px solid var(--islametra-line)",
           }}
         >
           {prevSurah ? (
@@ -707,16 +717,16 @@ export function SurahReader({ surah }: SurahReaderProps) {
                   padding: "10px 16px",
                   borderRadius: 12,
                   background: "rgba(255,255,255,0.03)",
-                  border: "1px solid var(--islamiva-line)",
+                  border: "1px solid var(--islametra-line)",
                   cursor: "pointer",
                 }}
               >
-                <ChevronLeft size={15} style={{ color: "var(--islamiva-fg-dim)" }} />
+                <ChevronLeft size={15} style={{ color: "var(--islametra-fg-dim)" }} />
                 <div>
                   <p
                     style={{
                       fontSize: 10,
-                      color: "var(--islamiva-fg-dim)",
+                      color: "var(--islametra-fg-dim)",
                       fontFamily: "'Geist Mono', monospace",
                       letterSpacing: "0.04em",
                       marginBottom: 2,
@@ -728,7 +738,7 @@ export function SurahReader({ surah }: SurahReaderProps) {
                     style={{
                       fontSize: 13,
                       fontWeight: 500,
-                      color: "var(--islamiva-fg-soft)",
+                      color: "var(--islametra-fg-soft)",
                       fontFamily: "'Geist', sans-serif",
                     }}
                   >
@@ -752,7 +762,7 @@ export function SurahReader({ surah }: SurahReaderProps) {
                   padding: "10px 16px",
                   borderRadius: 12,
                   background: "rgba(255,255,255,0.03)",
-                  border: "1px solid var(--islamiva-line)",
+                  border: "1px solid var(--islametra-line)",
                   cursor: "pointer",
                 }}
               >
@@ -760,7 +770,7 @@ export function SurahReader({ surah }: SurahReaderProps) {
                   <p
                     style={{
                       fontSize: 10,
-                      color: "var(--islamiva-fg-dim)",
+                      color: "var(--islametra-fg-dim)",
                       fontFamily: "'Geist Mono', monospace",
                       letterSpacing: "0.04em",
                       marginBottom: 2,
@@ -772,14 +782,14 @@ export function SurahReader({ surah }: SurahReaderProps) {
                     style={{
                       fontSize: 13,
                       fontWeight: 500,
-                      color: "var(--islamiva-fg-soft)",
+                      color: "var(--islametra-fg-soft)",
                       fontFamily: "'Geist', sans-serif",
                     }}
                   >
                     {nextSurah.name}
                   </p>
                 </div>
-                <ChevronRight size={15} style={{ color: "var(--islamiva-fg-dim)" }} />
+                <ChevronRight size={15} style={{ color: "var(--islametra-fg-dim)" }} />
               </div>
             </Link>
           ) : (

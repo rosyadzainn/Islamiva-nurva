@@ -3,52 +3,14 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useTheme } from "next-themes";
-
-const cols = [
-  {
-    title: "Produk",
-    links: [
-      { label: "Al-Quran", href: "/quran" },
-      { label: "Doa Harian", href: "/doa" },
-      { label: "Hadits", href: "/hadith" },
-      { label: "Kisah Nabi", href: "/kisah-nabi" },
-      { label: "Sejarah Islam", href: "/sejarah" },
-      { label: "Islamiva AI", href: "/ai-chat" },
-    ],
-  },
-  {
-    title: "Sumber",
-    links: [
-      { label: "Tafsir", href: "#" },
-      { label: "Sanad Hadits", href: "#" },
-      { label: "Atlas Sejarah", href: "#" },
-      { label: "Daftar Ulama", href: "#" },
-      { label: "Glosarium", href: "#" },
-    ],
-  },
-  {
-    title: "Komunitas",
-    links: [
-      { label: "Tentang Kami", href: "/about" },
-      { label: "Blog", href: "#" },
-      { label: "Donasi", href: "#" },
-      { label: "Kontak", href: "/contact" },
-    ],
-  },
-  {
-    title: "Bantuan",
-    links: [
-      { label: "Pusat Bantuan", href: "#" },
-      { label: "Panduan", href: "#" },
-      { label: "Kebijakan Privasi", href: "/privacy" },
-      { label: "Syarat Layanan", href: "/terms" },
-    ],
-  },
-];
+import { useLang } from "@/contexts/language-context";
+import { translations } from "@/lib/translations";
 
 export function Footer() {
   const [mounted, setMounted] = useState(false);
   const { theme } = useTheme();
+  const { lang } = useLang();
+  const tf = translations[lang].footer;
   const isLight = mounted && theme === "light";
 
   useEffect(() => { setMounted(true); }, []);
@@ -57,8 +19,8 @@ export function Footer() {
     <footer
       className="relative overflow-hidden"
       style={{
-        backgroundColor: "var(--islamiva-bg)",
-        borderTop: "1px solid var(--islamiva-line)",
+        backgroundColor: "var(--islametra-bg)",
+        borderTop: "1px solid var(--islametra-line)",
         padding: "100px 0 40px",
       }}
     >
@@ -76,9 +38,9 @@ export function Footer() {
         style={{ maxWidth: 1240, margin: "0 auto", padding: "0 28px" }}
       >
         {/* Grid */}
-        <div className="islamiva-footer-grid mb-20">
+        <div className="islametra-footer-grid mb-20">
           {/* Brand col */}
-          <div className="islamiva-footer-brand" style={{ maxWidth: 320 }}>
+          <div className="islametra-footer-brand" style={{ maxWidth: 320 }}>
             <Link href="/" className="flex items-center gap-2.5 mb-5">
               <div
                 style={{
@@ -100,65 +62,27 @@ export function Footer() {
                   fontWeight: 600,
                   fontSize: 19,
                   letterSpacing: "-0.02em",
-                  color: "var(--islamiva-fg)",
+                  color: "var(--islametra-fg)",
                 }}
               >
-                Islamiva
+                Islametra
               </span>
             </Link>
 
             <p
               style={{
                 fontSize: 14, lineHeight: 1.65,
-                color: "var(--islamiva-fg-mute)",
+                color: "var(--islametra-fg-mute)",
                 marginBottom: 24,
               }}
             >
-              Platform Islam modern berbasis AI — menemani perjalanan
-              spiritual Anda dengan rujukan otentik dan pengalaman yang tenang.
+              {tf.tagline}
             </p>
 
-            {/* Newsletter */}
-            <div
-              className="flex gap-1.5"
-              style={{
-                padding: "5px 5px 5px 14px",
-                borderRadius: 12,
-                background: isLight ? "rgba(0,0,0,0.03)" : "rgba(255,255,255,0.03)",
-                border: "1px solid var(--islamiva-line)",
-                maxWidth: 320,
-              }}
-            >
-              <input
-                type="email"
-                placeholder="Email Anda"
-                style={{
-                  flex: 1, background: "transparent",
-                  border: 0, outline: 0,
-                  color: "var(--islamiva-fg)",
-                  fontFamily: "inherit",
-                  fontSize: 13,
-                  padding: "8px 0",
-                }}
-              />
-              <button
-                style={{
-                  height: 32, padding: "0 12px",
-                  borderRadius: 8,
-                  fontSize: 12.5, fontWeight: 500,
-                  background:
-                    "linear-gradient(180deg, oklch(0.7 0.13 155), oklch(0.5 0.12 155))",
-                  color: "#08110b",
-                  flexShrink: 0,
-                }}
-              >
-                Berlangganan
-              </button>
-            </div>
           </div>
 
           {/* Link cols */}
-          {cols.map((col) => (
+          {tf.cols.map((col) => (
             <div key={col.title}>
               <h4
                 style={{
@@ -166,7 +90,7 @@ export function Footer() {
                   fontSize: 11,
                   letterSpacing: "0.08em",
                   textTransform: "uppercase",
-                  color: "var(--islamiva-fg-dim)",
+                  color: "var(--islametra-fg-dim)",
                   margin: "0 0 18px",
                   fontWeight: 500,
                 }}
@@ -180,10 +104,10 @@ export function Footer() {
                       href={l.href}
                       style={{
                         fontSize: 14,
-                        color: "var(--islamiva-fg-mute)",
+                        color: "var(--islametra-fg-mute)",
                         transition: "color 0.18s ease",
                       }}
-                      className="islamiva-footer-link"
+                      className="islametra-footer-link"
                     >
                       {l.label}
                     </Link>
@@ -199,19 +123,19 @@ export function Footer() {
           className="flex items-center justify-between flex-wrap gap-4"
           style={{
             paddingTop: 32,
-            borderTop: "1px solid var(--islamiva-line)",
+            borderTop: "1px solid var(--islametra-line)",
           }}
         >
           <div
             className="flex items-center gap-4 flex-wrap"
-            style={{ fontSize: 12.5, color: "var(--islamiva-fg-dim)" }}
+            style={{ fontSize: 12.5, color: "var(--islametra-fg-dim)" }}
           >
-            <span>© {new Date().getFullYear()} Islamiva</span>
+            <span>© {new Date().getFullYear()} Islametra</span>
             <span>·</span>
             <span
               className="font-arabic"
               lang="ar" dir="rtl"
-              style={{ fontStyle: "italic", color: "var(--islamiva-gold)", opacity: 0.7 }}
+              style={{ fontStyle: "italic", color: "var(--islametra-gold)", opacity: 0.7 }}
             >
               صنع بحب
             </span>
@@ -226,8 +150,8 @@ export function Footer() {
                 style={{
                   width: 34, height: 34, borderRadius: 9,
                   display: "grid", placeItems: "center",
-                  color: "var(--islamiva-fg-mute)",
-                  border: "1px solid var(--islamiva-line)",
+                  color: "var(--islametra-fg-mute)",
+                  border: "1px solid var(--islametra-line)",
                   background: isLight ? "rgba(0,0,0,0.02)" : "rgba(255,255,255,0.02)",
                   fontSize: 13,
                 }}
@@ -256,7 +180,7 @@ export function Footer() {
             userSelect: "none",
           }}
         >
-          Islamiva
+          Islametra
         </div>
       </div>
     </footer>

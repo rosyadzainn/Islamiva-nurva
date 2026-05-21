@@ -7,6 +7,8 @@ import { Search, Copy, CheckCheck, Heart, ChevronDown, ChevronUp } from "lucide-
 import { toast } from "react-hot-toast";
 import { DAILY_DUAS, DOA_CATEGORIES } from "@/data/doa-data";
 import { useBookmarks } from "@/hooks/use-bookmarks";
+import { useLang } from "@/contexts/language-context";
+import { translations } from "@/lib/translations";
 
 export function DoaModule() {
   const [search, setSearch] = useState("");
@@ -17,6 +19,8 @@ export function DoaModule() {
   const { theme } = useTheme();
   const isLight = mounted && theme === "light";
   const { isBookmarked, toggle: toggleBookmark } = useBookmarks();
+  const { lang } = useLang();
+  const td = translations[lang].doaModule;
   useEffect(() => { setMounted(true); }, []);
 
   const filtered = useMemo(() => {
@@ -31,26 +35,26 @@ export function DoaModule() {
 
   const handleCopy = (doa: (typeof DAILY_DUAS)[0]) => {
     navigator.clipboard.writeText(
-      `${doa.title}\n\n${doa.arabic}\n\n${doa.latin}\n\nArtinya: ${doa.translation}\n\nSumber: ${doa.source}`
+      `${doa.title}\n\n${doa.arabic}\n\n${doa.latin}\n\n${td.meaning} ${doa.translation}\n\nSumber: ${doa.source}`
     );
     setCopiedId(doa.id);
-    toast.success("Doa berhasil disalin!");
+    toast.success(td.toastCopied);
     setTimeout(() => setCopiedId(null), 2000);
   };
 
-  const toggleFavorite = (doa: (typeof DAILY_DUAS)[0]) => {
-    const added = toggleBookmark({
+  const toggleFavorite = async (doa: (typeof DAILY_DUAS)[0]) => {
+    const added = await toggleBookmark({
       type: "doa",
       slug: doa.slug,
       title: doa.title,
       arabic: doa.arabic,
       createdAt: new Date().toISOString(),
     });
-    toast.success(added ? "Ditambah ke bookmark!" : "Dihapus dari bookmark");
+    toast.success(added ? td.toastBookmarked : td.toastUnbookmarked);
   };
 
   return (
-    <div style={{ backgroundColor: "var(--islamiva-bg)", minHeight: "100vh" }}>
+    <div style={{ backgroundColor: "var(--islametra-bg)", minHeight: "100vh" }}>
       {/* Hero */}
       <section
         style={{
@@ -84,8 +88,8 @@ export function DoaModule() {
               padding: "6px 14px",
               borderRadius: 9999,
               background: "rgba(255,255,255,0.03)",
-              border: "1px solid var(--islamiva-line)",
-              color: "var(--islamiva-fg-soft)",
+              border: "1px solid var(--islametra-line)",
+              color: "var(--islametra-fg-soft)",
               fontSize: 11,
               fontWeight: 500,
               fontFamily: "'Geist Mono', monospace",
@@ -95,9 +99,9 @@ export function DoaModule() {
             }}
           >
             <span
-              style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--islamiva-emerald)", flexShrink: 0 }}
+              style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--islametra-emerald)", flexShrink: 0 }}
             />
-            200+ Doa
+            {td.badge}
           </motion.span>
           <motion.h1
             initial={{ opacity: 0, y: 8 }}
@@ -109,7 +113,7 @@ export function DoaModule() {
               fontSize: "clamp(36px, 5vw, 64px)",
               lineHeight: 1.05,
               letterSpacing: "-0.03em",
-              color: "var(--islamiva-fg)",
+              color: "var(--islametra-fg)",
               marginBottom: 20,
             }}
           >
@@ -119,10 +123,10 @@ export function DoaModule() {
                 fontFamily: "'Instrument Serif', serif",
                 fontStyle: "italic",
                 fontWeight: 400,
-                color: "var(--islamiva-emerald-soft)",
+                color: "var(--islametra-emerald-soft)",
               }}
             >
-              Harian
+              {td.titleEm}
             </em>
           </motion.h1>
           <motion.p
@@ -131,13 +135,13 @@ export function DoaModule() {
             transition={{ delay: 0.1 }}
             style={{
               fontSize: "clamp(15px, 1.8vw, 18px)",
-              color: "var(--islamiva-fg-mute)",
+              color: "var(--islametra-fg-mute)",
               lineHeight: 1.65,
               maxWidth: 520,
               margin: "0 auto",
             }}
           >
-            Kumpulan doa lengkap untuk diamalkan sehari-hari. Dilengkapi teks Arab, Latin, terjemahan, dan sumber referensi.
+            {td.sub}
           </motion.p>
         </div>
       </section>
@@ -145,7 +149,7 @@ export function DoaModule() {
       <div
         style={{
           height: 1,
-          background: "linear-gradient(90deg, transparent, var(--islamiva-line-strong), transparent)",
+          background: "linear-gradient(90deg, transparent, var(--islametra-line-strong), transparent)",
         }}
       />
 
@@ -177,12 +181,12 @@ export function DoaModule() {
                   }
                 : {
                     background: isLight ? "rgba(0,0,0,0.04)" : "rgba(255,255,255,0.03)",
-                    border: "1px solid var(--islamiva-line)",
-                    color: "var(--islamiva-fg-mute)",
+                    border: "1px solid var(--islametra-line)",
+                    color: "var(--islametra-fg-mute)",
                   }),
             }}
           >
-            Semua Doa
+            {td.allDoa}
           </button>
           {DOA_CATEGORIES.map((cat) => (
             <button
@@ -210,8 +214,8 @@ export function DoaModule() {
                     }
                   : {
                       background: isLight ? "rgba(0,0,0,0.04)" : "rgba(255,255,255,0.03)",
-                      border: "1px solid var(--islamiva-line)",
-                      color: "var(--islamiva-fg-mute)",
+                      border: "1px solid var(--islametra-line)",
+                      color: "var(--islametra-fg-mute)",
                     }),
               }}
             >
@@ -230,22 +234,22 @@ export function DoaModule() {
               left: 14,
               top: "50%",
               transform: "translateY(-50%)",
-              color: "var(--islamiva-fg-dim)",
+              color: "var(--islametra-fg-dim)",
               pointerEvents: "none",
             }}
           />
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Cari doa..."
-            className="islamiva-input"
+            placeholder={td.searchPlaceholder}
+            className="islametra-input"
             style={{
               width: "100%",
               padding: "12px 14px 12px 40px",
               borderRadius: 12,
               background: "rgba(255,255,255,0.03)",
-              border: "1px solid var(--islamiva-line)",
-              color: "var(--islamiva-fg)",
+              border: "1px solid var(--islametra-line)",
+              color: "var(--islametra-fg)",
               fontSize: 14,
               fontFamily: "'Geist', sans-serif",
               outline: "none",
@@ -255,7 +259,7 @@ export function DoaModule() {
               e.currentTarget.style.borderColor = "oklch(0.62 0.13 155 / 0.5)";
             }}
             onBlur={(e) => {
-              e.currentTarget.style.borderColor = "var(--islamiva-line)";
+              e.currentTarget.style.borderColor = "var(--islametra-line)";
             }}
           />
         </div>
@@ -279,8 +283,8 @@ export function DoaModule() {
                   style={{
                     borderRadius: 16,
                     background:
-                      isLight ? "var(--islamiva-bg-1)" : "linear-gradient(180deg, rgba(255,255,255,0.025), rgba(255,255,255,0.005)), var(--islamiva-bg-1)",
-                    border: "1px solid var(--islamiva-line)",
+                      isLight ? "var(--islametra-bg-1)" : "linear-gradient(180deg, rgba(255,255,255,0.025), rgba(255,255,255,0.005)), var(--islametra-bg-1)",
+                    border: "1px solid var(--islametra-line)",
                     overflow: "hidden",
                   }}
                 >
@@ -317,7 +321,7 @@ export function DoaModule() {
                           style={{
                             fontSize: 14,
                             fontWeight: 500,
-                            color: "var(--islamiva-fg)",
+                            color: "var(--islametra-fg)",
                             fontFamily: "'Geist', sans-serif",
                           }}
                         >
@@ -326,7 +330,7 @@ export function DoaModule() {
                         <p
                           style={{
                             fontSize: 11,
-                            color: "var(--islamiva-fg-dim)",
+                            color: "var(--islametra-fg-dim)",
                             fontFamily: "'Geist Mono', monospace",
                             letterSpacing: "0.03em",
                             marginTop: 2,
@@ -342,12 +346,13 @@ export function DoaModule() {
                           e.stopPropagation();
                           toggleFavorite(doa);
                         }}
+                        aria-label={isFav ? "Hapus favorit" : "Tambah ke favorit"}
                         style={{
                           padding: "6px",
                           borderRadius: 8,
                           border: "none",
                           background: "none",
-                          color: isFav ? "oklch(0.7 0.2 20)" : "var(--islamiva-fg-dim)",
+                          color: isFav ? "oklch(0.7 0.2 20)" : "var(--islametra-fg-dim)",
                           cursor: "pointer",
                           transition: "color 0.2s",
                           display: "flex",
@@ -357,9 +362,9 @@ export function DoaModule() {
                         <Heart size={14} fill={isFav ? "currentColor" : "none"} />
                       </button>
                       {isExpanded ? (
-                        <ChevronUp size={14} style={{ color: "var(--islamiva-fg-dim)" }} />
+                        <ChevronUp size={14} style={{ color: "var(--islametra-fg-dim)" }} />
                       ) : (
-                        <ChevronDown size={14} style={{ color: "var(--islamiva-fg-dim)" }} />
+                        <ChevronDown size={14} style={{ color: "var(--islametra-fg-dim)" }} />
                       )}
                     </div>
                   </div>
@@ -377,7 +382,7 @@ export function DoaModule() {
                         <div
                           style={{
                             padding: "20px 20px 20px",
-                            borderTop: "1px solid var(--islamiva-line)",
+                            borderTop: "1px solid var(--islametra-line)",
                           }}
                         >
                           {/* Arabic */}
@@ -398,7 +403,7 @@ export function DoaModule() {
                               dir="rtl"
                               style={{
                                 fontSize: "clamp(20px, 3vw, 30px)",
-                                color: "var(--islamiva-gold-soft)",
+                                color: "var(--islametra-gold-soft)",
                                 lineHeight: 2,
                                 opacity: 0.9,
                               }}
@@ -412,7 +417,7 @@ export function DoaModule() {
                             style={{
                               fontSize: 13,
                               fontStyle: "italic",
-                              color: "var(--islamiva-fg-mute)",
+                              color: "var(--islametra-fg-mute)",
                               lineHeight: 1.7,
                               textAlign: "center",
                               marginBottom: 16,
@@ -427,13 +432,13 @@ export function DoaModule() {
                               padding: 14,
                               borderRadius: 10,
                               background: isLight ? "rgba(0,0,0,0.04)" : "rgba(255,255,255,0.03)",
-                              border: "1px solid var(--islamiva-line)",
+                              border: "1px solid var(--islametra-line)",
                               marginBottom: 16,
                             }}
                           >
-                            <p style={{ fontSize: 13.5, lineHeight: 1.65, color: "var(--islamiva-fg-soft)" }}>
+                            <p style={{ fontSize: 13.5, lineHeight: 1.65, color: "var(--islametra-fg-soft)" }}>
                               <span style={{ fontWeight: 600, color: "oklch(0.78 0.13 155)" }}>
-                                Artinya:{" "}
+                                {td.meaning}{" "}
                               </span>
                               {doa.translation}
                             </p>
@@ -446,7 +451,7 @@ export function DoaModule() {
                               alignItems: "center",
                               justifyContent: "space-between",
                               paddingTop: 12,
-                              borderTop: "1px solid var(--islamiva-line)",
+                              borderTop: "1px solid var(--islametra-line)",
                             }}
                           >
                             <span
@@ -474,7 +479,7 @@ export function DoaModule() {
                                 color:
                                   copiedId === doa.id
                                     ? "oklch(0.78 0.13 155)"
-                                    : "var(--islamiva-fg-mute)",
+                                    : "var(--islametra-fg-mute)",
                                 background: "none",
                                 border: "none",
                                 cursor: "pointer",
@@ -486,7 +491,7 @@ export function DoaModule() {
                               ) : (
                                 <Copy size={13} />
                               )}
-                              {copiedId === doa.id ? "Tersalin!" : "Salin Doa"}
+                              {copiedId === doa.id ? td.copied : td.copy}
                             </button>
                           </div>
                         </div>
@@ -501,7 +506,7 @@ export function DoaModule() {
           {filtered.length === 0 && (
             <div style={{ textAlign: "center", padding: "60px 0" }}>
               <p style={{ fontSize: 40, marginBottom: 12 }}>🤲</p>
-              <p style={{ color: "var(--islamiva-fg-mute)", fontSize: 14 }}>Doa tidak ditemukan</p>
+              <p style={{ color: "var(--islametra-fg-mute)", fontSize: 14 }}>{td.notFound}</p>
             </div>
           )}
         </div>

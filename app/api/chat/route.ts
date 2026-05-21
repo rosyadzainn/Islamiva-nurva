@@ -6,7 +6,7 @@ const openai = new OpenAI({
   baseURL: "https://api.groq.com/openai/v1",
 });
 
-const SYSTEM_PROMPT = `Kamu adalah AI asisten Islami yang berpengetahuan luas bernama "Islamiva AI".
+const SYSTEM_PROMPT = `Kamu adalah AI asisten Islami yang berpengetahuan luas bernama "Islametra AI".
 
 Kamu membantu pengguna memahami Islam dengan cara yang:
 - Ramah, sopan, dan penuh kasih sayang

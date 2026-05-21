@@ -2,6 +2,8 @@
 
 import { useEffect } from "react";
 import { AlertTriangle, RefreshCw } from "lucide-react";
+import { useLang } from "@/contexts/language-context";
+import { translations } from "@/lib/translations";
 
 export default function Error({
   error,
@@ -10,6 +12,9 @@ export default function Error({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  const { lang } = useLang();
+  const te = translations[lang].errorPage;
+
   useEffect(() => {
     console.error(error);
   }, [error]);
@@ -21,7 +26,7 @@ export default function Error({
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        backgroundColor: "var(--islamiva-bg)",
+        backgroundColor: "var(--islametra-bg)",
         padding: "24px 16px",
         position: "relative",
         overflow: "hidden",
@@ -66,11 +71,11 @@ export default function Error({
             fontWeight: 600,
             fontSize: "clamp(18px, 3vw, 24px)",
             letterSpacing: "-0.02em",
-            color: "var(--islamiva-fg)",
+            color: "var(--islametra-fg)",
             marginBottom: 10,
           }}
         >
-          Terjadi{" "}
+          {te.title}{" "}
           <em
             style={{
               fontFamily: "'Instrument Serif', serif",
@@ -79,21 +84,21 @@ export default function Error({
               color: "oklch(0.88 0.06 80)",
             }}
           >
-            Kesalahan
+            {te.titleEm}
           </em>
         </h1>
 
         <p
           style={{
             fontSize: 14,
-            color: "var(--islamiva-fg-mute)",
+            color: "var(--islametra-fg-mute)",
             lineHeight: 1.65,
             maxWidth: 340,
             margin: "0 auto 32px",
             fontFamily: "'Geist', sans-serif",
           }}
         >
-          Maaf, terjadi kesalahan yang tidak terduga. Silakan coba lagi.
+          {te.sub}
         </p>
 
         <button
@@ -116,7 +121,7 @@ export default function Error({
           }}
         >
           <RefreshCw size={15} />
-          Coba Lagi
+          {te.retry}
         </button>
       </div>
     </div>

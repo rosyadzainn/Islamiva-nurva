@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ChevronLeft, ArrowRight, BookOpen } from "lucide-react";
 import { DAILY_DUAS, DOA_CATEGORIES } from "@/data/doa-data";
 import { DoaCopyButton } from "@/components/doa/doa-copy-button";
+import { T } from "@/components/shared/t";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -27,21 +28,21 @@ export default async function DoaDetailPage({ params }: Props) {
 
   if (!doa) {
     return (
-      <div style={{ backgroundColor: "var(--islamiva-bg)", minHeight: "100vh" }}>
+      <div style={{ backgroundColor: "var(--islametra-bg)", minHeight: "100vh" }}>
         <div style={{ maxWidth: 760, margin: "0 auto", padding: "clamp(32px, 5vw, 64px) 28px" }}>
           <Link
             href="/doa"
             style={{
               display: "inline-flex", alignItems: "center", gap: 6,
-              fontSize: 13, color: "var(--islamiva-fg-dim)",
+              fontSize: 13, color: "var(--islametra-fg-dim)",
               fontFamily: "'Geist', sans-serif", marginBottom: 36, textDecoration: "none",
             }}
           >
             <ChevronLeft size={15} />
-            Kembali ke Doa
+            <T id="Kembali ke Doa" en="Back to Prayers" />
           </Link>
-          <div style={{ textAlign: "center", padding: "80px 32px", borderRadius: 24, background: "var(--islamiva-card-overlay-sm)", border: "1px solid var(--islamiva-line)" }}>
-            <p style={{ color: "var(--islamiva-fg-mute)", fontSize: 15 }}>Doa tidak ditemukan.</p>
+          <div style={{ textAlign: "center", padding: "80px 32px", borderRadius: 24, background: "var(--islametra-card-overlay-sm)", border: "1px solid var(--islametra-line)" }}>
+            <p style={{ color: "var(--islametra-fg-mute)", fontSize: 15 }}><T id="Doa tidak ditemukan." en="Prayer not found." /></p>
           </div>
         </div>
       </div>
@@ -56,7 +57,7 @@ export default async function DoaDetailPage({ params }: Props) {
   const related = sameCategoryDuas.filter((d) => d.slug !== slug).slice(0, 3);
 
   return (
-    <div style={{ backgroundColor: "var(--islamiva-bg)", minHeight: "100vh" }}>
+    <div style={{ backgroundColor: "var(--islametra-bg)", minHeight: "100vh" }}>
       <div style={{ maxWidth: 760, margin: "0 auto", padding: "clamp(32px, 5vw, 64px) 28px" }}>
 
         {/* Back */}
@@ -64,7 +65,7 @@ export default async function DoaDetailPage({ params }: Props) {
           href="/doa"
           style={{
             display: "inline-flex", alignItems: "center", gap: 6,
-            fontSize: 13, color: "var(--islamiva-fg-dim)",
+            fontSize: 13, color: "var(--islametra-fg-dim)",
             fontFamily: "'Geist', sans-serif", marginBottom: 36, textDecoration: "none",
           }}
         >
@@ -78,8 +79,8 @@ export default async function DoaDetailPage({ params }: Props) {
             position: "relative",
             padding: "40px 32px",
             borderRadius: 24,
-            background: "var(--islamiva-hero-card-bg)",
-            border: "1px solid var(--islamiva-line-strong)",
+            background: "var(--islametra-hero-card-bg)",
+            border: "1px solid var(--islametra-line-strong)",
             textAlign: "center",
             marginBottom: 32,
             overflow: "hidden",
@@ -99,7 +100,7 @@ export default async function DoaDetailPage({ params }: Props) {
           <div
             style={{
               position: "absolute", inset: 0, borderRadius: 24, padding: 1,
-              background: "var(--islamiva-shimmer-top)",
+              background: "var(--islametra-shimmer-top)",
               WebkitMask: "linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)",
               WebkitMaskComposite: "xor", maskComposite: "exclude", pointerEvents: "none",
             }}
@@ -133,7 +134,7 @@ export default async function DoaDetailPage({ params }: Props) {
             <h1
               style={{
                 fontSize: "clamp(20px, 3vw, 28px)", fontWeight: 600,
-                fontFamily: "'Geist', sans-serif", color: "var(--islamiva-fg)",
+                fontFamily: "'Geist', sans-serif", color: "var(--islametra-fg)",
                 letterSpacing: "-0.02em", marginBottom: 24,
               }}
             >
@@ -147,7 +148,7 @@ export default async function DoaDetailPage({ params }: Props) {
               dir="rtl"
               style={{
                 fontSize: "clamp(24px, 4vw, 36px)",
-                color: "var(--islamiva-gold-soft)",
+                color: "var(--islametra-gold-soft)",
                 lineHeight: 2,
                 opacity: 0.9,
               }}
@@ -161,27 +162,27 @@ export default async function DoaDetailPage({ params }: Props) {
         <div
           style={{
             borderRadius: 20,
-            background: "var(--islamiva-content-card-bg)",
-            border: "1px solid var(--islamiva-line)",
+            background: "var(--islametra-content-card-bg)",
+            border: "1px solid var(--islametra-line)",
             overflow: "hidden",
             marginBottom: 24,
           }}
         >
           {/* Latin */}
-          <div style={{ padding: "20px 24px 18px", borderBottom: "1px dashed var(--islamiva-line)" }}>
+          <div style={{ padding: "20px 24px 18px", borderBottom: "1px dashed var(--islametra-line)" }}>
             <p
               style={{
                 fontSize: 11, fontFamily: "'Geist Mono', monospace",
                 letterSpacing: "0.07em", textTransform: "uppercase",
-                color: "var(--islamiva-fg-dim)", marginBottom: 10,
+                color: "var(--islametra-fg-dim)", marginBottom: 10,
               }}
             >
-              Transliterasi Latin
+              <T id="Transliterasi Latin" en="Latin Transliteration" />
             </p>
             <p
               style={{
                 fontSize: 15, fontStyle: "italic", lineHeight: 1.8,
-                color: "var(--islamiva-fg-soft)", fontFamily: "'Geist', sans-serif",
+                color: "var(--islametra-fg-soft)", fontFamily: "'Geist', sans-serif",
                 letterSpacing: "0.01em",
               }}
             >
@@ -190,20 +191,20 @@ export default async function DoaDetailPage({ params }: Props) {
           </div>
 
           {/* Translation */}
-          <div style={{ padding: "20px 24px 22px", borderBottom: "1px dashed var(--islamiva-line)" }}>
+          <div style={{ padding: "20px 24px 22px", borderBottom: "1px dashed var(--islametra-line)" }}>
             <p
               style={{
                 fontSize: 11, fontFamily: "'Geist Mono', monospace",
                 letterSpacing: "0.07em", textTransform: "uppercase",
-                color: "var(--islamiva-fg-dim)", marginBottom: 10,
+                color: "var(--islametra-fg-dim)", marginBottom: 10,
               }}
             >
-              Terjemahan
+              <T id="Terjemahan" en="Translation" />
             </p>
             <p
               style={{
                 fontSize: 15, lineHeight: 1.8,
-                color: "var(--islamiva-fg-mute)", fontFamily: "'Geist', sans-serif",
+                color: "var(--islametra-fg-mute)", fontFamily: "'Geist', sans-serif",
               }}
             >
               {doa.translation}
@@ -218,11 +219,11 @@ export default async function DoaDetailPage({ params }: Props) {
                 display: "flex", alignItems: "center", gap: 8,
               }}
             >
-              <BookOpen size={13} style={{ color: "var(--islamiva-fg-dim)", flexShrink: 0 }} />
+              <BookOpen size={13} style={{ color: "var(--islametra-fg-dim)", flexShrink: 0 }} />
               <p
                 style={{
                   fontSize: 12, fontFamily: "'Geist Mono', monospace",
-                  color: "var(--islamiva-fg-dim)", letterSpacing: "0.02em",
+                  color: "var(--islametra-fg-dim)", letterSpacing: "0.02em",
                 }}
               >
                 {doa.source}
@@ -239,7 +240,7 @@ export default async function DoaDetailPage({ params }: Props) {
           <div
             style={{
               display: "flex", alignItems: "center", justifyContent: "space-between",
-              marginTop: 40, paddingTop: 24, borderTop: "1px solid var(--islamiva-line)",
+              marginTop: 40, paddingTop: 24, borderTop: "1px solid var(--islametra-line)",
               gap: 12,
             }}
           >
@@ -249,16 +250,16 @@ export default async function DoaDetailPage({ params }: Props) {
                   style={{
                     display: "flex", alignItems: "center", gap: 10,
                     padding: "12px 16px", borderRadius: 12,
-                    background: "var(--islamiva-card-overlay)",
-                    border: "1px solid var(--islamiva-line)",
+                    background: "var(--islametra-card-overlay)",
+                    border: "1px solid var(--islametra-line)",
                   }}
                 >
-                  <ChevronLeft size={15} style={{ color: "var(--islamiva-fg-dim)", flexShrink: 0 }} />
+                  <ChevronLeft size={15} style={{ color: "var(--islametra-fg-dim)", flexShrink: 0 }} />
                   <div style={{ minWidth: 0 }}>
-                    <p style={{ fontSize: 10, color: "var(--islamiva-fg-dim)", fontFamily: "'Geist Mono', monospace", letterSpacing: "0.04em", marginBottom: 2 }}>
-                      Sebelumnya
+                    <p style={{ fontSize: 10, color: "var(--islametra-fg-dim)", fontFamily: "'Geist Mono', monospace", letterSpacing: "0.04em", marginBottom: 2 }}>
+                      <T id="Sebelumnya" en="Previous" />
                     </p>
-                    <p style={{ fontSize: 12, fontWeight: 500, color: "var(--islamiva-fg-soft)", fontFamily: "'Geist', sans-serif", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                    <p style={{ fontSize: 12, fontWeight: 500, color: "var(--islametra-fg-soft)", fontFamily: "'Geist', sans-serif", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                       {prevDoa.title}
                     </p>
                   </div>
@@ -272,19 +273,19 @@ export default async function DoaDetailPage({ params }: Props) {
                   style={{
                     display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 10,
                     padding: "12px 16px", borderRadius: 12,
-                    background: "var(--islamiva-card-overlay)",
-                    border: "1px solid var(--islamiva-line)",
+                    background: "var(--islametra-card-overlay)",
+                    border: "1px solid var(--islametra-line)",
                   }}
                 >
                   <div style={{ minWidth: 0, textAlign: "right" }}>
-                    <p style={{ fontSize: 10, color: "var(--islamiva-fg-dim)", fontFamily: "'Geist Mono', monospace", letterSpacing: "0.04em", marginBottom: 2 }}>
-                      Berikutnya
+                    <p style={{ fontSize: 10, color: "var(--islametra-fg-dim)", fontFamily: "'Geist Mono', monospace", letterSpacing: "0.04em", marginBottom: 2 }}>
+                      <T id="Berikutnya" en="Next" />
                     </p>
-                    <p style={{ fontSize: 12, fontWeight: 500, color: "var(--islamiva-fg-soft)", fontFamily: "'Geist', sans-serif", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                    <p style={{ fontSize: 12, fontWeight: 500, color: "var(--islametra-fg-soft)", fontFamily: "'Geist', sans-serif", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                       {nextDoa.title}
                     </p>
                   </div>
-                  <ArrowRight size={15} style={{ color: "var(--islamiva-fg-dim)", flexShrink: 0 }} />
+                  <ArrowRight size={15} style={{ color: "var(--islametra-fg-dim)", flexShrink: 0 }} />
                 </div>
               </Link>
             ) : <div style={{ flex: 1 }} />}
@@ -293,15 +294,15 @@ export default async function DoaDetailPage({ params }: Props) {
 
         {/* Related */}
         {related.length > 0 && (
-          <div style={{ marginTop: 40, paddingTop: 32, borderTop: "1px solid var(--islamiva-line)" }}>
+          <div style={{ marginTop: 40, paddingTop: 32, borderTop: "1px solid var(--islametra-line)" }}>
             <p
               style={{
                 fontSize: 11, fontFamily: "'Geist Mono', monospace",
                 letterSpacing: "0.08em", textTransform: "uppercase",
-                color: "var(--islamiva-fg-dim)", marginBottom: 16,
+                color: "var(--islametra-fg-dim)", marginBottom: 16,
               }}
             >
-              Doa Lainnya dalam Kategori Ini
+              <T id="Doa Lainnya dalam Kategori Ini" en="Other Prayers in This Category" />
             </p>
             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
               {related.map((d) => (
@@ -310,19 +311,19 @@ export default async function DoaDetailPage({ params }: Props) {
                     style={{
                       display: "flex", alignItems: "center", justifyContent: "space-between",
                       padding: "12px 16px", borderRadius: 12,
-                      background: "var(--islamiva-card-overlay-sm)",
-                      border: "1px solid var(--islamiva-line)",
+                      background: "var(--islametra-card-overlay-sm)",
+                      border: "1px solid var(--islametra-line)",
                     }}
                   >
                     <div style={{ minWidth: 0 }}>
-                      <p style={{ fontSize: 13, fontWeight: 500, color: "var(--islamiva-fg-soft)", fontFamily: "'Geist', sans-serif", marginBottom: 2 }}>
+                      <p style={{ fontSize: 13, fontWeight: 500, color: "var(--islametra-fg-soft)", fontFamily: "'Geist', sans-serif", marginBottom: 2 }}>
                         {d.title}
                       </p>
-                      <p style={{ fontSize: 11, color: "var(--islamiva-fg-dim)", fontFamily: "'Geist', sans-serif", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                      <p style={{ fontSize: 11, color: "var(--islametra-fg-dim)", fontFamily: "'Geist', sans-serif", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                         {d.latin}
                       </p>
                     </div>
-                    <ArrowRight size={14} style={{ color: "var(--islamiva-fg-dim)", flexShrink: 0, marginLeft: 12 }} />
+                    <ArrowRight size={14} style={{ color: "var(--islametra-fg-dim)", flexShrink: 0, marginLeft: 12 }} />
                   </div>
                 </Link>
               ))}

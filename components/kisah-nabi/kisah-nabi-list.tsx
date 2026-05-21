@@ -6,6 +6,8 @@ import { motion } from "framer-motion";
 import { ArrowUpRight, Star } from "lucide-react";
 import { useTheme } from "next-themes";
 import { PROPHETS } from "@/data/prophet-stories";
+import { useLang } from "@/contexts/language-context";
+import { translations } from "@/lib/translations";
 
 const ARABIC_NAMES: Record<string, string> = {
   adam: "آدَم",
@@ -61,10 +63,12 @@ export function KisahNabiList() {
   const [mounted, setMounted] = useState(false);
   const { theme } = useTheme();
   const isLight = mounted && theme === "light";
+  const { lang } = useLang();
+  const tkn = translations[lang].kisahNabiList;
   useEffect(() => { setMounted(true); }, []);
 
   return (
-    <div style={{ backgroundColor: "var(--islamiva-bg)", minHeight: "100vh" }}>
+    <div style={{ backgroundColor: "var(--islametra-bg)", minHeight: "100vh" }}>
       {/* ── Hero ── */}
       <section
         style={{
@@ -103,8 +107,8 @@ export function KisahNabiList() {
               padding: "6px 14px",
               borderRadius: 9999,
               background: isLight ? "rgba(0,0,0,0.04)" : "rgba(255,255,255,0.03)",
-              border: "1px solid var(--islamiva-line)",
-              color: "var(--islamiva-fg-soft)",
+              border: "1px solid var(--islametra-line)",
+              color: "var(--islametra-fg-soft)",
               fontSize: 11,
               fontWeight: 500,
               fontFamily: "'Geist Mono', monospace",
@@ -118,11 +122,11 @@ export function KisahNabiList() {
                 width: 6,
                 height: 6,
                 borderRadius: "50%",
-                background: "var(--islamiva-gold)",
+                background: "var(--islametra-gold)",
                 flexShrink: 0,
               }}
             />
-            25 Nabi &amp; Rasul
+            {tkn.badge}
           </motion.span>
 
           {/* Heading */}
@@ -137,20 +141,20 @@ export function KisahNabiList() {
               fontSize: "clamp(36px, 5vw, 64px)",
               lineHeight: 1.05,
               letterSpacing: "-0.03em",
-              color: "var(--islamiva-fg)",
+              color: "var(--islametra-fg)",
               marginBottom: 20,
             }}
           >
-            Kisah Para{" "}
+            {tkn.title}{" "}
             <em
               style={{
                 fontFamily: "'Instrument Serif', serif",
                 fontStyle: "italic",
                 fontWeight: 400,
-                color: "var(--islamiva-gold)",
+                color: "var(--islametra-gold)",
               }}
             >
-              Nabi
+              {tkn.titleEm}
             </em>
           </motion.h1>
 
@@ -162,14 +166,13 @@ export function KisahNabiList() {
             custom={0.12}
             style={{
               fontSize: "clamp(15px, 1.8vw, 18px)",
-              color: "var(--islamiva-fg-mute)",
+              color: "var(--islametra-fg-mute)",
               lineHeight: 1.65,
               maxWidth: 520,
               margin: "0 auto",
             }}
           >
-            Pelajari kisah inspiratif para nabi dan rasul Allah SWT. Hikmah dan
-            teladan untuk kehidupan sehari-hari.
+            {tkn.sub}
           </motion.p>
         </div>
       </section>
@@ -179,7 +182,7 @@ export function KisahNabiList() {
         style={{
           height: 1,
           background:
-            "linear-gradient(90deg, transparent, var(--islamiva-line-strong), transparent)",
+            "linear-gradient(90deg, transparent, var(--islametra-line-strong), transparent)",
         }}
       />
 
@@ -216,8 +219,8 @@ export function KisahNabiList() {
                       padding: 28,
                       borderRadius: 20,
                       background:
-                        isLight ? "var(--islamiva-bg-1)" : "linear-gradient(180deg, rgba(255,255,255,0.025), rgba(255,255,255,0.005)), var(--islamiva-bg-1)",
-                      border: "1px solid var(--islamiva-line)",
+                        isLight ? "var(--islametra-bg-1)" : "linear-gradient(180deg, rgba(255,255,255,0.025), rgba(255,255,255,0.005)), var(--islametra-bg-1)",
+                      border: "1px solid var(--islametra-line)",
                       height: "100%",
                       display: "flex",
                       flexDirection: "column",
@@ -296,7 +299,7 @@ export function KisahNabiList() {
                           dir="rtl"
                           style={{
                             fontSize: 22,
-                            color: "var(--islamiva-gold-soft)",
+                            color: "var(--islametra-gold-soft)",
                             lineHeight: 1.5,
                           }}
                         >
@@ -311,7 +314,7 @@ export function KisahNabiList() {
                         fontSize: 18,
                         fontWeight: 600,
                         fontFamily: "'Geist', sans-serif",
-                        color: "var(--islamiva-fg)",
+                        color: "var(--islametra-fg)",
                         letterSpacing: "-0.01em",
                         marginBottom: 4,
                         position: "relative",
@@ -323,7 +326,7 @@ export function KisahNabiList() {
                     <p
                       style={{
                         fontSize: 11,
-                        color: "var(--islamiva-fg-dim)",
+                        color: "var(--islametra-fg-dim)",
                         fontFamily: "'Geist Mono', monospace",
                         letterSpacing: "0.03em",
                         marginBottom: 14,
@@ -339,7 +342,7 @@ export function KisahNabiList() {
                       style={{
                         fontSize: 13.5,
                         lineHeight: 1.65,
-                        color: "var(--islamiva-fg-mute)",
+                        color: "var(--islametra-fg-mute)",
                         flex: 1,
                         display: "-webkit-box",
                         WebkitLineClamp: 3,
@@ -360,7 +363,7 @@ export function KisahNabiList() {
                         justifyContent: "space-between",
                         marginTop: 20,
                         paddingTop: 16,
-                        borderTop: "1px dashed var(--islamiva-line)",
+                        borderTop: "1px dashed var(--islametra-line)",
                         position: "relative",
                         zIndex: 1,
                       }}
@@ -368,16 +371,16 @@ export function KisahNabiList() {
                       <span
                         style={{
                           fontSize: 11,
-                          color: "var(--islamiva-fg-dim)",
+                          color: "var(--islametra-fg-dim)",
                           fontFamily: "'Geist Mono', monospace",
                           letterSpacing: "0.03em",
                         }}
                       >
-                        Baca kisah lengkap
+                        {tkn.readFull}
                       </span>
                       <ArrowUpRight
                         size={14}
-                        style={{ color: "var(--islamiva-fg-mute)" }}
+                        style={{ color: "var(--islametra-fg-mute)" }}
                         className="transition-all duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
                       />
                     </div>

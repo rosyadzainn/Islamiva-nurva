@@ -4,13 +4,17 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { BookOpen, ArrowRight } from "lucide-react";
 import { FEATURED_SURAHS } from "@/data/quran-data";
+import { useLang } from "@/contexts/language-context";
+import { translations } from "@/lib/translations";
 
 export function FeaturedSurah() {
+  const { lang } = useLang();
+  const ts = translations[lang].featuredSurah;
   return (
     <section
       className="relative"
       style={{
-        backgroundColor: "var(--islamiva-bg-1)",
+        backgroundColor: "var(--islametra-bg-1)",
         padding: "clamp(80px, 12vw, 160px) 0",
       }}
     >
@@ -18,7 +22,7 @@ export function FeaturedSurah() {
         className="absolute top-0 left-0 right-0 h-px"
         style={{
           background:
-            "linear-gradient(90deg, transparent, var(--islamiva-line-strong), transparent)",
+            "linear-gradient(90deg, transparent, var(--islametra-line-strong), transparent)",
         }}
       />
 
@@ -35,8 +39,8 @@ export function FeaturedSurah() {
                 letterSpacing: "0.08em",
                 textTransform: "uppercase",
                 background: "rgba(255,255,255,0.03)",
-                border: "1px solid var(--islamiva-line)",
-                color: "var(--islamiva-fg-soft)",
+                border: "1px solid var(--islametra-line)",
+                color: "var(--islametra-fg-soft)",
                 display: "inline-flex",
                 alignItems: "center",
                 gap: 8,
@@ -48,9 +52,9 @@ export function FeaturedSurah() {
               }}
             >
               <span
-                style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--islamiva-emerald)", flexShrink: 0 }}
+                style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--islametra-emerald)", flexShrink: 0 }}
               />
-              Al-Quran Digital
+              {ts.badge}
             </motion.span>
             <motion.h2
               initial={{ opacity: 0, y: 8 }}
@@ -63,18 +67,18 @@ export function FeaturedSurah() {
                 fontSize: "clamp(28px, 3.6vw, 46px)",
                 lineHeight: 1.05,
                 letterSpacing: "-0.03em",
-                color: "var(--islamiva-fg)",
+                color: "var(--islametra-fg)",
               }}
             >
-              Surah Populer
+              {ts.title}
             </motion.h2>
           </div>
           <Link
             href="/quran"
             className="hidden sm:flex items-center gap-1.5 text-sm font-medium transition-colors group"
-            style={{ color: "var(--islamiva-fg-mute)", fontFamily: "'Geist', sans-serif" }}
+            style={{ color: "var(--islametra-fg-mute)", fontFamily: "'Geist', sans-serif" }}
           >
-            Lihat semua 114 surah
+            {ts.allLink}
             <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>
@@ -96,8 +100,8 @@ export function FeaturedSurah() {
                     padding: 16,
                     borderRadius: 16,
                     background:
-                      "linear-gradient(180deg, rgba(255,255,255,0.025), rgba(255,255,255,0.005)), var(--islamiva-bg-2)",
-                    border: "1px solid var(--islamiva-line)",
+                      "linear-gradient(180deg, rgba(255,255,255,0.025), rgba(255,255,255,0.005)), var(--islametra-bg-2)",
+                    border: "1px solid var(--islametra-line)",
                   }}
                 >
                   {/* Number + type */}
@@ -129,14 +133,14 @@ export function FeaturedSurah() {
                         fontSize: 10,
                         padding: "2px 7px", borderRadius: 999,
                         background: "rgba(255,255,255,0.04)",
-                        border: "1px solid var(--islamiva-line)",
-                        color: "var(--islamiva-fg-dim)",
+                        border: "1px solid var(--islametra-line)",
+                        color: "var(--islametra-fg-dim)",
                         fontFamily: "'Geist Mono', monospace",
                         letterSpacing: "0.03em",
                         whiteSpace: "nowrap",
                       }}
                     >
-                      {surah.revelationType === "Meccan" ? "Makkiyah" : "Madaniyah"}
+                      {surah.revelationType === "Meccan" ? ts.meccan : ts.medinan}
                     </span>
                   </div>
 
@@ -147,7 +151,7 @@ export function FeaturedSurah() {
                       marginBottom: 4,
                       textAlign: "right",
                       fontSize: 20, lineHeight: 1.8,
-                      color: "var(--islamiva-emerald-soft)",
+                      color: "var(--islametra-emerald-soft)",
                     }}
                   >
                     {surah.nameArabic}
@@ -157,7 +161,7 @@ export function FeaturedSurah() {
                   <h3
                     style={{
                       fontSize: 13, fontWeight: 500,
-                      color: "var(--islamiva-fg-soft)",
+                      color: "var(--islametra-fg-soft)",
                       letterSpacing: "-0.01em",
                       overflow: "hidden",
                       textOverflow: "ellipsis",
@@ -169,7 +173,7 @@ export function FeaturedSurah() {
                   <p
                     style={{
                       fontSize: 11,
-                      color: "var(--islamiva-fg-dim)",
+                      color: "var(--islametra-fg-dim)",
                       marginTop: 2,
                       overflow: "hidden",
                       textOverflow: "ellipsis",
@@ -182,17 +186,17 @@ export function FeaturedSurah() {
                   {/* Verse count */}
                   <div
                     className="flex items-center gap-1.5 mt-3 pt-2.5"
-                    style={{ borderTop: "1px solid var(--islamiva-line)" }}
+                    style={{ borderTop: "1px solid var(--islametra-line)" }}
                   >
-                    <BookOpen size={11} style={{ color: "var(--islamiva-fg-dim)" }} />
+                    <BookOpen size={11} style={{ color: "var(--islametra-fg-dim)" }} />
                     <span
                       style={{
                         fontSize: 11,
-                        color: "var(--islamiva-fg-dim)",
+                        color: "var(--islametra-fg-dim)",
                         fontFamily: "'Geist Mono', monospace",
                       }}
                     >
-                      {surah.numberOfAyahs} ayat
+                      {surah.numberOfAyahs} {ts.verses}
                     </span>
                   </div>
                 </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useAuth } from "@clerk/nextjs";
 
 export type BookmarkType = "quran" | "doa" | "hadith";
 
@@ -31,15 +32,38 @@ export interface HadithBookmark {
 
 export type Bookmark = QuranBookmark | DoaBookmark | HadithBookmark;
 
-const STORAGE_KEY = "islamiva_bookmarks";
+const STORAGE_KEY = "islametra_bookmarks";
 
-function getKey(bookmark: Bookmark): string {
+const TYPE_MAP: Record<BookmarkType, string> = {
+  quran: "QURAN",
+  doa: "DOA",
+  hadith: "HADITH",
+};
+
+export function getKey(bookmark: Bookmark): string {
   if (bookmark.type === "quran") return `quran-${bookmark.surahNumber}-${bookmark.ayahNumber}`;
   if (bookmark.type === "doa") return `doa-${bookmark.slug}`;
   return `hadith-${bookmark.kitab}-${bookmark.number}`;
 }
 
-function load(): Bookmark[] {
+function getReferenceId(bookmark: Bookmark): string {
+  return getKey(bookmark);
+}
+
+function getMetadata(bookmark: Bookmark): Record<string, unknown> {
+  return bookmark as unknown as Record<string, unknown>;
+}
+
+function rowToBookmark(row: { type: string; referenceId: string; metadata: unknown; createdAt: Date | string }): Bookmark | null {
+  const meta = row.metadata as Record<string, unknown>;
+  if (!meta) return null;
+  if (row.type === "QURAN") return { ...(meta as unknown as QuranBookmark), type: "quran", createdAt: String(row.createdAt) };
+  if (row.type === "DOA") return { ...(meta as unknown as DoaBookmark), type: "doa", createdAt: String(row.createdAt) };
+  if (row.type === "HADITH") return { ...(meta as unknown as HadithBookmark), type: "hadith", createdAt: String(row.createdAt) };
+  return null;
+}
+
+function loadLocal(): Bookmark[] {
   if (typeof window === "undefined") return [];
   try {
     return JSON.parse(localStorage.getItem(STORAGE_KEY) ?? "[]");
@@ -48,44 +72,100 @@ function load(): Bookmark[] {
   }
 }
 
-function save(bookmarks: Bookmark[]) {
+function saveLocal(bookmarks: Bookmark[]) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(bookmarks));
 }
 
 export function useBookmarks() {
+  const { isSignedIn, isLoaded } = useAuth();
   const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
+  const [synced, setSynced] = useState(false);
 
   useEffect(() => {
-    setBookmarks(load());
-  }, []);
+    if (!isLoaded) return;
+
+    if (isSignedIn) {
+      fetch("/api/bookmarks")
+        .then((r) => r.json())
+        .then((data: { bookmarks: { type: string; referenceId: string; metadata: unknown; createdAt: string }[] }) => {
+          const parsed = (data.bookmarks ?? []).map(rowToBookmark).filter(Boolean) as Bookmark[];
+          setBookmarks(parsed);
+          setSynced(true);
+        })
+        .catch(() => {
+          setBookmarks(loadLocal());
+          setSynced(true);
+        });
+    } else {
+      setBookmarks(loadLocal());
+      setSynced(true);
+    }
+  }, [isSignedIn, isLoaded]);
 
   const isBookmarked = useCallback(
     (key: string) => bookmarks.some((b) => getKey(b) === key),
     [bookmarks]
   );
 
-  const toggle = useCallback((bookmark: Bookmark) => {
+  const toggle = useCallback(async (bookmark: Bookmark) => {
     const key = getKey(bookmark);
-    setBookmarks((prev) => {
-      const exists = prev.some((b) => getKey(b) === key);
-      const next = exists ? prev.filter((b) => getKey(b) !== key) : [...prev, bookmark];
-      save(next);
-      return next;
-    });
-    return !bookmarks.some((b) => getKey(b) === key);
-  }, [bookmarks]);
+    const exists = bookmarks.some((b) => getKey(b) === key);
 
-  const remove = useCallback((key: string) => {
-    setBookmarks((prev) => {
-      const next = prev.filter((b) => getKey(b) !== key);
-      save(next);
-      return next;
-    });
-  }, []);
+    if (isSignedIn) {
+      if (exists) {
+        await fetch("/api/bookmarks", {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ type: TYPE_MAP[bookmark.type], referenceId: getReferenceId(bookmark) }),
+        });
+        setBookmarks((prev) => prev.filter((b) => getKey(b) !== key));
+      } else {
+        await fetch("/api/bookmarks", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            type: TYPE_MAP[bookmark.type],
+            referenceId: getReferenceId(bookmark),
+            metadata: getMetadata(bookmark),
+          }),
+        });
+        setBookmarks((prev) => [...prev, { ...bookmark, createdAt: new Date().toISOString() }]);
+      }
+    } else {
+      setBookmarks((prev) => {
+        const next = exists ? prev.filter((b) => getKey(b) !== key) : [...prev, bookmark];
+        saveLocal(next);
+        return next;
+      });
+    }
+
+    return !exists;
+  }, [bookmarks, isSignedIn]);
+
+  const remove = useCallback(async (key: string) => {
+    const bookmark = bookmarks.find((b) => getKey(b) === key);
+    if (!bookmark) return;
+
+    if (isSignedIn) {
+      await fetch("/api/bookmarks", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type: TYPE_MAP[bookmark.type], referenceId: getReferenceId(bookmark) }),
+      });
+    } else {
+      setBookmarks((prev) => {
+        const next = prev.filter((b) => getKey(b) !== key);
+        saveLocal(next);
+        return next;
+      });
+    }
+
+    setBookmarks((prev) => prev.filter((b) => getKey(b) !== key));
+  }, [bookmarks, isSignedIn]);
 
   const quranBookmarks = bookmarks.filter((b): b is QuranBookmark => b.type === "quran");
   const doaBookmarks = bookmarks.filter((b): b is DoaBookmark => b.type === "doa");
   const hadithBookmarks = bookmarks.filter((b): b is HadithBookmark => b.type === "hadith");
 
-  return { bookmarks, quranBookmarks, doaBookmarks, hadithBookmarks, isBookmarked, toggle, remove, getKey };
+  return { bookmarks, quranBookmarks, doaBookmarks, hadithBookmarks, isBookmarked, toggle, remove, getKey, synced };
 }

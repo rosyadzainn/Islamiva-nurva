@@ -2,9 +2,14 @@
 
 import Link from "next/link";
 import { UserButton, useUser } from "@clerk/nextjs";
+import { useLang } from "@/contexts/language-context";
+import { translations } from "@/lib/translations";
 
 export function AuthButton({ mobile }: { mobile?: boolean }) {
   const { isSignedIn, isLoaded, user } = useUser();
+  const { lang } = useLang();
+  const tn = translations[lang].nav;
+  const tc = translations[lang].common;
 
   if (!isLoaded) {
     return mobile ? null : (
@@ -14,7 +19,7 @@ export function AuthButton({ mobile }: { mobile?: boolean }) {
           height: 30,
           borderRadius: 9999,
           background: "rgba(255,255,255,0.06)",
-          border: "1px solid var(--islamiva-line)",
+          border: "1px solid var(--islametra-line)",
           flexShrink: 0,
         }}
       />
@@ -43,11 +48,11 @@ export function AuthButton({ mobile }: { mobile?: boolean }) {
               style={{
                 fontSize: 13,
                 fontWeight: 500,
-                color: "var(--islamiva-fg)",
+                color: "var(--islametra-fg)",
                 fontFamily: "'Geist', sans-serif",
               }}
             >
-              {user?.firstName ?? user?.emailAddresses?.[0]?.emailAddress?.split("@")[0] ?? "Pengguna"}
+              {user?.firstName ?? user?.emailAddresses?.[0]?.emailAddress?.split("@")[0] ?? tc.guest}
             </p>
             <p
               style={{
@@ -57,7 +62,7 @@ export function AuthButton({ mobile }: { mobile?: boolean }) {
                 letterSpacing: "0.02em",
               }}
             >
-              ● Sudah masuk
+              ● {tc.loggedIn}
             </p>
           </div>
         </div>
@@ -95,7 +100,7 @@ export function AuthButton({ mobile }: { mobile?: boolean }) {
               whiteSpace: "nowrap",
             }}
           >
-            {user?.firstName ?? "Masuk"}
+            {user?.firstName ?? tn.signIn}
           </span>
         </div>
         <UserButton
@@ -126,7 +131,7 @@ export function AuthButton({ mobile }: { mobile?: boolean }) {
           textDecoration: "none",
         }}
       >
-        Masuk ke Islamiva
+        {tn.signInFull}
       </Link>
     );
   }
@@ -153,7 +158,7 @@ export function AuthButton({ mobile }: { mobile?: boolean }) {
         whiteSpace: "nowrap",
       }}
     >
-      Masuk
+      {tn.signIn}
     </Link>
   );
 }

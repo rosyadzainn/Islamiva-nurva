@@ -1,13 +1,21 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Poppins } from "next/font/google";
+import { Geist, Geist_Mono, Poppins, Instrument_Serif, Amiri, Scheherazade_New } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import { ThemeProvider } from "@/components/providers/theme-provider";
+import { LanguageProvider } from "@/contexts/language-context";
 import { Toaster } from "react-hot-toast";
+import { GoogleAnalytics } from "@/components/providers/google-analytics";
 import "./globals.css";
 
-const inter = Inter({
+const geist = Geist({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-geist",
+  display: "swap",
+});
+
+const geistMono = Geist_Mono({
+  subsets: ["latin"],
+  variable: "--font-geist-mono",
   display: "swap",
 });
 
@@ -18,10 +26,33 @@ const poppins = Poppins({
   display: "swap",
 });
 
+const instrumentSerif = Instrument_Serif({
+  subsets: ["latin"],
+  weight: ["400"],
+  style: ["normal", "italic"],
+  variable: "--font-instrument-serif",
+  display: "swap",
+});
+
+const amiri = Amiri({
+  subsets: ["arabic", "latin"],
+  weight: ["400", "700"],
+  style: ["normal", "italic"],
+  variable: "--font-amiri",
+  display: "swap",
+});
+
+const scheherazade = Scheherazade_New({
+  subsets: ["arabic", "latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-scheherazade",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: {
-    default: "Islamiva - Platform Islami Modern",
-    template: "%s | Islamiva",
+    default: "Islametra - Platform Islami Modern",
+    template: "%s | Islametra",
   },
   description:
     "Platform Islami modern untuk membaca Al-Quran, doa harian, hadits, kisah nabi, sejarah Islam, dan tanya jawab AI Islami.",
@@ -36,22 +67,33 @@ export const metadata: Metadata = {
     "doa islam",
     "AI islami",
   ],
-  authors: [{ name: "Islamiva" }],
-  creator: "Islamiva",
+  authors: [{ name: "Islametra" }],
+  creator: "Islametra",
+  icons: {
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/favicon.ico", sizes: "any" },
+    ],
+    apple: "/icon.svg",
+    shortcut: "/icon.svg",
+  },
   openGraph: {
     type: "website",
     locale: "id_ID",
     url: process.env.NEXT_PUBLIC_APP_URL,
-    title: "Islamiva - Platform Islami Modern",
+    title: "Islametra - Platform Islami Modern",
     description:
       "Platform Islami modern untuk membaca Al-Quran, doa harian, hadits, kisah nabi, sejarah Islam, dan tanya jawab AI Islami.",
-    siteName: "Islamiva",
+    siteName: "Islametra",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Islamiva - Platform Islami Modern",
+    title: "Islametra - Platform Islami Modern",
     description:
       "Platform Islami modern untuk membaca Al-Quran, doa harian, hadits, kisah nabi, sejarah Islam.",
+  },
+  verification: {
+    google: "EABhXGM5IWoxjf5uL0HDIMGkXBnbWyk1vtvzFOoWXRc",
   },
   robots: {
     index: true,
@@ -79,18 +121,27 @@ const Inner = ({ children }: { children: React.ReactNode }) => (
   <html
     lang="id"
     suppressHydrationWarning
-    className={`${inter.variable} ${poppins.variable}`}
+    className={`${geist.variable} ${geistMono.variable} ${poppins.variable} ${instrumentSerif.variable} ${amiri.variable} ${scheherazade.variable}`}
   >
-    <head>
-      <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-      <link
-        href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&family=Amiri:ital,wght@0,400;0,700;1,400;1,700&family=Scheherazade+New:wght@400;500;600;700&display=swap"
-        rel="stylesheet"
-      />
-    </head>
-    <body className="min-h-screen antialiased">
+    <head />
+    <body className="min-h-screen antialiased" suppressHydrationWarning>
+      <a
+        href="#main-content"
+        style={{
+          position: "absolute", top: -9999, left: 0, zIndex: 9999,
+          padding: "8px 16px", background: "oklch(0.62 0.13 155)", color: "#08110b",
+          fontFamily: "sans-serif", fontSize: 14, fontWeight: 600, borderRadius: "0 0 8px 0",
+        }}
+        onFocus={(e) => { e.currentTarget.style.top = "0"; }}
+        onBlur={(e) => { e.currentTarget.style.top = "-9999px"; }}
+      >
+        Skip to main content
+      </a>
+      <GoogleAnalytics />
       <ThemeProvider>
+        <LanguageProvider>
         {children}
+        </LanguageProvider>
         <Toaster
           position="top-center"
           toastOptions={{

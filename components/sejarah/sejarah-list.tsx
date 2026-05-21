@@ -5,82 +5,24 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { useTheme } from "next-themes";
+import { useLang } from "@/contexts/language-context";
+import { translations } from "@/lib/translations";
 
-const TIMELINE = [
-  { year: "610 M", label: "Kenabian", color: "oklch(0.62 0.13 155)" },
-  { year: "622 M", label: "Hijrah", color: "oklch(0.62 0.13 155)" },
-  { year: "632 M", label: "Wafat Nabi", color: "oklch(0.82 0.08 80)" },
-  { year: "661 M", label: "Umayyah", color: "oklch(0.82 0.08 80)" },
-  { year: "750 M", label: "Abbasiyah", color: "oklch(0.82 0.08 80)" },
-  { year: "1258 M", label: "Baghdad", color: "oklch(0.68 0.15 30)" },
-  { year: "1924 M", label: "Utsmani", color: "oklch(0.68 0.15 30)" },
+const TIMELINE_COLORS = [
+  "oklch(0.62 0.13 155)",
+  "oklch(0.62 0.13 155)",
+  "oklch(0.82 0.08 80)",
+  "oklch(0.82 0.08 80)",
+  "oklch(0.82 0.08 80)",
+  "oklch(0.68 0.15 30)",
+  "oklch(0.68 0.15 30)",
 ];
 
-const HISTORY_CATEGORIES = [
-  {
-    id: "khulafaur-rasyidin",
-    title: "Khulafaur Rasyidin",
-    description: "Empat khalifah pertama setelah wafatnya Nabi Muhammad SAW",
-    period: "632 – 661 M",
-    icon: "👑",
-    iconBg: "oklch(0.62 0.13 155 / 0.12)",
-    iconBorder: "1px solid oklch(0.62 0.13 155 / 0.2)",
-    glowColor: "oklch(0.62 0.13 155 / 0.06)",
-    articles: [
-      { title: "Abu Bakar Ash-Shiddiq RA", slug: "abu-bakar-ash-shiddiq" },
-      { title: "Umar bin Khattab RA", slug: "umar-bin-khattab" },
-      { title: "Utsman bin Affan RA", slug: "utsman-bin-affan" },
-      { title: "Ali bin Abi Thalib RA", slug: "ali-bin-abi-thalib" },
-    ],
-  },
-  {
-    id: "dinasti-islam",
-    title: "Dinasti & Kekhalifahan",
-    description: "Perjalanan kekhalifahan dan dinasti-dinasti besar Islam",
-    period: "661 – 1924 M",
-    icon: "🏰",
-    iconBg: "oklch(0.82 0.08 80 / 0.12)",
-    iconBorder: "1px solid oklch(0.82 0.08 80 / 0.2)",
-    glowColor: "oklch(0.82 0.08 80 / 0.06)",
-    articles: [
-      { title: "Dinasti Umayyah", slug: "dinasti-umayyah" },
-      { title: "Dinasti Abbasiyah", slug: "dinasti-abbasiyah" },
-      { title: "Kekhalifahan Utsmani", slug: "kekhalifahan-utsmani" },
-      { title: "Kejayaan Islam di Andalusia", slug: "islam-di-andalusia" },
-    ],
-  },
-  {
-    id: "tokoh-ulama",
-    title: "Tokoh & Ulama Islam",
-    description: "Para ulama dan ilmuwan Islam yang mengubah peradaban dunia",
-    period: "Klasik – Modern",
-    icon: "📚",
-    iconBg: "oklch(0.7 0.1 240 / 0.12)",
-    iconBorder: "1px solid oklch(0.7 0.1 240 / 0.2)",
-    glowColor: "oklch(0.7 0.1 240 / 0.06)",
-    articles: [
-      { title: "Imam Al-Ghazali", slug: "imam-al-ghazali" },
-      { title: "Ibnu Sina (Avicenna)", slug: "ibnu-sina" },
-      { title: "Al-Khawarizmi (Bapak Aljabar)", slug: "al-khawarizmi" },
-      { title: "Ibnu Khaldun", slug: "ibnu-khaldun" },
-    ],
-  },
-  {
-    id: "penyebaran-islam",
-    title: "Penyebaran Islam",
-    description: "Perjalanan Islam menyebar ke seluruh penjuru dunia",
-    period: "610 M – Sekarang",
-    icon: "🌍",
-    iconBg: "oklch(0.75 0.1 310 / 0.12)",
-    iconBorder: "1px solid oklch(0.75 0.1 310 / 0.2)",
-    glowColor: "oklch(0.75 0.1 310 / 0.06)",
-    articles: [
-      { title: "Masuknya Islam ke Indonesia", slug: "islam-di-indonesia" },
-      { title: "Islam di Asia Tenggara", slug: "islam-asia-tenggara" },
-      { title: "Islam di Afrika", slug: "islam-di-afrika" },
-      { title: "Islam di Eropa", slug: "islam-di-eropa" },
-    ],
-  },
+const CATEGORY_STYLES = [
+  { icon: "👑", iconBg: "oklch(0.62 0.13 155 / 0.12)", iconBorder: "1px solid oklch(0.62 0.13 155 / 0.2)", glowColor: "oklch(0.62 0.13 155 / 0.06)" },
+  { icon: "🏰", iconBg: "oklch(0.82 0.08 80 / 0.12)", iconBorder: "1px solid oklch(0.82 0.08 80 / 0.2)", glowColor: "oklch(0.82 0.08 80 / 0.06)" },
+  { icon: "📚", iconBg: "oklch(0.7 0.1 240 / 0.12)", iconBorder: "1px solid oklch(0.7 0.1 240 / 0.2)", glowColor: "oklch(0.7 0.1 240 / 0.06)" },
+  { icon: "🌍", iconBg: "oklch(0.75 0.1 310 / 0.12)", iconBorder: "1px solid oklch(0.75 0.1 310 / 0.2)", glowColor: "oklch(0.75 0.1 310 / 0.06)" },
 ];
 
 const fadeUp = {
@@ -109,10 +51,12 @@ export function SejarahList() {
   const [mounted, setMounted] = useState(false);
   const { theme } = useTheme();
   const isLight = mounted && theme === "light";
+  const { lang } = useLang();
+  const ts = translations[lang].sejarahList;
   useEffect(() => { setMounted(true); }, []);
 
   return (
-    <div style={{ backgroundColor: "var(--islamiva-bg)", minHeight: "100vh" }}>
+    <div style={{ backgroundColor: "var(--islametra-bg)", minHeight: "100vh" }}>
       {/* ── Hero ── */}
       <section
         style={{
@@ -151,8 +95,8 @@ export function SejarahList() {
               padding: "6px 14px",
               borderRadius: 9999,
               background: isLight ? "rgba(0,0,0,0.04)" : "rgba(255,255,255,0.03)",
-              border: "1px solid var(--islamiva-line)",
-              color: "var(--islamiva-fg-soft)",
+              border: "1px solid var(--islametra-line)",
+              color: "var(--islametra-fg-soft)",
               fontSize: 11,
               fontWeight: 500,
               fontFamily: "'Geist Mono', monospace",
@@ -166,11 +110,11 @@ export function SejarahList() {
                 width: 6,
                 height: 6,
                 borderRadius: "50%",
-                background: "var(--islamiva-emerald)",
+                background: "var(--islametra-emerald)",
                 flexShrink: 0,
               }}
             />
-            100+ Artikel
+            {ts.badge}
           </motion.span>
 
           {/* Heading */}
@@ -185,7 +129,7 @@ export function SejarahList() {
               fontSize: "clamp(36px, 5vw, 64px)",
               lineHeight: 1.05,
               letterSpacing: "-0.03em",
-              color: "var(--islamiva-fg)",
+              color: "var(--islametra-fg)",
               marginBottom: 20,
             }}
           >
@@ -195,10 +139,10 @@ export function SejarahList() {
                 fontFamily: "'Instrument Serif', serif",
                 fontStyle: "italic",
                 fontWeight: 400,
-                color: "var(--islamiva-emerald-soft)",
+                color: "var(--islametra-emerald-soft)",
               }}
             >
-              Islam
+              {ts.titleEm}
             </em>
           </motion.h1>
 
@@ -210,14 +154,13 @@ export function SejarahList() {
             custom={0.12}
             style={{
               fontSize: "clamp(15px, 1.8vw, 18px)",
-              color: "var(--islamiva-fg-mute)",
+              color: "var(--islametra-fg-mute)",
               lineHeight: 1.65,
               maxWidth: 540,
               margin: "0 auto",
             }}
           >
-            Jelajahi perjalanan panjang Islam dari zaman Nabi Muhammad SAW hingga
-            kejayaan peradaban Islam yang mengubah dunia.
+            {ts.sub}
           </motion.p>
         </div>
       </section>
@@ -227,7 +170,7 @@ export function SejarahList() {
         style={{
           height: 1,
           background:
-            "linear-gradient(90deg, transparent, var(--islamiva-line-strong), transparent)",
+            "linear-gradient(90deg, transparent, var(--islametra-line-strong), transparent)",
         }}
       />
 
@@ -248,8 +191,8 @@ export function SejarahList() {
             padding: "28px 32px",
             borderRadius: 20,
             background:
-              isLight ? "var(--islamiva-bg-1)" : "linear-gradient(180deg, rgba(255,255,255,0.025), rgba(255,255,255,0.005)), var(--islamiva-bg-1)",
-            border: "1px solid var(--islamiva-line-strong)",
+              isLight ? "var(--islametra-bg-1)" : "linear-gradient(180deg, rgba(255,255,255,0.025), rgba(255,255,255,0.005)), var(--islametra-bg-1)",
+            border: "1px solid var(--islametra-line-strong)",
             overflow: "hidden",
             boxShadow: "0 20px 60px -20px rgba(0,0,0,0.4)",
           }}
@@ -260,11 +203,11 @@ export function SejarahList() {
               fontFamily: "'Geist Mono', monospace",
               letterSpacing: "0.08em",
               textTransform: "uppercase",
-              color: "var(--islamiva-fg-dim)",
+              color: "var(--islametra-fg-dim)",
               marginBottom: 24,
             }}
           >
-            Timeline Sejarah Islam
+            {ts.timelineLabel}
           </p>
           <div className="scrollbar-hide" style={{ overflowX: "auto" }}>
             <div style={{ minWidth: 560, position: "relative" }}>
@@ -288,7 +231,7 @@ export function SejarahList() {
                   position: "relative",
                 }}
               >
-                {TIMELINE.map((item, i) => (
+                {ts.timeline.map((item, i) => (
                   <motion.div
                     key={item.year}
                     initial={{ opacity: 0, y: 6 }}
@@ -310,9 +253,9 @@ export function SejarahList() {
                         width: 10,
                         height: 10,
                         borderRadius: "50%",
-                        background: item.color,
-                        border: "2px solid var(--islamiva-bg-1)",
-                        boxShadow: `0 0 8px ${item.color}`,
+                        background: TIMELINE_COLORS[i],
+                        border: "2px solid var(--islametra-bg-1)",
+                        boxShadow: `0 0 8px ${TIMELINE_COLORS[i]}`,
                         zIndex: 1,
                         flexShrink: 0,
                       }}
@@ -322,7 +265,7 @@ export function SejarahList() {
                         fontSize: 10,
                         fontWeight: 700,
                         fontFamily: "'Geist Mono', monospace",
-                        color: "var(--islamiva-fg-soft)",
+                        color: "var(--islametra-fg-soft)",
                         whiteSpace: "nowrap",
                       }}
                     >
@@ -331,7 +274,7 @@ export function SejarahList() {
                     <span
                       style={{
                         fontSize: 10,
-                        color: "var(--islamiva-fg-dim)",
+                        color: "var(--islametra-fg-dim)",
                         textAlign: "center",
                         maxWidth: 50,
                         lineHeight: 1.3,
@@ -354,7 +297,9 @@ export function SejarahList() {
             gap: 20,
           }}
         >
-          {HISTORY_CATEGORIES.map((cat, i) => (
+          {ts.categories.map((cat, i) => {
+            const style = CATEGORY_STYLES[i];
+            return (
             <motion.div
               key={cat.id}
               variants={cardVariants}
@@ -367,8 +312,8 @@ export function SejarahList() {
                   padding: 28,
                   borderRadius: 20,
                   background:
-                    isLight ? "var(--islamiva-bg-1)" : "linear-gradient(180deg, rgba(255,255,255,0.025), rgba(255,255,255,0.005)), var(--islamiva-bg-1)",
-                  border: "1px solid var(--islamiva-line)",
+                    isLight ? "var(--islametra-bg-1)" : "linear-gradient(180deg, rgba(255,255,255,0.025), rgba(255,255,255,0.005)), var(--islametra-bg-1)",
+                  border: "1px solid var(--islametra-line)",
                   position: "relative",
                   overflow: "hidden",
                   height: "100%",
@@ -399,7 +344,7 @@ export function SejarahList() {
                     left: -40,
                     width: 180,
                     height: 180,
-                    background: `radial-gradient(circle, ${cat.glowColor}, transparent 70%)`,
+                    background: `radial-gradient(circle, ${style.glowColor}, transparent 70%)`,
                     pointerEvents: "none",
                   }}
                 />
@@ -420,8 +365,8 @@ export function SejarahList() {
                       width: 40,
                       height: 40,
                       borderRadius: 12,
-                      background: cat.iconBg,
-                      border: cat.iconBorder,
+                      background: style.iconBg,
+                      border: style.iconBorder,
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
@@ -429,7 +374,7 @@ export function SejarahList() {
                       flexShrink: 0,
                     }}
                   >
-                    {cat.icon}
+                    {style.icon}
                   </div>
                   <div>
                     <h2
@@ -437,7 +382,7 @@ export function SejarahList() {
                         fontSize: 16,
                         fontWeight: 600,
                         fontFamily: "'Geist', sans-serif",
-                        color: "var(--islamiva-fg)",
+                        color: "var(--islametra-fg)",
                         letterSpacing: "-0.01em",
                       }}
                     >
@@ -447,7 +392,7 @@ export function SejarahList() {
                       style={{
                         fontSize: 10,
                         fontFamily: "'Geist Mono', monospace",
-                        color: "var(--islamiva-fg-dim)",
+                        color: "var(--islametra-fg-dim)",
                         letterSpacing: "0.03em",
                       }}
                     >
@@ -459,7 +404,7 @@ export function SejarahList() {
                 <p
                   style={{
                     fontSize: 13.5,
-                    color: "var(--islamiva-fg-mute)",
+                    color: "var(--islametra-fg-mute)",
                     lineHeight: 1.6,
                     marginBottom: 20,
                     position: "relative",
@@ -500,21 +445,21 @@ export function SejarahList() {
                           padding: "10px 14px",
                           borderRadius: 10,
                           background: isLight ? "rgba(0,0,0,0.04)" : "rgba(255,255,255,0.03)",
-                          border: "1px solid var(--islamiva-line)",
+                          border: "1px solid var(--islametra-line)",
                         }}
                       >
                         <span
                           style={{
                             fontSize: 13,
                             fontWeight: 500,
-                            color: "var(--islamiva-fg-soft)",
+                            color: "var(--islametra-fg-soft)",
                           }}
                         >
                           {article.title}
                         </span>
                         <ArrowRight
                           size={13}
-                          style={{ color: "var(--islamiva-fg-dim)", flexShrink: 0 }}
+                          style={{ color: "var(--islametra-fg-dim)", flexShrink: 0 }}
                           className="transition-transform duration-200 group-hover:translate-x-1"
                         />
                       </Link>
@@ -523,7 +468,8 @@ export function SejarahList() {
                 </div>
               </div>
             </motion.div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>

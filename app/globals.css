@@ -26,9 +26,8 @@
   --color-gold-900: #713f12;
 
   /* Fonts */
-  --font-sans: var(--font-inter);
-  --font-poppins: var(--font-poppins);
-  --font-arabic: "Amiri", "Scheherazade New", serif;
+  --font-sans: var(--font-poppins), sans-serif;
+  --font-arabic: var(--font-amiri), var(--font-scheherazade), serif;
 
   /* Custom */
   --color-background: var(--background);
@@ -80,7 +79,7 @@
 
   html {
     color-scheme: dark;
-    background: var(--islamiva-bg);
+    background: var(--islametra-bg);
   }
 
   [data-theme="light"] html, html[data-theme="light"] {
@@ -88,8 +87,8 @@
   }
 
   body {
-    background: var(--islamiva-bg);
-    color: var(--islamiva-fg);
+    background: var(--islametra-bg);
+    color: var(--islametra-fg);
     font-family: var(--font-inter), system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -134,63 +133,63 @@
   background: #065f46;
 }
 
-/* ============ Islamiva dark landing page design system ============ */
+/* ============ Islametra dark landing page design system ============ */
 :root {
-  --islamiva-bg: #0a0c0b;
-  --islamiva-bg-1: #0d100e;
-  --islamiva-bg-2: #11140f;
-  --islamiva-line: rgba(255, 255, 255, 0.06);
-  --islamiva-line-strong: rgba(255, 255, 255, 0.10);
-  --islamiva-fg: #f3f4ee;
-  --islamiva-fg-soft: #d8dad1;
-  --islamiva-fg-mute: #8a8e83;
-  --islamiva-fg-dim: #5a5e54;
-  --islamiva-emerald: oklch(0.62 0.13 155);
-  --islamiva-emerald-soft: oklch(0.7 0.11 155);
-  --islamiva-gold: oklch(0.82 0.08 80);
-  --islamiva-gold-soft: oklch(0.88 0.06 80);
+  --islametra-bg: #0a0c0b;
+  --islametra-bg-1: #0d100e;
+  --islametra-bg-2: #11140f;
+  --islametra-line: rgba(255, 255, 255, 0.06);
+  --islametra-line-strong: rgba(255, 255, 255, 0.10);
+  --islametra-fg: #f3f4ee;
+  --islametra-fg-soft: #d8dad1;
+  --islametra-fg-mute: #8a8e83;
+  --islametra-fg-dim: #5a5e54;
+  --islametra-emerald: oklch(0.62 0.13 155);
+  --islametra-emerald-soft: oklch(0.7 0.11 155);
+  --islametra-gold: oklch(0.82 0.08 80);
+  --islametra-gold-soft: oklch(0.88 0.06 80);
 }
 
 /* ── Surface overlay tokens (theme-aware, usable in Server Components via CSS var) ── */
 :root {
-  --islamiva-card-overlay-sm: rgba(255,255,255,0.02);
-  --islamiva-card-overlay: rgba(255,255,255,0.03);
-  --islamiva-card-overlay-md: rgba(255,255,255,0.04);
-  --islamiva-hero-card-bg: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.005)), var(--islamiva-bg-1);
-  --islamiva-content-card-bg: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.005)), var(--islamiva-bg-1);
-  --islamiva-shimmer-top: linear-gradient(180deg, rgba(255,255,255,0.08), transparent 40%);
+  --islametra-card-overlay-sm: rgba(255,255,255,0.02);
+  --islametra-card-overlay: rgba(255,255,255,0.03);
+  --islametra-card-overlay-md: rgba(255,255,255,0.04);
+  --islametra-hero-card-bg: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.005)), var(--islametra-bg-1);
+  --islametra-content-card-bg: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.005)), var(--islametra-bg-1);
+  --islametra-shimmer-top: linear-gradient(180deg, rgba(255,255,255,0.08), transparent 40%);
 }
 
 /* ── Light mode ── */
 [data-theme="light"] {
-  --islamiva-card-overlay-sm: rgba(0,0,0,0.03);
-  --islamiva-card-overlay: rgba(0,0,0,0.04);
-  --islamiva-card-overlay-md: rgba(0,0,0,0.05);
-  --islamiva-hero-card-bg: var(--islamiva-bg-1);
-  --islamiva-content-card-bg: var(--islamiva-bg-1);
-  --islamiva-shimmer-top: linear-gradient(180deg, rgba(0,0,0,0.05), transparent 40%);
+  --islametra-card-overlay-sm: rgba(0,0,0,0.03);
+  --islametra-card-overlay: rgba(0,0,0,0.04);
+  --islametra-card-overlay-md: rgba(0,0,0,0.05);
+  --islametra-hero-card-bg: var(--islametra-bg-1);
+  --islametra-content-card-bg: var(--islametra-bg-1);
+  --islametra-shimmer-top: linear-gradient(180deg, rgba(0,0,0,0.05), transparent 40%);
 }
 
 [data-theme="light"] {
-  --islamiva-bg: #f5f5f0;
-  --islamiva-bg-1: #ffffff;
-  --islamiva-bg-2: #efefea;
-  --islamiva-line: rgba(0, 0, 0, 0.07);
-  --islamiva-line-strong: rgba(0, 0, 0, 0.12);
-  --islamiva-fg: #111210;
-  --islamiva-fg-soft: #2c2e2a;
-  --islamiva-fg-mute: #5a5e54;
-  --islamiva-fg-dim: #8a8e83;
-  --islamiva-emerald: oklch(0.48 0.14 155);
-  --islamiva-emerald-soft: oklch(0.42 0.13 155);
-  --islamiva-gold: oklch(0.6 0.1 75);
-  --islamiva-gold-soft: oklch(0.5 0.1 75);
+  --islametra-bg: #f5f5f0;
+  --islametra-bg-1: #ffffff;
+  --islametra-bg-2: #efefea;
+  --islametra-line: rgba(0, 0, 0, 0.07);
+  --islametra-line-strong: rgba(0, 0, 0, 0.12);
+  --islametra-fg: #111210;
+  --islametra-fg-soft: #2c2e2a;
+  --islametra-fg-mute: #5a5e54;
+  --islametra-fg-dim: #8a8e83;
+  --islametra-emerald: oklch(0.48 0.14 155);
+  --islametra-emerald-soft: oklch(0.42 0.13 155);
+  --islametra-gold: oklch(0.6 0.1 75);
+  --islametra-gold-soft: oklch(0.5 0.1 75);
   color-scheme: light;
 }
 
 [data-theme="light"] body {
-  background: var(--islamiva-bg);
-  color: var(--islamiva-fg);
+  background: var(--islametra-bg);
+  color: var(--islametra-fg);
 }
 
 [data-theme="light"] ::-webkit-scrollbar-thumb {
@@ -201,56 +200,56 @@
 .font-geist-mono { font-family: "Geist Mono", ui-monospace, monospace; }
 .font-display { font-family: "Instrument Serif", serif; }
 
-@keyframes islamiva-float {
+@keyframes islametra-float {
   0%, 100% { transform: translateY(0px); }
   50% { transform: translateY(-10px); }
 }
-@keyframes islamiva-pulse-glow {
+@keyframes islametra-pulse-glow {
   0%, 100% { opacity: 0.5; }
   50% { opacity: 0.9; }
 }
-@keyframes islamiva-typing {
+@keyframes islametra-typing {
   0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
   30% { transform: translateY(-4px); opacity: 1; }
 }
-@keyframes islamiva-fade-up {
+@keyframes islametra-fade-up {
   from { opacity: 0; transform: translateY(14px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 /* Footer responsive grid */
-.islamiva-footer-grid {
+.islametra-footer-grid {
   display: grid;
   grid-template-columns: 1.4fr repeat(4, 1fr);
   gap: 40px;
 }
 @media (max-width: 980px) {
-  .islamiva-footer-grid { grid-template-columns: 1fr 1fr; }
-  .islamiva-footer-brand { grid-column: 1 / -1; max-width: 480px; }
+  .islametra-footer-grid { grid-template-columns: 1fr 1fr; }
+  .islametra-footer-brand { grid-column: 1 / -1; max-width: 480px; }
 }
 @media (max-width: 560px) {
-  .islamiva-footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+  .islametra-footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
 }
 
 /* Module grid responsive */
-.islamiva-module-grid {
+.islametra-module-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 16px;
 }
-@media (max-width: 980px) { .islamiva-module-grid { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 620px) { .islamiva-module-grid { grid-template-columns: 1fr; } }
+@media (max-width: 980px) { .islametra-module-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 620px) { .islametra-module-grid { grid-template-columns: 1fr; } }
 
-.islamiva-footer-link:hover { color: var(--islamiva-fg); }
+.islametra-footer-link:hover { color: var(--islametra-fg); }
 
 /* Feature header responsive */
-.islamiva-feat-head {
+.islametra-feat-head {
   display: grid;
   grid-template-columns: 1fr auto;
   gap: 40px;
   align-items: end;
 }
-@media (max-width: 760px) { .islamiva-feat-head { grid-template-columns: 1fr; } }
+@media (max-width: 760px) { .islametra-feat-head { grid-template-columns: 1fr; } }
 
 /* Hide scrollbar utility */
 .scrollbar-hide {

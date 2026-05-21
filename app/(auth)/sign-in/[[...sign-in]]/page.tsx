@@ -18,7 +18,7 @@ export default function SignInPage() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        backgroundColor: "var(--islamiva-bg)",
+        backgroundColor: "var(--islametra-bg)",
         padding: "24px 16px",
         position: "relative",
         overflow: "hidden",
@@ -67,7 +67,7 @@ export default function SignInPage() {
               fontWeight: 600,
               fontSize: 22,
               letterSpacing: "-0.02em",
-              color: "var(--islamiva-fg)",
+              color: "var(--islametra-fg)",
               marginBottom: 6,
             }}
           >
@@ -77,10 +77,10 @@ export default function SignInPage() {
                 fontFamily: "'Instrument Serif', serif",
                 fontStyle: "italic",
                 fontWeight: 400,
-                color: "var(--islamiva-emerald-soft)",
+                color: "var(--islametra-emerald-soft)",
               }}
             >
-              Islamiva
+              Islametra
             </em>
           </h1>
           <div
@@ -89,13 +89,13 @@ export default function SignInPage() {
               alignItems: "center",
               gap: 6,
               fontSize: 11,
-              color: "var(--islamiva-fg-dim)",
+              color: "var(--islametra-fg-dim)",
               fontFamily: "'Geist Mono', monospace",
               letterSpacing: "0.06em",
               textTransform: "uppercase",
             }}
           >
-            <Sparkles size={9} style={{ color: "var(--islamiva-emerald)" }} />
+            <Sparkles size={9} style={{ color: "var(--islametra-emerald)" }} />
             Platform Islami Modern
           </div>
         </div>
@@ -103,14 +103,14 @@ export default function SignInPage() {
         <SignIn
           appearance={{
             elements: {
-              card: "bg-[var(--islamiva-bg-1)] border border-[var(--islamiva-line)] shadow-2xl rounded-2xl",
+              card: "bg-[var(--islametra-bg-1)] border border-[var(--islametra-line)] shadow-2xl rounded-2xl",
               headerTitle: "hidden",
               headerSubtitle: "hidden",
               formButtonPrimary:
                 "bg-emerald-600 hover:bg-emerald-500 text-white font-medium font-[Geist]",
               formFieldInput: isLight
-                ? "bg-[rgba(0,0,0,0.04)] border-[var(--islamiva-line)] text-[var(--islamiva-fg)] placeholder:text-[var(--islamiva-fg-dim)]"
-                : "bg-[rgba(255,255,255,0.04)] border-[var(--islamiva-line)] text-[var(--islamiva-fg)] placeholder:text-[var(--islamiva-fg-dim)]",
+                ? "bg-[rgba(0,0,0,0.04)] border-[var(--islametra-line)] text-[var(--islametra-fg)] placeholder:text-[var(--islametra-fg-dim)]"
+                : "bg-[rgba(255,255,255,0.04)] border-[var(--islametra-line)] text-[var(--islametra-fg)] placeholder:text-[var(--islametra-fg-dim)]",
               footerActionLink: "text-emerald-400 hover:text-emerald-300",
             },
           }}

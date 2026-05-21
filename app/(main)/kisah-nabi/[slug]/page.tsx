@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { PROPHETS } from "@/data/prophet-stories";
 import { ChevronLeft, ChevronRight, Star } from "lucide-react";
+import { T } from "@/components/shared/t";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -548,7 +549,7 @@ export default async function ProphetStoryPage({ params }: Props) {
   const related = PROPHETS.filter((p) => p.slug !== slug).slice(0, 3);
 
   return (
-    <div style={{ backgroundColor: "var(--islamiva-bg)", minHeight: "100vh" }}>
+    <div style={{ backgroundColor: "var(--islametra-bg)", minHeight: "100vh" }}>
       <div style={{ maxWidth: 800, margin: "0 auto", padding: "clamp(32px, 5vw, 64px) 28px" }}>
 
         {/* Back link */}
@@ -559,7 +560,7 @@ export default async function ProphetStoryPage({ params }: Props) {
             alignItems: "center",
             gap: 6,
             fontSize: 13,
-            color: "var(--islamiva-fg-dim)",
+            color: "var(--islametra-fg-dim)",
             fontFamily: "'Geist', sans-serif",
             marginBottom: 36,
             textDecoration: "none",
@@ -567,7 +568,7 @@ export default async function ProphetStoryPage({ params }: Props) {
           }}
         >
           <ChevronLeft size={15} />
-          Kembali ke Kisah Para Nabi
+          <T id="Kembali ke Kisah Para Nabi" en="Back to Prophet Stories" />
         </Link>
 
         {/* Hero card */}
@@ -576,8 +577,8 @@ export default async function ProphetStoryPage({ params }: Props) {
             position: "relative",
             padding: "44px 36px",
             borderRadius: 24,
-            background: "var(--islamiva-hero-card-bg)",
-            border: "1px solid var(--islamiva-line-strong)",
+            background: "var(--islametra-hero-card-bg)",
+            border: "1px solid var(--islametra-line-strong)",
             textAlign: "center",
             marginBottom: 40,
             overflow: "hidden",
@@ -604,7 +605,7 @@ export default async function ProphetStoryPage({ params }: Props) {
               inset: 0,
               borderRadius: 24,
               padding: 1,
-              background: "var(--islamiva-shimmer-top)",
+              background: "var(--islametra-shimmer-top)",
               WebkitMask: "linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)",
               WebkitMaskComposite: "xor",
               maskComposite: "exclude",
@@ -635,7 +636,7 @@ export default async function ProphetStoryPage({ params }: Props) {
                   color: "oklch(0.85 0.1 155)",
                 }}
               >
-                Nabi ke-{prophet.order} dari 25
+                <T id="Nabi ke-{order} dari 25" en="Prophet {order} of 25" values={{ order: prophet.order }} />
               </span>
             </div>
 
@@ -647,7 +648,7 @@ export default async function ProphetStoryPage({ params }: Props) {
                 dir="rtl"
                 style={{
                   fontSize: "clamp(36px, 6vw, 56px)",
-                  color: "var(--islamiva-gold-soft)",
+                  color: "var(--islametra-gold-soft)",
                   lineHeight: 1.5,
                   marginBottom: 10,
                   opacity: 0.9,
@@ -662,7 +663,7 @@ export default async function ProphetStoryPage({ params }: Props) {
                 fontSize: "clamp(22px, 3.5vw, 32px)",
                 fontWeight: 600,
                 fontFamily: "'Geist', sans-serif",
-                color: "var(--islamiva-fg)",
+                color: "var(--islametra-fg)",
                 letterSpacing: "-0.02em",
                 marginBottom: 6,
               }}
@@ -672,7 +673,7 @@ export default async function ProphetStoryPage({ params }: Props) {
             <p
               style={{
                 fontSize: 13.5,
-                color: "var(--islamiva-fg-mute)",
+                color: "var(--islametra-fg-mute)",
                 fontFamily: "'Geist', sans-serif",
                 lineHeight: 1.6,
                 maxWidth: 480,
@@ -702,7 +703,7 @@ export default async function ProphetStoryPage({ params }: Props) {
                         fontSize: 17,
                         fontWeight: 600,
                         fontFamily: "'Geist', sans-serif",
-                        color: "var(--islamiva-fg-soft)",
+                        color: "var(--islametra-fg-soft)",
                         letterSpacing: "-0.01em",
                         marginBottom: 10,
                         display: "flex",
@@ -727,7 +728,7 @@ export default async function ProphetStoryPage({ params }: Props) {
                     style={{
                       fontSize: 15,
                       lineHeight: 1.85,
-                      color: section.heading ? "var(--islamiva-fg-mute)" : "var(--islamiva-fg-dim)",
+                      color: section.heading ? "var(--islametra-fg-mute)" : "var(--islametra-fg-dim)",
                       fontFamily: "'Geist', sans-serif",
                       fontStyle: !section.heading ? "italic" : "normal",
                       borderLeft: !section.heading
@@ -745,7 +746,7 @@ export default async function ProphetStoryPage({ params }: Props) {
                   style={{
                     fontSize: 15,
                     lineHeight: 1.85,
-                    color: "var(--islamiva-fg-mute)",
+                    color: "var(--islametra-fg-mute)",
                     fontFamily: "'Geist', sans-serif",
                   }}
                 >
@@ -762,7 +763,7 @@ export default async function ProphetStoryPage({ params }: Props) {
             justifyContent: "space-between",
             gap: 12,
             paddingTop: 28,
-            borderTop: "1px solid var(--islamiva-line)",
+            borderTop: "1px solid var(--islametra-line)",
             marginBottom: 48,
           }}
         >
@@ -775,17 +776,17 @@ export default async function ProphetStoryPage({ params }: Props) {
                   gap: 10,
                   padding: "12px 16px",
                   borderRadius: 12,
-                  background: "var(--islamiva-card-overlay-sm)",
-                  border: "1px solid var(--islamiva-line)",
+                  background: "var(--islametra-card-overlay-sm)",
+                  border: "1px solid var(--islametra-line)",
                   transition: "border-color 0.2s",
                 }}
               >
-                <ChevronLeft size={14} style={{ color: "var(--islamiva-fg-dim)", flexShrink: 0 }} />
+                <ChevronLeft size={14} style={{ color: "var(--islametra-fg-dim)", flexShrink: 0 }} />
                 <div>
-                  <p style={{ fontSize: 10, color: "var(--islamiva-fg-dim)", fontFamily: "'Geist Mono', monospace", letterSpacing: "0.04em", marginBottom: 2 }}>
-                    Sebelumnya
+                  <p style={{ fontSize: 10, color: "var(--islametra-fg-dim)", fontFamily: "'Geist Mono', monospace", letterSpacing: "0.04em", marginBottom: 2 }}>
+                    <T id="Sebelumnya" en="Previous" />
                   </p>
-                  <p style={{ fontSize: 13, fontWeight: 500, color: "var(--islamiva-fg-soft)", fontFamily: "'Geist', sans-serif" }}>
+                  <p style={{ fontSize: 13, fontWeight: 500, color: "var(--islametra-fg-soft)", fontFamily: "'Geist', sans-serif" }}>
                     {prevProphet.prophetName}
                   </p>
                 </div>
@@ -803,20 +804,20 @@ export default async function ProphetStoryPage({ params }: Props) {
                   gap: 10,
                   padding: "12px 16px",
                   borderRadius: 12,
-                  background: "var(--islamiva-card-overlay-sm)",
-                  border: "1px solid var(--islamiva-line)",
+                  background: "var(--islametra-card-overlay-sm)",
+                  border: "1px solid var(--islametra-line)",
                   transition: "border-color 0.2s",
                 }}
               >
                 <div style={{ textAlign: "right" }}>
-                  <p style={{ fontSize: 10, color: "var(--islamiva-fg-dim)", fontFamily: "'Geist Mono', monospace", letterSpacing: "0.04em", marginBottom: 2 }}>
-                    Berikutnya
+                  <p style={{ fontSize: 10, color: "var(--islametra-fg-dim)", fontFamily: "'Geist Mono', monospace", letterSpacing: "0.04em", marginBottom: 2 }}>
+                    <T id="Berikutnya" en="Next" />
                   </p>
-                  <p style={{ fontSize: 13, fontWeight: 500, color: "var(--islamiva-fg-soft)", fontFamily: "'Geist', sans-serif" }}>
+                  <p style={{ fontSize: 13, fontWeight: 500, color: "var(--islametra-fg-soft)", fontFamily: "'Geist', sans-serif" }}>
                     {nextProphet.prophetName}
                   </p>
                 </div>
-                <ChevronRight size={14} style={{ color: "var(--islamiva-fg-dim)", flexShrink: 0 }} />
+                <ChevronRight size={14} style={{ color: "var(--islametra-fg-dim)", flexShrink: 0 }} />
               </div>
             </Link>
           ) : <div style={{ flex: 1 }} />}
@@ -830,11 +831,11 @@ export default async function ProphetStoryPage({ params }: Props) {
               fontFamily: "'Geist Mono', monospace",
               letterSpacing: "0.08em",
               textTransform: "uppercase",
-              color: "var(--islamiva-fg-dim)",
+              color: "var(--islametra-fg-dim)",
               marginBottom: 16,
             }}
           >
-            Kisah Nabi Lainnya
+            <T id="Kisah Nabi Lainnya" en="Other Prophet Stories" />
           </p>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 10 }}>
             {related.map((p) => (
@@ -844,7 +845,7 @@ export default async function ProphetStoryPage({ params }: Props) {
                     padding: "14px 16px",
                     borderRadius: 14,
                     background: "rgba(255,255,255,0.02)",
-                    border: "1px solid var(--islamiva-line)",
+                    border: "1px solid var(--islametra-line)",
                     transition: "border-color 0.2s, background 0.2s",
                   }}
                 >
@@ -853,18 +854,18 @@ export default async function ProphetStoryPage({ params }: Props) {
                       className="font-arabic"
                       lang="ar"
                       dir="rtl"
-                      style={{ fontSize: 18, color: "var(--islamiva-gold-soft)", lineHeight: 1.5, marginBottom: 4, opacity: 0.8 }}
+                      style={{ fontSize: 18, color: "var(--islametra-gold-soft)", lineHeight: 1.5, marginBottom: 4, opacity: 0.8 }}
                     >
                       {ARABIC_NAMES[p.slug]}
                     </p>
                   )}
-                  <p style={{ fontSize: 13, fontWeight: 500, color: "var(--islamiva-fg-soft)", fontFamily: "'Geist', sans-serif", marginBottom: 4 }}>
+                  <p style={{ fontSize: 13, fontWeight: 500, color: "var(--islametra-fg-soft)", fontFamily: "'Geist', sans-serif", marginBottom: 4 }}>
                     {p.prophetName}
                   </p>
                   <p
                     style={{
                       fontSize: 11,
-                      color: "var(--islamiva-fg-dim)",
+                      color: "var(--islametra-fg-dim)",
                       lineHeight: 1.5,
                       display: "-webkit-box",
                       WebkitLineClamp: 2,

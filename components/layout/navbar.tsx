@@ -4,10 +4,12 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
-import { Search, Moon, Sun, X, Sparkles, BookOpen, Heart, BookMarked, Clock, Star, Bookmark, ChevronDown } from "lucide-react";
+import { Search, Moon, Sun, X, Sparkles, BookOpen, Heart, BookMarked, Clock, Star, Bookmark, ChevronDown, Calculator } from "lucide-react";
 import { useTheme } from "next-themes";
 import { SearchDialog } from "@/components/home/search-dialog";
 import dynamic from "next/dynamic";
+import { useLang } from "@/contexts/language-context";
+import { translations } from "@/lib/translations";
 
 const clerkKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY ?? "";
 const useClerk = clerkKey.startsWith("pk_live_") || clerkKey.startsWith("pk_test_");
@@ -36,20 +38,12 @@ const AuthButton = useClerk
         </Link>
       ) : null;
 
-const navLinks = [
-  { href: "/quran", label: "Al-Quran", icon: BookOpen },
-  { href: "/doa", label: "Doa", icon: Heart },
-  { href: "/hadith", label: "Hadits", icon: BookMarked },
-  { href: "/jadwal-sholat", label: "Jadwal Sholat", icon: Clock },
-  { href: "/ai-chat", label: "AI Chat", icon: Sparkles },
-];
+const NAV_HREFS = ["/quran", "/doa", "/hadith", "/jadwal-sholat", "/ai-chat"] as const;
+const NAV_ICONS = [BookOpen, Heart, BookMarked, Clock, Sparkles] as const;
+const BELAJAR_HREFS = ["/kisah-nabi", "/sejarah", "/artikel", "/zakat"] as const;
+const BELAJAR_ICONS = [Star, Clock, BookOpen, Calculator] as const;
 
-const belajarLinks = [
-  { href: "/kisah-nabi", label: "Kisah Nabi", icon: Star },
-  { href: "/sejarah", label: "Sejarah Islam", icon: Clock },
-];
-
-function BelajarDropdown({ isLight, currentPath }: { isLight: boolean; currentPath: string }) {
+function BelajarDropdown({ isLight, currentPath, belajarLinks, label }: { isLight: boolean; currentPath: string; belajarLinks: { href: string; label: string; icon: React.ElementType }[]; label: string }) {
   const [open, setOpen] = useState(false);
   const isActive = belajarLinks.some((l) => currentPath.startsWith(l.href));
 
@@ -76,10 +70,10 @@ function BelajarDropdown({ isLight, currentPath }: { isLight: boolean; currentPa
           cursor: "pointer",
           transition: "color 0.15s ease, background 0.15s ease",
           color: isActive
-            ? "var(--islamiva-fg)"
+            ? "var(--islametra-fg)"
             : open
-            ? "var(--islamiva-fg-soft)"
-            : "var(--islamiva-fg-mute)",
+            ? "var(--islametra-fg-soft)"
+            : "var(--islametra-fg-mute)",
           background: isActive
             ? isLight ? "rgba(0,0,0,0.06)" : "rgba(255,255,255,0.05)"
             : open
@@ -87,7 +81,7 @@ function BelajarDropdown({ isLight, currentPath }: { isLight: boolean; currentPa
             : "transparent",
         }}
       >
-        Belajar
+        {label}
         <ChevronDown
           size={11}
           style={{
@@ -128,7 +122,7 @@ function BelajarDropdown({ isLight, currentPath }: { isLight: boolean; currentPa
               minWidth: 168,
               borderRadius: 12,
               background: isLight ? "rgba(250,249,246,0.99)" : "rgba(13,17,14,0.98)",
-              border: "1px solid var(--islamiva-line)",
+              border: "1px solid var(--islametra-line)",
               backdropFilter: "blur(24px)",
               WebkitBackdropFilter: "blur(24px)",
               boxShadow: isLight
@@ -152,7 +146,7 @@ function BelajarDropdown({ isLight, currentPath }: { isLight: boolean; currentPa
                     padding: "8px 10px",
                     borderRadius: 8,
                     textDecoration: "none",
-                    color: isItemActive ? "var(--islamiva-fg)" : "var(--islamiva-fg-mute)",
+                    color: isItemActive ? "var(--islametra-fg)" : "var(--islametra-fg-mute)",
                     background: isItemActive
                       ? isLight ? "rgba(0,0,0,0.06)" : "oklch(0.62 0.13 155 / 0.10)"
                       : "transparent",
@@ -165,20 +159,20 @@ function BelajarDropdown({ isLight, currentPath }: { isLight: boolean; currentPa
                   onMouseEnter={(e) => {
                     if (!isItemActive) {
                       (e.currentTarget as HTMLElement).style.background = isLight ? "rgba(0,0,0,0.04)" : "rgba(255,255,255,0.04)";
-                      (e.currentTarget as HTMLElement).style.color = "var(--islamiva-fg-soft)";
+                      (e.currentTarget as HTMLElement).style.color = "var(--islametra-fg-soft)";
                     }
                   }}
                   onMouseLeave={(e) => {
                     if (!isItemActive) {
                       (e.currentTarget as HTMLElement).style.background = "transparent";
-                      (e.currentTarget as HTMLElement).style.color = "var(--islamiva-fg-mute)";
+                      (e.currentTarget as HTMLElement).style.color = "var(--islametra-fg-mute)";
                     }
                   }}
                 >
                   <Icon
                     size={13}
                     style={{
-                      color: isItemActive ? "oklch(0.78 0.13 155)" : "var(--islamiva-fg-dim)",
+                      color: isItemActive ? "oklch(0.78 0.13 155)" : "var(--islametra-fg-dim)",
                       flexShrink: 0,
                     }}
                   />
@@ -217,10 +211,10 @@ function NavLink({ href, label, isActive, isLight }: { href: string; label: stri
         textDecoration: "none",
         transition: "color 0.15s ease, background 0.15s ease",
         color: isActive
-          ? "var(--islamiva-fg)"
+          ? "var(--islametra-fg)"
           : hovered
-          ? "var(--islamiva-fg-soft)"
-          : "var(--islamiva-fg-mute)",
+          ? "var(--islametra-fg-soft)"
+          : "var(--islametra-fg-mute)",
         background: isActive
           ? isLight ? "rgba(0,0,0,0.06)" : "rgba(255,255,255,0.05)"
           : hovered
@@ -232,7 +226,7 @@ function NavLink({ href, label, isActive, isLight }: { href: string; label: stri
         <Sparkles
           size={12}
           style={{
-            color: isActive ? "oklch(0.78 0.13 155)" : hovered ? "oklch(0.78 0.13 155 / 0.7)" : "var(--islamiva-fg-dim)",
+            color: isActive ? "oklch(0.78 0.13 155)" : hovered ? "oklch(0.78 0.13 155 / 0.7)" : "var(--islametra-fg-dim)",
             transition: "color 0.15s ease",
             flexShrink: 0,
           }}
@@ -265,7 +259,23 @@ export function Navbar() {
   const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
   const { theme, setTheme } = useTheme();
+  const { lang, setLang } = useLang();
+  const tn = translations[lang].nav;
   const isLight = mounted && theme === "light";
+
+  const navLinks = [
+    { href: "/quran", label: tn.quran, icon: NAV_ICONS[0] },
+    { href: "/doa", label: tn.doa, icon: NAV_ICONS[1] },
+    { href: "/hadith", label: tn.hadith, icon: NAV_ICONS[2] },
+    { href: "/jadwal-sholat", label: tn.prayerTimes, icon: NAV_ICONS[3] },
+    { href: "/ai-chat", label: tn.aiChat, icon: NAV_ICONS[4] },
+  ];
+  const belajarLinks = [
+    { href: "/kisah-nabi", label: tn.prophets, icon: BELAJAR_ICONS[0] },
+    { href: "/sejarah", label: tn.history, icon: BELAJAR_ICONS[1] },
+    { href: "/artikel", label: lang === "en" ? "Articles" : "Artikel", icon: BELAJAR_ICONS[2] },
+    { href: "/zakat", label: lang === "en" ? "Zakat Calc" : "Kalkulator Zakat", icon: BELAJAR_ICONS[3] },
+  ];
 
   useEffect(() => {
     setMounted(true);
@@ -362,14 +372,14 @@ export function Navbar() {
                   fontWeight: 600,
                   letterSpacing: "-0.03em",
                   fontSize: 14.5,
-                  color: "var(--islamiva-fg)",
+                  color: "var(--islametra-fg)",
                   overflow: "hidden",
                   textOverflow: "ellipsis",
                   whiteSpace: "nowrap",
                   minWidth: 0,
                 }}
               >
-                Islamiva
+                Islametra
               </span>
               <span
                 className="hidden sm:inline-flex"
@@ -409,7 +419,7 @@ export function Navbar() {
                   isLight={isLight}
                 />
               ))}
-              <BelajarDropdown isLight={isLight} currentPath={pathname} />
+              <BelajarDropdown isLight={isLight} currentPath={pathname} belajarLinks={belajarLinks} label={tn.learn} />
               {navLinks.slice(4).map((link) => (
                 <NavLink
                   key={link.href}
@@ -441,8 +451,8 @@ export function Navbar() {
                   padding: "0 12px",
                   borderRadius: 8,
                   background: isLight ? "rgba(0,0,0,0.04)" : "rgba(255,255,255,0.04)",
-                  border: "1px solid var(--islamiva-line)",
-                  color: "var(--islamiva-fg-dim)",
+                  border: "1px solid var(--islametra-line)",
+                  color: "var(--islametra-fg-dim)",
                   fontSize: 12,
                   fontFamily: "'Geist', sans-serif",
                   cursor: "pointer",
@@ -454,13 +464,13 @@ export function Navbar() {
                   e.currentTarget.style.background = isLight ? "rgba(0,0,0,0.06)" : "rgba(255,255,255,0.06)";
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor = "var(--islamiva-line)";
+                  e.currentTarget.style.borderColor = "var(--islametra-line)";
                   e.currentTarget.style.background = isLight ? "rgba(0,0,0,0.04)" : "rgba(255,255,255,0.04)";
                 }}
                 aria-label="Search"
               >
                 <Search size={13} style={{ flexShrink: 0, opacity: 0.6 }} />
-                <span style={{ flex: 1, textAlign: "left" }}>Cari ayat, doa…</span>
+                <span style={{ flex: 1, textAlign: "left" }}>{tn.search}</span>
                 <span
                   style={{
                     fontFamily: "'Geist Mono', monospace",
@@ -469,7 +479,7 @@ export function Navbar() {
                     borderRadius: 4,
                     background: isLight ? "rgba(0,0,0,0.05)" : "rgba(255,255,255,0.06)",
                     border: isLight ? "1px solid rgba(0,0,0,0.08)" : "1px solid rgba(255,255,255,0.08)",
-                    color: "var(--islamiva-fg-dim)",
+                    color: "var(--islametra-fg-dim)",
                     whiteSpace: "nowrap",
                   }}
                 >
@@ -487,7 +497,7 @@ export function Navbar() {
                   borderRadius: 9,
                   display: "grid",
                   placeItems: "center",
-                  color: "var(--islamiva-fg-mute)",
+                  color: "var(--islametra-fg-mute)",
                   background: "transparent",
                   border: "none",
                   cursor: "pointer",
@@ -503,12 +513,12 @@ export function Navbar() {
                 style={{
                   width: 32, height: 32, borderRadius: 8,
                   display: "grid", placeItems: "center",
-                  color: "var(--islamiva-fg-mute)",
+                  color: "var(--islametra-fg-mute)",
                   transition: "color 0.15s ease",
                 }}
                 aria-label="Bookmark"
-                onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.color = "var(--islamiva-fg-soft)"; }}
-                onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.color = "var(--islamiva-fg-mute)"; }}
+                onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.color = "var(--islametra-fg-soft)"; }}
+                onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.color = "var(--islametra-fg-mute)"; }}
               >
                 <Bookmark size={15} />
               </Link>
@@ -523,23 +533,60 @@ export function Navbar() {
                     borderRadius: 8,
                     display: "grid",
                     placeItems: "center",
-                    color: "var(--islamiva-fg-mute)",
+                    color: "var(--islametra-fg-mute)",
                     background: "transparent",
                     border: "none",
                     cursor: "pointer",
                     transition: "color 0.15s ease, background 0.15s ease",
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.color = "var(--islamiva-fg-soft)";
+                    e.currentTarget.style.color = "var(--islametra-fg-soft)";
                     e.currentTarget.style.background = "rgba(255,255,255,0.05)";
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.color = "var(--islamiva-fg-mute)";
+                    e.currentTarget.style.color = "var(--islametra-fg-mute)";
                     e.currentTarget.style.background = "transparent";
                   }}
                   aria-label="Toggle theme"
                 >
                   {theme === "dark" ? <Sun size={14} /> : <Moon size={14} />}
+                </button>
+              )}
+
+              {/* Language toggle */}
+              {mounted && (
+                <button
+                  onClick={() => setLang(lang === "id" ? "en" : "id")}
+                  style={{
+                    height: 28,
+                    padding: "0 8px",
+                    borderRadius: 7,
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 3,
+                    fontSize: 11,
+                    fontFamily: "'Geist Mono', monospace",
+                    fontWeight: 500,
+                    letterSpacing: "0.04em",
+                    color: "var(--islametra-fg-mute)",
+                    background: isLight ? "rgba(0,0,0,0.04)" : "rgba(255,255,255,0.04)",
+                    border: "1px solid var(--islametra-line)",
+                    cursor: "pointer",
+                    transition: "all 0.15s ease",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.color = "var(--islametra-fg-soft)";
+                    e.currentTarget.style.borderColor = isLight ? "rgba(0,0,0,0.14)" : "rgba(255,255,255,0.12)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.color = "var(--islametra-fg-mute)";
+                    e.currentTarget.style.borderColor = "var(--islametra-line)";
+                  }}
+                  aria-label="Toggle language"
+                >
+                  <span style={{ opacity: lang === "id" ? 1 : 0.4 }}>ID</span>
+                  <span style={{ opacity: 0.3 }}>/</span>
+                  <span style={{ opacity: lang === "en" ? 1 : 0.4 }}>EN</span>
                 </button>
               )}
 
@@ -549,7 +596,7 @@ export function Navbar() {
                 style={{
                   width: 1,
                   height: 18,
-                  background: "var(--islamiva-line)",
+                  background: "var(--islametra-line)",
                   margin: "0 2px",
                 }}
               />
@@ -569,7 +616,7 @@ export function Navbar() {
                   borderRadius: 9,
                   display: "grid",
                   placeItems: "center",
-                  color: "var(--islamiva-fg-mute)",
+                  color: "var(--islametra-fg-mute)",
                   background: mobileOpen ? (isLight ? "rgba(0,0,0,0.06)" : "rgba(255,255,255,0.06)") : "transparent",
                   border: "none",
                   cursor: "pointer",
@@ -638,7 +685,7 @@ export function Navbar() {
                 zIndex: 50,
                 width: "min(320px, 88vw)",
                 background: isLight ? "rgba(250,249,246,0.98)" : "rgba(10,12,11,0.97)",
-                borderLeft: "1px solid var(--islamiva-line)",
+                borderLeft: "1px solid var(--islametra-line)",
                 backdropFilter: "blur(24px)",
                 display: "flex",
                 flexDirection: "column",
@@ -651,7 +698,7 @@ export function Navbar() {
                   alignItems: "center",
                   justifyContent: "space-between",
                   padding: "20px 20px 16px",
-                  borderBottom: "1px solid var(--islamiva-line)",
+                  borderBottom: "1px solid var(--islametra-line)",
                 }}
               >
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
@@ -677,11 +724,11 @@ export function Navbar() {
                       fontFamily: "'Geist', sans-serif",
                       fontWeight: 600,
                       fontSize: 15,
-                      color: "var(--islamiva-fg)",
+                      color: "var(--islametra-fg)",
                       letterSpacing: "-0.02em",
                     }}
                   >
-                    Islamiva
+                    Islametra
                   </span>
                 </div>
                 <button
@@ -692,7 +739,7 @@ export function Navbar() {
                     borderRadius: 8,
                     display: "grid",
                     placeItems: "center",
-                    color: "var(--islamiva-fg-mute)",
+                    color: "var(--islametra-fg-mute)",
                     background: "rgba(255,255,255,0.05)",
                     border: "none",
                     cursor: "pointer",
@@ -724,11 +771,11 @@ export function Navbar() {
                             fontFamily: "'Geist Mono', monospace",
                             letterSpacing: "0.08em",
                             textTransform: "uppercase",
-                            color: "var(--islamiva-fg-dim)",
+                            color: "var(--islametra-fg-dim)",
                             fontWeight: 500,
                           }}
                         >
-                          Belajar
+                          {tn.learn}
                         </div>
                       )}
                       <Link
@@ -745,7 +792,7 @@ export function Navbar() {
                             ? "oklch(0.62 0.13 155 / 0.1)"
                             : "transparent",
                           border: `1px solid ${isActive ? "oklch(0.62 0.13 155 / 0.2)" : "transparent"}`,
-                          color: isActive ? "var(--islamiva-fg)" : "var(--islamiva-fg-mute)",
+                          color: isActive ? "var(--islametra-fg)" : "var(--islametra-fg-mute)",
                           transition: "background 0.15s ease, border-color 0.15s ease",
                         }}
                       >
@@ -765,7 +812,7 @@ export function Navbar() {
                           <Icon
                             size={15}
                             style={{
-                              color: isActive ? "oklch(0.78 0.13 155)" : "var(--islamiva-fg-dim)",
+                              color: isActive ? "oklch(0.78 0.13 155)" : "var(--islametra-fg-dim)",
                             }}
                           />
                         </div>
@@ -801,7 +848,7 @@ export function Navbar() {
               <div
                 style={{
                   padding: "16px 16px 32px",
-                  borderTop: "1px solid var(--islamiva-line)",
+                  borderTop: "1px solid var(--islametra-line)",
                   display: "flex",
                   flexDirection: "column",
                   gap: 10,
@@ -820,16 +867,16 @@ export function Navbar() {
                     width: "100%",
                     padding: "12px 14px",
                     borderRadius: 12,
-                    border: "1px solid var(--islamiva-line)",
+                    border: "1px solid var(--islametra-line)",
                     background: "rgba(255,255,255,0.03)",
-                    color: "var(--islamiva-fg-mute)",
+                    color: "var(--islametra-fg-mute)",
                     fontSize: 14,
                     fontFamily: "'Geist', sans-serif",
                     cursor: "pointer",
                   }}
                 >
                   <Search size={14} />
-                  <span>Cari ayat, doa…</span>
+                  <span>{tn.search}</span>
                   <span
                     style={{
                       marginLeft: "auto",
@@ -839,7 +886,7 @@ export function Navbar() {
                       borderRadius: 4,
                       background: "rgba(255,255,255,0.06)",
                       border: "1px solid rgba(255,255,255,0.08)",
-                      color: "var(--islamiva-fg-dim)",
+                      color: "var(--islametra-fg-dim)",
                     }}
                   >
                     ⌘K

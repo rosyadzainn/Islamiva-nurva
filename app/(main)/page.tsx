@@ -7,14 +7,14 @@ import { ModuleGrid } from "@/components/home/module-grid";
 import { AiChatPreview } from "@/components/home/ai-chat-preview";
 
 export const metadata: Metadata = {
-  title: "Islamiva - Platform Islami Modern",
+  title: "Islametra - Platform Islami Modern",
   description:
     "Baca Al-Quran, doa harian, hadits, kisah nabi, dan sejarah Islam. Tanya melalui AI Chat Islami yang cerdas dan ramah.",
 };
 
 export default function HomePage() {
   return (
-    <div style={{ backgroundColor: "var(--islamiva-bg)" }}>
+    <div style={{ backgroundColor: "var(--islametra-bg)" }}>
       <HeroSection />
       <ModuleGrid />
       <FeaturedSurah />

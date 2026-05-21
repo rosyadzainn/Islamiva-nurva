@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 
-const STORAGE_KEY = "islamiva_quran_progress";
+const STORAGE_KEY = "islametra_quran_progress";
 
 interface ProgressEntry {
   lastAyah: number;

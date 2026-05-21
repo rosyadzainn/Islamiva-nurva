@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
+import { useAuth } from "@clerk/nextjs";
 import { useTheme } from "next-themes";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -15,6 +16,8 @@ import {
   AlertTriangle,
 } from "lucide-react";
 import { toast } from "react-hot-toast";
+import { useLang } from "@/contexts/language-context";
+import { translations } from "@/lib/translations";
 
 interface Message {
   id: string;
@@ -30,14 +33,6 @@ interface ChatSession {
   createdAt: Date;
 }
 
-const SUGGESTED_PROMPTS = [
-  "Apa hukum sholat berjamaah?",
-  "Bagaimana cara berwudhu yang benar?",
-  "Jelaskan rukun Islam",
-  "Apa keutamaan membaca Surah Yasin?",
-  "Bagaimana cara bertaubat yang benar?",
-  "Apa perbedaan sunnah muakkadah dan ghairu muakkadah?",
-];
 
 /* ─── Typing indicator ─── */
 function TypingIndicator() {
@@ -66,8 +61,8 @@ function TypingIndicator() {
           borderRadius: 16,
           borderTopLeftRadius: 4,
           background:
-            "linear-gradient(180deg, rgba(255,255,255,0.025), rgba(255,255,255,0.005)), var(--islamiva-bg-1)",
-          border: "1px solid var(--islamiva-line)",
+            "linear-gradient(180deg, rgba(255,255,255,0.025), rgba(255,255,255,0.005)), var(--islametra-bg-1)",
+          border: "1px solid var(--islametra-line)",
           alignItems: "center",
         }}
       >
@@ -78,7 +73,7 @@ function TypingIndicator() {
               width: 6,
               height: 6,
               borderRadius: "50%",
-              background: "var(--islamiva-fg-dim)",
+              background: "var(--islametra-fg-dim)",
             }}
             animate={{ scale: [1, 1.3, 1], opacity: [0.4, 1, 0.4] }}
             transition={{ duration: 0.8, repeat: Infinity, delay: i * 0.2 }}
@@ -147,9 +142,9 @@ function MessageBubble({
                 }
               : {
                   background:
-                    "linear-gradient(180deg, rgba(255,255,255,0.025), rgba(255,255,255,0.005)), var(--islamiva-bg-1)",
-                  border: "1px solid var(--islamiva-line)",
-                  color: "var(--islamiva-fg-soft)",
+                    "linear-gradient(180deg, rgba(255,255,255,0.025), rgba(255,255,255,0.005)), var(--islametra-bg-1)",
+                  border: "1px solid var(--islametra-line)",
+                  color: "var(--islametra-fg-soft)",
                   borderTopLeftRadius: 4,
                 }),
           }}
@@ -163,7 +158,7 @@ function MessageBubble({
           <span
             style={{
               fontSize: 10,
-              color: "var(--islamiva-fg-dim)",
+              color: "var(--islametra-fg-dim)",
               fontFamily: "'Geist Mono', monospace",
             }}
           >
@@ -174,12 +169,13 @@ function MessageBubble({
           </span>
           <button
             onClick={() => onCopy(message.content)}
+            aria-label="Salin pesan"
             style={{
               padding: "3px 6px",
               borderRadius: 6,
               border: "none",
               background: isLight ? "rgba(0,0,0,0.06)" : "rgba(255,255,255,0.05)",
-              color: "var(--islamiva-fg-dim)",
+              color: "var(--islametra-fg-dim)",
               cursor: "pointer",
               display: "flex",
               alignItems: "center",
@@ -215,6 +211,8 @@ function SidebarContent({
   mobile?: boolean;
   isLight: boolean;
 }) {
+  const { lang } = useLang();
+  const ta = translations[lang].aiChat;
   return (
     <>
       {/* Header row */}
@@ -224,7 +222,7 @@ function SidebarContent({
           alignItems: "center",
           justifyContent: "space-between",
           padding: "18px 16px 14px",
-          borderBottom: "1px solid var(--islamiva-line)",
+          borderBottom: "1px solid var(--islametra-line)",
           flexShrink: 0,
         }}
       >
@@ -235,7 +233,7 @@ function SidebarContent({
               fontSize: 13,
               fontWeight: 500,
               fontFamily: "'Geist', sans-serif",
-              color: "var(--islamiva-fg-soft)",
+              color: "var(--islametra-fg-soft)",
               letterSpacing: "-0.015em",
               lineHeight: 1,
             }}
@@ -252,16 +250,16 @@ function SidebarContent({
                 width: 30,
                 height: 30,
                 borderRadius: 8,
-                border: "1px solid var(--islamiva-line)",
+                border: "1px solid var(--islametra-line)",
                 background: isLight ? "rgba(0,0,0,0.04)" : "rgba(255,255,255,0.03)",
-                color: "var(--islamiva-fg-dim)",
+                color: "var(--islametra-fg-dim)",
                 cursor: "pointer",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 transition: "background 0.15s",
               }}
-              aria-label="Tutup sidebar"
+              aria-label={ta.closeSidebar}
             >
               <X size={13} />
             </button>
@@ -292,8 +290,8 @@ function SidebarContent({
               e.currentTarget.style.transform = "translateY(0)";
               e.currentTarget.style.boxShadow = "inset 0 1px 0 rgba(255,255,255,0.28), 0 4px 12px -4px oklch(0.62 0.13 155 / 0.55)";
             }}
-            aria-label="Chat baru"
-            title="Chat Baru"
+            aria-label={ta.newChat}
+            title={ta.newChat}
           >
             <Plus size={14} strokeWidth={2.5} />
           </button>
@@ -309,18 +307,18 @@ function SidebarContent({
               fontFamily: "'Geist Mono', monospace",
               letterSpacing: "0.10em",
               textTransform: "uppercase",
-              color: "var(--islamiva-fg-dim)",
+              color: "var(--islametra-fg-dim)",
               fontWeight: 500,
             }}
           >
-            Riwayat
+            {ta.history}
           </span>
           <button
             onClick={onClearAll}
             style={{
               fontSize: 10,
               fontFamily: "'Geist', sans-serif",
-              color: "var(--islamiva-fg-dim)",
+              color: "var(--islametra-fg-dim)",
               background: "none",
               border: "none",
               cursor: "pointer",
@@ -328,9 +326,9 @@ function SidebarContent({
               borderRadius: 5,
               opacity: 0.7,
             }}
-            title="Hapus semua riwayat"
+            title={ta.clearAllTitle}
           >
-            Hapus semua
+            {ta.clearAll}
           </button>
         </div>
       )}
@@ -349,18 +347,18 @@ function SidebarContent({
           >
             <MessageCircle
               size={20}
-              style={{ color: "var(--islamiva-fg-dim)", opacity: 0.5 }}
+              style={{ color: "var(--islametra-fg-dim)", opacity: 0.5 }}
             />
             <p
               style={{
                 fontSize: 11.5,
-                color: "var(--islamiva-fg-dim)",
+                color: "var(--islametra-fg-dim)",
                 textAlign: "center",
                 lineHeight: 1.6,
                 fontFamily: "'Geist', sans-serif",
               }}
             >
-              Mulai chat pertama kamu
+              {ta.emptyHint}
             </p>
           </div>
         ) : (
@@ -404,7 +402,7 @@ function SidebarContent({
                 <MessageCircle
                   size={13}
                   style={{
-                    color: isActive ? "oklch(0.82 0.12 155)" : "var(--islamiva-fg-dim)",
+                    color: isActive ? "oklch(0.82 0.12 155)" : "var(--islametra-fg-dim)",
                     flexShrink: 0,
                     opacity: isActive ? 1 : 0.6,
                   }}
@@ -416,7 +414,7 @@ function SidebarContent({
                     overflow: "hidden",
                     textOverflow: "ellipsis",
                     whiteSpace: "nowrap",
-                    color: isActive ? "var(--islamiva-fg)" : "var(--islamiva-fg-mute)",
+                    color: isActive ? "var(--islametra-fg)" : "var(--islametra-fg-mute)",
                     fontFamily: "'Geist', sans-serif",
                     fontWeight: isActive ? 500 : 400,
                     letterSpacing: "-0.01em",
@@ -429,13 +427,14 @@ function SidebarContent({
                     e.stopPropagation();
                     onDeleteSession(session.id);
                   }}
+                  aria-label="Hapus sesi"
                   className="opacity-0 group-hover:opacity-100"
                   style={{
                     padding: "2px 4px",
                     borderRadius: 5,
                     border: "none",
                     background: "none",
-                    color: "var(--islamiva-fg-dim)",
+                    color: "var(--islametra-fg-dim)",
                     cursor: "pointer",
                     display: "flex",
                     alignItems: "center",
@@ -454,7 +453,7 @@ function SidebarContent({
       <div
         style={{
           padding: "12px 14px 16px",
-          borderTop: "1px solid var(--islamiva-line)",
+          borderTop: "1px solid var(--islametra-line)",
           flexShrink: 0,
         }}
       >
@@ -466,23 +465,23 @@ function SidebarContent({
             padding: "8px 12px",
             borderRadius: 10,
             background: isLight ? "rgba(0,0,0,0.025)" : "rgba(255,255,255,0.02)",
-            border: "1px solid var(--islamiva-line)",
+            border: "1px solid var(--islametra-line)",
           }}
         >
           <AlertTriangle
             size={10}
-            style={{ color: "var(--islamiva-fg-dim)", flexShrink: 0, opacity: 0.7 }}
+            style={{ color: "var(--islametra-fg-dim)", flexShrink: 0, opacity: 0.7 }}
           />
           <span
             style={{
               fontSize: 10.5,
-              color: "var(--islamiva-fg-dim)",
+              color: "var(--islametra-fg-dim)",
               fontFamily: "'Geist', sans-serif",
               lineHeight: 1.4,
               opacity: 0.8,
             }}
           >
-            Bukan pengganti ulama terpercaya
+            {ta.disclaimer}
           </span>
         </div>
       </div>
@@ -503,33 +502,62 @@ export function AiChatModule() {
   const inputRef = useRef<HTMLInputElement>(null);
   const { theme } = useTheme();
   const isLight = mounted && theme === "light";
+  const { lang } = useLang();
+  const ta = translations[lang].aiChat;
+  const { isSignedIn, isLoaded: authLoaded } = useAuth();
 
-  // Load sessions from localStorage on mount
+  // Load sessions: from DB if signed in, else from localStorage
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem("islamiva-chat-sessions");
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        const loadedSessions: ChatSession[] = parsed.map((s: ChatSession & { createdAt: string; messages: (Message & { timestamp: string })[] }) => ({
-          ...s,
-          createdAt: new Date(s.createdAt),
-          messages: s.messages.map((m) => ({ ...m, timestamp: new Date(m.timestamp) })),
-        }));
-        if (loadedSessions.length > 0) {
-          setSessions(loadedSessions);
-          setCurrentSessionId(loadedSessions[0].id);
+    if (!authLoaded) return;
+
+    if (isSignedIn) {
+      fetch("/api/chat-sessions")
+        .then((r) => r.json())
+        .then((data: { sessions: { id: string; title: string | null; createdAt: string; updatedAt: string; messages: { id: string; role: string; content: string; createdAt: string }[] }[] }) => {
+          const loaded: ChatSession[] = (data.sessions ?? []).map((s) => ({
+            id: s.id,
+            title: s.title ?? ta.newSession,
+            createdAt: new Date(s.createdAt),
+            messages: s.messages.map((m) => ({
+              id: m.id,
+              role: m.role as "user" | "assistant",
+              content: m.content,
+              timestamp: new Date(m.createdAt),
+            })),
+          }));
+          if (loaded.length > 0) {
+            setSessions(loaded);
+            setCurrentSessionId(loaded[0].id);
+          }
+        })
+        .catch(() => {})
+        .finally(() => setMounted(true));
+    } else {
+      try {
+        const saved = localStorage.getItem("islametra-chat-sessions");
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          const loadedSessions: ChatSession[] = parsed.map((s: ChatSession & { createdAt: string; messages: (Message & { timestamp: string })[] }) => ({
+            ...s,
+            createdAt: new Date(s.createdAt),
+            messages: s.messages.map((m) => ({ ...m, timestamp: new Date(m.timestamp) })),
+          }));
+          if (loadedSessions.length > 0) {
+            setSessions(loadedSessions);
+            setCurrentSessionId(loadedSessions[0].id);
+          }
         }
-      }
-    } catch { /* ignore */ }
-    setMounted(true);
-  }, []);
-
-  // Save sessions to localStorage whenever they change
-  useEffect(() => {
-    if (mounted) {
-      localStorage.setItem("islamiva-chat-sessions", JSON.stringify(sessions));
+      } catch { /* ignore */ }
+      setMounted(true);
     }
-  }, [sessions, mounted]);
+  }, [isSignedIn, authLoaded, ta.newSession]);
+
+  // Persist to localStorage for guests
+  useEffect(() => {
+    if (mounted && !isSignedIn) {
+      localStorage.setItem("islametra-chat-sessions", JSON.stringify(sessions));
+    }
+  }, [sessions, mounted, isSignedIn]);
 
   const currentSession = sessions.find((s) => s.id === currentSessionId);
   const messages = currentSession?.messages || [];
@@ -541,19 +569,34 @@ export function AiChatModule() {
     }
   }, [messages, isLoading]);
 
-  const createNewSession = useCallback(() => {
+  const createNewSession = useCallback(async () => {
+    if (isSignedIn) {
+      try {
+        const res = await fetch("/api/chat-sessions", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ title: ta.newSession }),
+        });
+        const data = await res.json() as { session: { id: string; title: string | null; createdAt: string } };
+        const newSession: ChatSession = {
+          id: data.session.id,
+          title: data.session.title ?? ta.newSession,
+          messages: [],
+          createdAt: new Date(data.session.createdAt),
+        };
+        setSessions((prev) => [newSession, ...prev]);
+        setCurrentSessionId(newSession.id);
+        setMobileSidebarOpen(false);
+        return newSession.id;
+      } catch { /* fallback to local */ }
+    }
     const id = `session-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
-    const newSession: ChatSession = {
-      id,
-      title: "Obrolan Baru",
-      messages: [],
-      createdAt: new Date(),
-    };
+    const newSession: ChatSession = { id, title: ta.newSession, messages: [], createdAt: new Date() };
     setSessions((prev) => [newSession, ...prev]);
     setCurrentSessionId(id);
     setMobileSidebarOpen(false);
     return id;
-  }, []);
+  }, [ta, isSignedIn]);
 
   useEffect(() => {
     if (!currentSessionId) {
@@ -567,8 +610,11 @@ export function AiChatModule() {
 
     let sessionId = currentSessionId;
     if (!sessionId) {
-      sessionId = createNewSession();
+      sessionId = await createNewSession();
     }
+
+    const isFirstMessage = (sessions.find((s) => s.id === sessionId)?.messages.length ?? 0) === 0;
+    const newTitle = isFirstMessage ? text.slice(0, 40) + (text.length > 40 ? "..." : "") : undefined;
 
     const userMessage: Message = {
       id: `msg-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
@@ -580,10 +626,9 @@ export function AiChatModule() {
     setSessions((prev) =>
       prev.map((s) => {
         if (s.id === sessionId) {
-          const isFirst = s.messages.length === 0;
           return {
             ...s,
-            title: isFirst ? text.slice(0, 40) + (text.length > 40 ? "..." : "") : s.title,
+            title: newTitle ?? s.title,
             messages: [...s.messages, userMessage],
           };
         }
@@ -592,6 +637,15 @@ export function AiChatModule() {
     );
     setInput("");
     setIsLoading(true);
+
+    // Update session title in DB on first message
+    if (isSignedIn && sessionId && newTitle) {
+      fetch(`/api/chat-sessions/${sessionId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title: newTitle }),
+      }).catch(() => {});
+    }
 
     try {
       const history = messages.map((m) => ({ role: m.role, content: m.content }));
@@ -656,8 +710,22 @@ export function AiChatModule() {
           }
         }
       }
+
+      // Save both messages to DB after stream completes
+      if (isSignedIn && sessionId && aiContent) {
+        fetch(`/api/chat-sessions/${sessionId}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            messages: [
+              { role: "user", content: text },
+              { role: "assistant", content: aiContent },
+            ],
+          }),
+        }).catch(() => {});
+      }
     } catch {
-      toast.error("Gagal mendapatkan respons AI. Coba lagi.");
+      toast.error(ta.toastError);
       setSessions((prev) =>
         prev.map((s) =>
           s.id === sessionId
@@ -676,20 +744,27 @@ export function AiChatModule() {
 
   const handleCopy = (text: string) => {
     navigator.clipboard.writeText(text);
-    toast.success("Pesan disalin!");
+    toast.success(ta.toastCopied);
   };
 
   const handleDeleteSession = (id: string) => {
     setSessions((prev) => prev.filter((s) => s.id !== id));
-    if (currentSessionId === id) {
-      setCurrentSessionId(null);
+    if (currentSessionId === id) setCurrentSessionId(null);
+    if (isSignedIn) {
+      fetch(`/api/chat-sessions/${id}`, { method: "DELETE" }).catch(() => {});
     }
   };
 
   const handleClearAll = () => {
+    if (isSignedIn) {
+      sessions.forEach((s) => {
+        fetch(`/api/chat-sessions/${s.id}`, { method: "DELETE" }).catch(() => {});
+      });
+    } else {
+      localStorage.removeItem("islametra-chat-sessions");
+    }
     setSessions([]);
     setCurrentSessionId(null);
-    localStorage.removeItem("islamiva-chat-sessions");
   };
 
   return (
@@ -734,7 +809,7 @@ export function AiChatModule() {
               backgroundColor: isLight ? "rgba(250,249,246,0.97)" : "rgba(8, 10, 9, 0.97)",
               backdropFilter: "blur(24px)",
               WebkitBackdropFilter: "blur(24px)",
-              borderRight: "1px solid var(--islamiva-line-strong)",
+              borderRight: "1px solid var(--islametra-line-strong)",
             }}
           >
             <SidebarContent
@@ -760,7 +835,7 @@ export function AiChatModule() {
         style={{
           display: "flex",
           height: "calc(100vh - 64px)",
-          backgroundColor: "var(--islamiva-bg)",
+          backgroundColor: "var(--islametra-bg)",
         }}
       >
         {/* ── Desktop sidebar spacer — keeps main content offset right ── */}
@@ -780,7 +855,7 @@ export function AiChatModule() {
             backgroundColor: isLight ? "rgba(252,251,248,0.97)" : "rgba(9, 11, 10, 0.97)",
             backdropFilter: "blur(24px) saturate(160%)",
             WebkitBackdropFilter: "blur(24px) saturate(160%)",
-            borderRight: "1px solid var(--islamiva-line)",
+            borderRight: "1px solid var(--islametra-line)",
             boxShadow: isLight
               ? "2px 0 16px -4px rgba(0,0,0,0.07), 1px 0 0 rgba(0,0,0,0.04)"
               : "2px 0 24px -6px rgba(0,0,0,0.6), 1px 0 0 rgba(255,255,255,0.04)",
@@ -815,9 +890,9 @@ export function AiChatModule() {
               alignItems: "center",
               gap: 10,
               padding: "10px 16px",
-              borderBottom: "1px solid var(--islamiva-line)",
+              borderBottom: "1px solid var(--islametra-line)",
               flexShrink: 0,
-              backgroundColor: "var(--islamiva-bg)",
+              backgroundColor: "var(--islametra-bg)",
             }}
           >
             <button
@@ -826,23 +901,23 @@ export function AiChatModule() {
                 width: 32,
                 height: 32,
                 borderRadius: 8,
-                border: "1px solid var(--islamiva-line)",
+                border: "1px solid var(--islametra-line)",
                 background: isLight ? "rgba(0,0,0,0.04)" : "rgba(255,255,255,0.03)",
-                color: "var(--islamiva-fg-mute)",
+                color: "var(--islametra-fg-mute)",
                 cursor: "pointer",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 flexShrink: 0,
               }}
-              aria-label="Buka sidebar"
+              aria-label={ta.openSidebar}
             >
               <Menu size={15} />
             </button>
             <span
               style={{
                 fontSize: 13,
-                color: "var(--islamiva-fg-soft)",
+                color: "var(--islametra-fg-soft)",
                 fontFamily: "'Geist', sans-serif",
                 fontWeight: 500,
                 overflow: "hidden",
@@ -850,7 +925,7 @@ export function AiChatModule() {
                 whiteSpace: "nowrap",
               }}
             >
-              {currentSession?.title || "AI Chat Islami"}
+              {currentSession?.title || ta.defaultTitle}
             </span>
           </div>
 
@@ -912,7 +987,7 @@ export function AiChatModule() {
                     fontWeight: 500,
                     fontSize: "clamp(22px, 3.5vw, 30px)",
                     letterSpacing: "-0.03em",
-                    color: "var(--islamiva-fg)",
+                    color: "var(--islametra-fg)",
                     marginBottom: 10,
                     lineHeight: 1.1,
                   }}
@@ -923,10 +998,10 @@ export function AiChatModule() {
                       fontFamily: "'Instrument Serif', serif",
                       fontStyle: "italic",
                       fontWeight: 400,
-                      color: "var(--islamiva-emerald-soft)",
+                      color: "var(--islametra-emerald-soft)",
                     }}
                   >
-                    Islami
+                    {ta.titleEm}
                   </em>
                 </motion.h2>
 
@@ -936,14 +1011,13 @@ export function AiChatModule() {
                   transition={{ duration: 0.4, ease: [0.2, 0.8, 0.2, 1], delay: 0.13 }}
                   style={{
                     fontSize: "clamp(13px, 1.6vw, 14px)",
-                    color: "var(--islamiva-fg-mute)",
+                    color: "var(--islametra-fg-mute)",
                     lineHeight: 1.65,
                     maxWidth: 360,
                     marginBottom: 32,
                   }}
                 >
-                  Tanyakan seputar Islam — fiqih, tafsir, hadits, dan sejarah.
-                  Dijawab berdasarkan Al-Quran dan sunnah.
+                  {ta.sub}
                 </motion.p>
 
                 {/* Prompt chips */}
@@ -961,16 +1035,16 @@ export function AiChatModule() {
                     marginBottom: 24,
                   }}
                 >
-                  {SUGGESTED_PROMPTS.map((prompt) => (
+                  {ta.prompts.map((prompt) => (
                     <button
                       key={prompt}
                       onClick={() => handleSend(prompt)}
                       style={{
                         padding: "11px 14px",
                         borderRadius: 12,
-                        border: "1px solid var(--islamiva-line)",
+                        border: "1px solid var(--islametra-line)",
                         background: isLight ? "rgba(0,0,0,0.03)" : "rgba(255,255,255,0.02)",
-                        color: "var(--islamiva-fg-mute)",
+                        color: "var(--islametra-fg-mute)",
                         fontSize: 12.5,
                         lineHeight: 1.5,
                         cursor: "pointer",
@@ -981,12 +1055,12 @@ export function AiChatModule() {
                       onMouseEnter={(e) => {
                         e.currentTarget.style.borderColor = "oklch(0.62 0.13 155 / 0.35)";
                         e.currentTarget.style.background = "oklch(0.62 0.13 155 / 0.06)";
-                        e.currentTarget.style.color = "var(--islamiva-fg-soft)";
+                        e.currentTarget.style.color = "var(--islametra-fg-soft)";
                       }}
                       onMouseLeave={(e) => {
-                        e.currentTarget.style.borderColor = "var(--islamiva-line)";
+                        e.currentTarget.style.borderColor = "var(--islametra-line)";
                         e.currentTarget.style.background = isLight ? "rgba(0,0,0,0.03)" : "rgba(255,255,255,0.02)";
-                        e.currentTarget.style.color = "var(--islamiva-fg-mute)";
+                        e.currentTarget.style.color = "var(--islametra-fg-mute)";
                       }}
                     >
                       {prompt}
@@ -1006,21 +1080,21 @@ export function AiChatModule() {
                     padding: "6px 13px",
                     borderRadius: 999,
                     background: isLight ? "rgba(0,0,0,0.03)" : "rgba(255,255,255,0.02)",
-                    border: "1px solid var(--islamiva-line)",
+                    border: "1px solid var(--islametra-line)",
                   }}
                 >
                   <AlertTriangle
                     size={10}
-                    style={{ color: "var(--islamiva-fg-dim)", flexShrink: 0 }}
+                    style={{ color: "var(--islametra-fg-dim)", flexShrink: 0 }}
                   />
                   <span
                     style={{
                       fontSize: 10.5,
-                      color: "var(--islamiva-fg-dim)",
+                      color: "var(--islametra-fg-dim)",
                       fontFamily: "'Geist', sans-serif",
                     }}
                   >
-                    Untuk fatwa resmi, konsultasikan dengan ulama terpercaya.
+                    {ta.disclaimer2}
                   </span>
                 </motion.div>
               </div>
@@ -1058,8 +1132,8 @@ export function AiChatModule() {
           <div
             style={{
               padding: "12px 20px 16px",
-              borderTop: "1px solid var(--islamiva-line)",
-              backgroundColor: "var(--islamiva-bg)",
+              borderTop: "1px solid var(--islametra-line)",
+              backgroundColor: "var(--islametra-bg)",
               flexShrink: 0,
             }}
           >
@@ -1081,15 +1155,15 @@ export function AiChatModule() {
                   ref={inputRef}
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
-                  placeholder="Tanyakan tentang Islam..."
+                  placeholder={ta.inputPlaceholder}
                   disabled={isLoading}
                   style={{
                     width: "100%",
                     padding: "12px 16px",
                     borderRadius: 12,
                     background: isLight ? "rgba(0,0,0,0.04)" : "rgba(255,255,255,0.04)",
-                    border: "1px solid var(--islamiva-line)",
-                    color: "var(--islamiva-fg)",
+                    border: "1px solid var(--islametra-line)",
+                    color: "var(--islametra-fg)",
                     fontSize: 14,
                     fontFamily: "'Geist', sans-serif",
                     outline: "none",
@@ -1100,7 +1174,7 @@ export function AiChatModule() {
                     e.currentTarget.style.borderColor = "oklch(0.62 0.13 155 / 0.5)";
                   }}
                   onBlur={(e) => {
-                    e.currentTarget.style.borderColor = "var(--islamiva-line)";
+                    e.currentTarget.style.borderColor = "var(--islametra-line)";
                   }}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" && !e.shiftKey) {
@@ -1112,6 +1186,7 @@ export function AiChatModule() {
               </div>
               <button
                 type="submit"
+                aria-label="Kirim pesan"
                 disabled={!input.trim() || isLoading}
                 style={{
                   width: 42,
@@ -1123,7 +1198,7 @@ export function AiChatModule() {
                       ? (isLight ? "rgba(0,0,0,0.05)" : "rgba(255,255,255,0.05)")
                       : "linear-gradient(180deg, oklch(0.7 0.13 155) 0%, oklch(0.55 0.12 155) 100%)",
                   color:
-                    !input.trim() || isLoading ? "var(--islamiva-fg-dim)" : "#08110b",
+                    !input.trim() || isLoading ? "var(--islametra-fg-dim)" : "#08110b",
                   cursor:
                     !input.trim() || isLoading ? "not-allowed" : "pointer",
                   display: "flex",
@@ -1144,13 +1219,13 @@ export function AiChatModule() {
               style={{
                 textAlign: "center",
                 fontSize: 10.5,
-                color: "var(--islamiva-fg-dim)",
+                color: "var(--islametra-fg-dim)",
                 fontFamily: "'Geist Mono', monospace",
                 marginTop: 8,
                 opacity: 0.6,
               }}
             >
-              Enter kirim · Shift+Enter baris baru
+              {ta.inputHint}
             </p>
           </div>
         </div>

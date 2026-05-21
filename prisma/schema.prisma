@@ -140,6 +140,14 @@ model ProphetStory {
   @@map("prophet_stories")
 }
 
+model SiteSetting {
+  key       String   @id
+  value     String   @db.Text
+  updatedAt DateTime @updatedAt
+
+  @@map("site_settings")
+}
+
 model IslamicHistory {
   id        String   @id @default(cuid())
   title     String

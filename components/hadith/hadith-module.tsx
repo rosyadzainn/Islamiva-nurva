@@ -3,10 +3,13 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import { useTheme } from "next-themes";
+import { useAuth } from "@clerk/nextjs";
 import { Search, Bookmark, Copy, CheckCheck } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { HADITH_KITAB } from "@/data/hadith-data";
 import { useBookmarks } from "@/hooks/use-bookmarks";
+import { useLang } from "@/contexts/language-context";
+import { translations } from "@/lib/translations";
 
 interface HadithItem {
   arab: string;
@@ -70,8 +73,8 @@ function SkeletonCard({ isLight }: { isLight: boolean }) {
         padding: 24,
         borderRadius: 16,
         background:
-          isLight ? "var(--islamiva-bg-1)" : "linear-gradient(180deg, rgba(255,255,255,0.025), rgba(255,255,255,0.005)), var(--islamiva-bg-1)",
-        border: "1px solid var(--islamiva-line)",
+          isLight ? "var(--islametra-bg-1)" : "linear-gradient(180deg, rgba(255,255,255,0.025), rgba(255,255,255,0.005)), var(--islametra-bg-1)",
+        border: "1px solid var(--islametra-line)",
       }}
     >
       <div
@@ -122,6 +125,9 @@ export function HadithModule() {
   const { theme } = useTheme();
   const isLight = mounted && theme === "light";
   const { isBookmarked, toggle: toggleBookmark } = useBookmarks();
+  const { lang } = useLang();
+  const th = translations[lang].hadithModule;
+  const { isSignedIn } = useAuth();
 
   useEffect(() => { setMounted(true); }, []);
 
@@ -137,13 +143,20 @@ export function HadithModule() {
             transliteration: transliterateArabic(h.arab),
           }))
         );
+        if (isSignedIn) {
+          fetch("/api/reading-history", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ type: "hadith", referenceId: `hadith-${kitab}`, metadata: { kitab } }),
+          }).catch(() => {});
+        }
       }
     } catch {
-      toast.error("Gagal memuat hadits");
+      toast.error(th.toastLoad);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [th]);
 
   useEffect(() => {
     fetchHadiths(activeKitab);
@@ -162,25 +175,25 @@ export function HadithModule() {
       `${h.arab}\n\n${h.id_text}\n\n(HR. ${HADITH_KITAB.find((k) => k.id === activeKitab)?.name}, No. ${h.number})`
     );
     setCopiedId(String(h.number));
-    toast.success("Hadits berhasil disalin!");
+    toast.success(th.toastCopied);
     setTimeout(() => setCopiedId(null), 2000);
   };
 
-  const handleBookmark = (hadith: HadithItem) => {
-    const added = toggleBookmark({
+  const handleBookmark = async (hadith: HadithItem) => {
+    const added = await toggleBookmark({
       type: "hadith",
       kitab: activeKitab,
       number: hadith.number,
       arab: hadith.arab,
       createdAt: new Date().toISOString(),
     });
-    toast.success(added ? "Hadits di-bookmark!" : "Bookmark dihapus");
+    toast.success(added ? th.toastBookmarked : th.toastUnbookmarked);
   };
 
   const currentKitab = HADITH_KITAB.find((k) => k.id === activeKitab);
 
   return (
-    <div style={{ backgroundColor: "var(--islamiva-bg)", minHeight: "100vh" }}>
+    <div style={{ backgroundColor: "var(--islametra-bg)", minHeight: "100vh" }}>
       {/* Hero */}
       <section
         style={{
@@ -214,8 +227,8 @@ export function HadithModule() {
               padding: "6px 14px",
               borderRadius: 9999,
               background: isLight ? "rgba(0,0,0,0.04)" : "rgba(255,255,255,0.03)",
-              border: "1px solid var(--islamiva-line)",
-              color: "var(--islamiva-fg-soft)",
+              border: "1px solid var(--islametra-line)",
+              color: "var(--islametra-fg-soft)",
               fontSize: 11,
               fontWeight: 500,
               fontFamily: "'Geist Mono', monospace",
@@ -225,9 +238,9 @@ export function HadithModule() {
             }}
           >
             <span
-              style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--islamiva-gold)", flexShrink: 0 }}
+              style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--islametra-gold)", flexShrink: 0 }}
             />
-            6 Kitab Shahih
+            {th.badge}
           </motion.span>
           <motion.h1
             initial={{ opacity: 0, y: 8 }}
@@ -239,7 +252,7 @@ export function HadithModule() {
               fontSize: "clamp(36px, 5vw, 64px)",
               lineHeight: 1.05,
               letterSpacing: "-0.03em",
-              color: "var(--islamiva-fg)",
+              color: "var(--islametra-fg)",
               marginBottom: 20,
             }}
           >
@@ -249,10 +262,10 @@ export function HadithModule() {
                 fontFamily: "'Instrument Serif', serif",
                 fontStyle: "italic",
                 fontWeight: 400,
-                color: "var(--islamiva-gold)",
+                color: "var(--islametra-gold)",
               }}
             >
-              Nabi ﷺ
+              {th.titleEm}
             </em>
           </motion.h1>
           <motion.p
@@ -261,13 +274,13 @@ export function HadithModule() {
             transition={{ delay: 0.1 }}
             style={{
               fontSize: "clamp(15px, 1.8vw, 18px)",
-              color: "var(--islamiva-fg-mute)",
+              color: "var(--islametra-fg-mute)",
               lineHeight: 1.65,
               maxWidth: 520,
               margin: "0 auto",
             }}
           >
-            Kumpulan hadits shahih dari kitab-kitab terpercaya dengan terjemahan bahasa Indonesia dan informasi perawi.
+            {th.sub}
           </motion.p>
         </div>
       </section>
@@ -275,7 +288,7 @@ export function HadithModule() {
       <div
         style={{
           height: 1,
-          background: "linear-gradient(90deg, transparent, var(--islamiva-line-strong), transparent)",
+          background: "linear-gradient(90deg, transparent, var(--islametra-line-strong), transparent)",
         }}
       />
 
@@ -303,14 +316,14 @@ export function HadithModule() {
                 ...(activeKitab === kitab.id
                   ? {
                       background:
-                        isLight ? "var(--islamiva-bg-1)" : "linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0.01)), var(--islamiva-bg-1)",
+                        isLight ? "var(--islametra-bg-1)" : "linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0.01)), var(--islametra-bg-1)",
                       border: "1px solid oklch(0.82 0.08 80 / 0.5)",
                       boxShadow: "0 0 20px -8px oklch(0.82 0.08 80 / 0.3)",
                     }
                   : {
                       background:
-                        isLight ? "var(--islamiva-bg-1)" : "linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.005)), var(--islamiva-bg-1)",
-                      border: "1px solid var(--islamiva-line)",
+                        isLight ? "var(--islametra-bg-1)" : "linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.005)), var(--islametra-bg-1)",
+                      border: "1px solid var(--islametra-line)",
                     }),
               }}
             >
@@ -318,7 +331,7 @@ export function HadithModule() {
                 className="font-arabic"
                 style={{
                   fontSize: 18,
-                  color: activeKitab === kitab.id ? "var(--islamiva-gold)" : "var(--islamiva-gold-soft)",
+                  color: activeKitab === kitab.id ? "var(--islametra-gold)" : "var(--islametra-gold-soft)",
                   lineHeight: 1.6,
                   marginBottom: 6,
                   opacity: activeKitab === kitab.id ? 1 : 0.7,
@@ -330,7 +343,7 @@ export function HadithModule() {
                 style={{
                   fontSize: 12,
                   fontWeight: 600,
-                  color: activeKitab === kitab.id ? "var(--islamiva-fg)" : "var(--islamiva-fg-soft)",
+                  color: activeKitab === kitab.id ? "var(--islametra-fg)" : "var(--islametra-fg-soft)",
                   fontFamily: "'Geist', sans-serif",
                   marginBottom: 4,
                 }}
@@ -340,12 +353,12 @@ export function HadithModule() {
               <p
                 style={{
                   fontSize: 10,
-                  color: "var(--islamiva-fg-dim)",
+                  color: "var(--islametra-fg-dim)",
                   fontFamily: "'Geist Mono', monospace",
                   letterSpacing: "0.02em",
                 }}
               >
-                {kitab.available.toLocaleString()} hadits
+                {mounted ? kitab.available.toLocaleString() : kitab.available} {th.hadithUnit}
               </p>
             </button>
           ))}
@@ -360,21 +373,21 @@ export function HadithModule() {
               left: 14,
               top: "50%",
               transform: "translateY(-50%)",
-              color: "var(--islamiva-fg-dim)",
+              color: "var(--islametra-fg-dim)",
               pointerEvents: "none",
             }}
           />
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Cari hadits..."
+            placeholder={th.searchPlaceholder}
             style={{
               width: "100%",
               padding: "12px 14px 12px 40px",
               borderRadius: 12,
               background: isLight ? "rgba(0,0,0,0.04)" : "rgba(255,255,255,0.03)",
-              border: "1px solid var(--islamiva-line)",
-              color: "var(--islamiva-fg)",
+              border: "1px solid var(--islametra-line)",
+              color: "var(--islametra-fg)",
               fontSize: 14,
               fontFamily: "'Geist', sans-serif",
               outline: "none",
@@ -384,7 +397,7 @@ export function HadithModule() {
               e.currentTarget.style.borderColor = "oklch(0.82 0.08 80 / 0.5)";
             }}
             onBlur={(e) => {
-              e.currentTarget.style.borderColor = "var(--islamiva-line)";
+              e.currentTarget.style.borderColor = "var(--islametra-line)";
             }}
           />
         </div>
@@ -400,7 +413,7 @@ export function HadithModule() {
               padding: "14px 20px",
               borderRadius: 12,
               background: isLight ? "rgba(0,0,0,0.03)" : "rgba(255,255,255,0.02)",
-              border: "1px solid var(--islamiva-line)",
+              border: "1px solid var(--islametra-line)",
             }}
           >
             <div style={{ flex: 1 }}>
@@ -408,7 +421,7 @@ export function HadithModule() {
                 style={{
                   fontSize: 13,
                   fontWeight: 600,
-                  color: "var(--islamiva-fg-soft)",
+                  color: "var(--islametra-fg-soft)",
                   fontFamily: "'Geist', sans-serif",
                 }}
               >
@@ -417,19 +430,19 @@ export function HadithModule() {
               <p
                 style={{
                   fontSize: 11,
-                  color: "var(--islamiva-fg-dim)",
+                  color: "var(--islametra-fg-dim)",
                   fontFamily: "'Geist Mono', monospace",
                   marginTop: 2,
                 }}
               >
-                {currentKitab.available.toLocaleString()} hadits tersedia · Menampilkan 20 pertama
+                {mounted ? currentKitab.available.toLocaleString() : currentKitab.available} {th.available}
               </p>
             </div>
             <p
               className="font-arabic"
               style={{
                 fontSize: 20,
-                color: "var(--islamiva-gold-soft)",
+                color: "var(--islametra-gold-soft)",
                 lineHeight: 1.5,
               }}
             >
@@ -457,8 +470,8 @@ export function HadithModule() {
                       padding: 24,
                       borderRadius: 16,
                       background:
-                        isLight ? "var(--islamiva-bg-1)" : "linear-gradient(180deg, rgba(255,255,255,0.025), rgba(255,255,255,0.005)), var(--islamiva-bg-1)",
-                      border: "1px solid var(--islamiva-line)",
+                        isLight ? "var(--islametra-bg-1)" : "linear-gradient(180deg, rgba(255,255,255,0.025), rgba(255,255,255,0.005)), var(--islametra-bg-1)",
+                      border: "1px solid var(--islametra-line)",
                       transition: "border-color 0.2s",
                     }}
                   >
@@ -479,7 +492,7 @@ export function HadithModule() {
                           borderRadius: 6,
                           background: "oklch(0.82 0.08 80 / 0.12)",
                           border: "1px solid oklch(0.82 0.08 80 / 0.2)",
-                          color: "var(--islamiva-gold-soft)",
+                          color: "var(--islametra-gold-soft)",
                           letterSpacing: "0.03em",
                         }}
                       >
@@ -491,12 +504,13 @@ export function HadithModule() {
                       >
                         <button
                           onClick={() => handleBookmark(hadith)}
+                          aria-label={isHadithBookmarked ? "Hapus bookmark" : "Bookmark hadits"}
                           style={{
                             padding: "6px",
                             borderRadius: 8,
                             border: "none",
                             background: "none",
-                            color: isHadithBookmarked ? "var(--islamiva-gold)" : "var(--islamiva-fg-dim)",
+                            color: isHadithBookmarked ? "var(--islametra-gold)" : "var(--islametra-fg-dim)",
                             cursor: "pointer",
                             transition: "color 0.2s",
                             display: "flex",
@@ -510,6 +524,7 @@ export function HadithModule() {
                         </button>
                         <button
                           onClick={() => handleCopy(hadith)}
+                          aria-label="Salin hadits"
                           style={{
                             padding: "6px",
                             borderRadius: 8,
@@ -517,8 +532,8 @@ export function HadithModule() {
                             background: "none",
                             color:
                               copiedId === String(hadith.number)
-                                ? "var(--islamiva-gold)"
-                                : "var(--islamiva-fg-dim)",
+                                ? "var(--islametra-gold)"
+                                : "var(--islametra-fg-dim)",
                             cursor: "pointer",
                             transition: "color 0.2s",
                             display: "flex",
@@ -552,7 +567,7 @@ export function HadithModule() {
                         style={{
                           fontSize: 20,
                           lineHeight: 1.9,
-                          color: "var(--islamiva-gold-soft)",
+                          color: "var(--islametra-gold-soft)",
                         }}
                       >
                         {hadith.arab}
@@ -565,7 +580,7 @@ export function HadithModule() {
                         style={{
                           paddingTop: 12,
                           paddingBottom: 14,
-                          borderTop: "1px dashed var(--islamiva-line)",
+                          borderTop: "1px dashed var(--islametra-line)",
                         }}
                       >
                         <p
@@ -573,7 +588,7 @@ export function HadithModule() {
                             fontSize: 13,
                             fontStyle: "italic",
                             lineHeight: 1.75,
-                            color: "var(--islamiva-fg-dim)",
+                            color: "var(--islametra-fg-dim)",
                             fontFamily: "'Geist', sans-serif",
                             letterSpacing: "0.01em",
                           }}
@@ -587,14 +602,14 @@ export function HadithModule() {
                     <div
                       style={{
                         paddingTop: 14,
-                        borderTop: "1px dashed var(--islamiva-line)",
+                        borderTop: "1px dashed var(--islametra-line)",
                       }}
                     >
                       <p
                         style={{
                           fontSize: 13.5,
                           lineHeight: 1.7,
-                          color: "var(--islamiva-fg-mute)",
+                          color: "var(--islametra-fg-mute)",
                         }}
                       >
                         {hadith.id_text}
@@ -607,7 +622,7 @@ export function HadithModule() {
 
         {filtered.length === 0 && !loading && (
           <div style={{ textAlign: "center", padding: "60px 0" }}>
-            <p style={{ color: "var(--islamiva-fg-mute)", fontSize: 14 }}>Hadits tidak ditemukan</p>
+            <p style={{ color: "var(--islametra-fg-mute)", fontSize: 14 }}>{th.notFound}</p>
           </div>
         )}
       </section>

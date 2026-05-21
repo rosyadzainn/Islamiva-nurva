@@ -7,7 +7,7 @@ export function ThemeToggle() {
   const [theme, setTheme] = useState<"dark" | "light">("dark");
 
   useEffect(() => {
-    const stored = localStorage.getItem("islamiva_theme") as "dark" | "light" | null;
+    const stored = localStorage.getItem("islametra_theme") as "dark" | "light" | null;
     const resolved = stored ?? "dark";
     setTheme(resolved);
     document.documentElement.setAttribute("data-theme", resolved);
@@ -17,7 +17,7 @@ export function ThemeToggle() {
     const next = theme === "dark" ? "light" : "dark";
     setTheme(next);
     document.documentElement.setAttribute("data-theme", next);
-    localStorage.setItem("islamiva_theme", next);
+    localStorage.setItem("islametra_theme", next);
   };
 
   return (
@@ -31,20 +31,20 @@ export function ThemeToggle() {
         width: 34,
         height: 34,
         borderRadius: 9,
-        border: "1px solid var(--islamiva-line)",
+        border: "1px solid var(--islametra-line)",
         background: "rgba(255,255,255,0.04)",
-        color: "var(--islamiva-fg-dim)",
+        color: "var(--islametra-fg-dim)",
         cursor: "pointer",
         transition: "all 0.2s",
         flexShrink: 0,
       }}
       onMouseEnter={(e) => {
         e.currentTarget.style.background = "rgba(255,255,255,0.08)";
-        e.currentTarget.style.color = "var(--islamiva-fg-soft)";
+        e.currentTarget.style.color = "var(--islametra-fg-soft)";
       }}
       onMouseLeave={(e) => {
         e.currentTarget.style.background = "rgba(255,255,255,0.04)";
-        e.currentTarget.style.color = "var(--islamiva-fg-dim)";
+        e.currentTarget.style.color = "var(--islametra-fg-dim)";
       }}
     >
       {theme === "dark" ? <Sun size={15} /> : <Moon size={15} />}

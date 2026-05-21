@@ -6,23 +6,10 @@ import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { ArrowRight } from "lucide-react";
 import { useTheme } from "next-themes";
+import { useLang } from "@/contexts/language-context";
+import { translations } from "@/lib/translations";
 
 const GEOMETRIC_PATTERN = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160' fill='none' stroke='%23ffffff' stroke-width='0.6' stroke-opacity='0.07'><g transform='translate(80 80)'><polygon points='-30,0 -21,-21 0,-30 21,-21 30,0 21,21 0,30 -21,21'/><polygon points='-30,0 -21,-21 0,-30 21,-21 30,0 21,21 0,30 -21,21' transform='rotate(22.5)'/><circle r='30'/><circle r='15'/></g></svg>")`;
-
-const stats = [
-  { num: "114", label: "Surah" },
-  { num: "6,236", label: "Ayat" },
-  { num: "40,000", label: "Hadits", plus: true },
-  { num: "25", label: "Kisah Nabi" },
-  { num: "120k", label: "Pengguna", plus: true },
-];
-
-const chips = [
-  "Hafalkan Surah Al-Mulk",
-  "Doa sebelum tidur",
-  "Hadits tentang ilmu",
-  "Kisah Nabi Yusuf",
-];
 
 const fadeUp = { initial: { opacity: 0, y: 14 }, animate: { opacity: 1, y: 0 } };
 const ease = [0.2, 0.8, 0.2, 1] as const;
@@ -32,6 +19,8 @@ export function HeroSection() {
   const [mounted, setMounted] = useState(false);
   const router = useRouter();
   const { theme } = useTheme();
+  const { lang } = useLang();
+  const th = translations[lang].hero;
   const isLight = mounted && theme === "light";
 
   useEffect(() => { setMounted(true); }, []);
@@ -45,7 +34,7 @@ export function HeroSection() {
     <section
       className="relative overflow-hidden"
       style={{
-        backgroundColor: "var(--islamiva-bg)",
+        backgroundColor: "var(--islametra-bg)",
         padding: "clamp(70px, 10vw, 130px) 0 clamp(80px, 11vw, 140px)",
       }}
     >
@@ -117,18 +106,18 @@ export function HeroSection() {
               letterSpacing: "0.08em",
               textTransform: "uppercase",
               background: isLight ? "rgba(0,0,0,0.03)" : "linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01))",
-              border: "1px solid var(--islamiva-line)",
-              color: "var(--islamiva-fg-soft)",
+              border: "1px solid var(--islametra-line)",
+              color: "var(--islametra-fg-soft)",
             }}
           >
             <span
               style={{
                 width: 6, height: 6, borderRadius: "50%", flexShrink: 0,
-                background: "var(--islamiva-emerald)",
-                boxShadow: "0 0 10px var(--islamiva-emerald)",
+                background: "var(--islametra-emerald)",
+                boxShadow: "0 0 10px var(--islametra-emerald)",
               }}
             />
-            v2.0 — Sekarang dengan Islamiva AI
+            {th.badge}
           </span>
         </motion.div>
 
@@ -141,7 +130,7 @@ export function HeroSection() {
           dir="rtl"
           style={{
             fontSize: "clamp(20px, 2vw, 26px)",
-            color: "var(--islamiva-gold-soft)",
+            color: "var(--islametra-gold-soft)",
             opacity: 0.85,
             textAlign: "center",
             marginBottom: 20,
@@ -160,13 +149,13 @@ export function HeroSection() {
             fontSize: "clamp(44px, 6.4vw, 88px)",
             lineHeight: 0.96,
             letterSpacing: "-0.035em",
-            color: "var(--islamiva-fg)",
+            color: "var(--islametra-fg)",
             margin: "0 auto 24px",
             maxWidth: 900,
             textAlign: "center",
           }}
         >
-          Pelajari Islam dengan{" "}
+          {th.heading1}{" "}
           <em
             style={{
               fontFamily: "'Instrument Serif', serif",
@@ -180,10 +169,10 @@ export function HeroSection() {
               letterSpacing: "-0.01em",
             }}
           >
-            kecerdasan
+            {th.headingEm}
           </em>
           <br />
-          yang penuh ketenangan.
+          {th.heading2}
         </motion.h1>
 
         {/* Lede */}
@@ -192,15 +181,14 @@ export function HeroSection() {
           transition={{ duration: 0.9, delay: 0.3, ease }}
           style={{
             fontSize: "clamp(16px, 1.35vw, 18px)",
-            color: "var(--islamiva-fg-mute)",
+            color: "var(--islametra-fg-mute)",
             maxWidth: "56ch",
             margin: "0 auto 38px",
             lineHeight: 1.55,
             textAlign: "center",
           }}
         >
-          Islamiva menyatukan Al-Quran, hadits, doa, dan kisah para Nabi dalam satu platform
-          AI modern — dirancang untuk membantu Anda memahami, merenung, dan terhubung lebih dalam.
+          {th.sub}
         </motion.p>
 
         {/* CTAs */}
@@ -224,7 +212,7 @@ export function HeroSection() {
                   "inset 0 1px 0 rgba(255,255,255,0.25), 0 1px 0 rgba(0,0,0,0.4), 0 12px 28px -12px oklch(0.62 0.13 155 / 0.55)",
               }}
             >
-              Mulai Sekarang
+              {th.cta}
               <ArrowRight size={16} />
             </button>
           </Link>
@@ -236,11 +224,11 @@ export function HeroSection() {
                 borderRadius: 12,
                 fontSize: 15, fontWeight: 500,
                 background: isLight ? "rgba(0,0,0,0.03)" : "rgba(255,255,255,0.03)",
-                border: "1px solid var(--islamiva-line)",
-                color: "var(--islamiva-fg)",
+                border: "1px solid var(--islametra-line)",
+                color: "var(--islametra-fg)",
               }}
             >
-              Lihat Cara Kerja
+              {th.ctaSecondary}
             </button>
           </Link>
         </motion.div>
@@ -258,14 +246,14 @@ export function HeroSection() {
             style={{
               top: -120, left: -260, width: 220,
               background: isLight ? "rgba(255,255,255,0.75)" : "rgba(13, 16, 14, 0.6)",
-              border: "1px solid var(--islamiva-line-strong)",
+              border: "1px solid var(--islametra-line-strong)",
               borderRadius: 14,
               backdropFilter: "blur(14px)",
               padding: "12px 14px",
               fontSize: 12.5,
-              color: "var(--islamiva-fg-mute)",
+              color: "var(--islametra-fg-mute)",
               boxShadow: "0 18px 40px -18px rgba(0,0,0,0.7)",
-              animation: "islamiva-float 8s ease-in-out infinite",
+              animation: "islametra-float 8s ease-in-out infinite",
               animationDelay: "-2s",
             }}
           >
@@ -274,20 +262,20 @@ export function HeroSection() {
                 fontFamily: "'Geist Mono', monospace",
                 fontSize: 10, textTransform: "uppercase",
                 letterSpacing: "0.08em",
-                color: "var(--islamiva-fg-dim)", marginBottom: 6,
+                color: "var(--islametra-fg-dim)", marginBottom: 6,
               }}
             >
-              Surah · 36:1–2
+              {th.floatLeft.meta}
             </div>
             <div
               className="font-arabic"
               lang="ar" dir="rtl"
-              style={{ fontSize: 18, color: "var(--islamiva-gold-soft)", marginBottom: 4 }}
+              style={{ fontSize: 18, color: "var(--islametra-gold-soft)", marginBottom: 4 }}
             >
               يٰسٓ ۚ وَالْقُرْاٰنِ الْحَكِيْمِ
             </div>
             <div className="flex items-center justify-between">
-              <span style={{ fontSize: 11, color: "var(--islamiva-fg-mute)" }}>Yasin</span>
+              <span style={{ fontSize: 11, color: "var(--islametra-fg-mute)" }}>{th.floatLeft.sub}</span>
               <span
                 style={{
                   padding: "2px 7px", borderRadius: 6,
@@ -296,7 +284,7 @@ export function HeroSection() {
                   fontFamily: "'Geist Mono', monospace", fontSize: 10,
                 }}
               >
-                83 ayat
+                {th.floatLeft.count}
               </span>
             </div>
           </div>
@@ -307,14 +295,14 @@ export function HeroSection() {
             style={{
               top: -180, right: -260, width: 230,
               background: isLight ? "rgba(255,255,255,0.75)" : "rgba(13, 16, 14, 0.6)",
-              border: "1px solid var(--islamiva-line-strong)",
+              border: "1px solid var(--islametra-line-strong)",
               borderRadius: 14,
               backdropFilter: "blur(14px)",
               padding: "12px 14px",
               fontSize: 12.5,
-              color: "var(--islamiva-fg-mute)",
+              color: "var(--islametra-fg-mute)",
               boxShadow: "0 18px 40px -18px rgba(0,0,0,0.7)",
-              animation: "islamiva-float 8s ease-in-out infinite",
+              animation: "islametra-float 8s ease-in-out infinite",
               animationDelay: "-4s",
             }}
           >
@@ -323,16 +311,16 @@ export function HeroSection() {
                 fontFamily: "'Geist Mono', monospace",
                 fontSize: 10, textTransform: "uppercase",
                 letterSpacing: "0.08em",
-                color: "var(--islamiva-fg-dim)", marginBottom: 6,
+                color: "var(--islametra-fg-dim)", marginBottom: 6,
               }}
             >
-              Doa · Pagi Hari
+              {th.floatRight.meta}
             </div>
-            <div style={{ color: "var(--islamiva-fg)", fontWeight: 500, marginBottom: 4 }}>
-              Pelindungan & Keberkahan
+            <div style={{ color: "var(--islametra-fg)", fontWeight: 500, marginBottom: 4 }}>
+              {th.floatRight.title}
             </div>
-            <div style={{ fontSize: 11.5, lineHeight: 1.5, color: "var(--islamiva-fg-mute)" }}>
-              Aku berlindung kepada Allah dari godaan setan yang terkutuk…
+            <div style={{ fontSize: 11.5, lineHeight: 1.5, color: "var(--islametra-fg-mute)" }}>
+              {th.floatRight.body}
             </div>
           </div>
 
@@ -343,7 +331,7 @@ export function HeroSection() {
               background: isLight
                 ? "rgba(255,255,255,0.82)"
                 : "linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01)), rgba(13, 16, 14, 0.7)",
-              border: "1px solid var(--islamiva-line-strong)",
+              border: "1px solid var(--islametra-line-strong)",
               borderRadius: 20,
               padding: "8px 8px 8px 18px",
               display: "flex", alignItems: "center", gap: 10,
@@ -353,18 +341,18 @@ export function HeroSection() {
                 : "0 1px 0 rgba(255,255,255,0.04) inset, 0 30px 80px -30px rgba(0,0,0,0.7), 0 0 0 6px oklch(0.62 0.13 155 / 0.04)",
             }}
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style={{ color: "var(--islamiva-emerald-soft)", flexShrink: 0 }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style={{ color: "var(--islametra-emerald-soft)", flexShrink: 0 }}>
               <path d="M12 2L13.5 9.5L21 11L13.5 12.5L12 20L10.5 12.5L3 11L10.5 9.5L12 2Z" fill="currentColor" />
             </svg>
             <input
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder='Tanyakan apa saja — "Apa makna sabar dalam Surah Al-Baqarah?"'
+              placeholder={th.placeholder}
               style={{
                 flex: 1, background: "transparent",
                 border: 0, outline: 0,
-                color: "var(--islamiva-fg)",
+                color: "var(--islametra-fg)",
                 fontFamily: "inherit", fontSize: 15,
                 padding: "12px 0",
               }}
@@ -390,15 +378,15 @@ export function HeroSection() {
 
           {/* Suggestion chips */}
           <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 8, marginTop: 24 }}>
-            {chips.map((chip) => (
+            {th.chips.map((chip) => (
               <button
                 key={chip}
                 className="transition-colors"
                 style={{
                   padding: "8px 14px", borderRadius: 999,
-                  fontSize: 13, color: "var(--islamiva-fg-soft)",
+                  fontSize: 13, color: "var(--islametra-fg-soft)",
                   background: isLight ? "rgba(0,0,0,0.03)" : "rgba(255,255,255,0.03)",
-                  border: "1px solid var(--islamiva-line)",
+                  border: "1px solid var(--islametra-line)",
                   cursor: "pointer",
                 }}
               >
@@ -414,26 +402,26 @@ export function HeroSection() {
             display: "flex", flexWrap: "wrap",
             alignItems: "center", justifyContent: "center",
             gap: 40, marginTop: 80,
-            color: "var(--islamiva-fg-dim)",
+            color: "var(--islametra-fg-dim)",
           }}
         >
-          {stats.map((s) => (
+          {th.stats.map((s) => (
             <div key={s.label} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
               <span
                 style={{
                   fontFamily: "'Geist', sans-serif",
                   fontSize: 22, fontWeight: 500,
                   letterSpacing: "-0.02em",
-                  color: "var(--islamiva-fg-soft)",
+                  color: "var(--islametra-fg-soft)",
                 }}
               >
                 {s.num}
-                {s.plus && (
+                {"plus" in s && s.plus && (
                   <em
                     style={{
                       fontFamily: "'Instrument Serif', serif",
                       fontStyle: "italic",
-                      color: "var(--islamiva-gold)",
+                      color: "var(--islametra-gold)",
                     }}
                   >
                     +
@@ -445,7 +433,7 @@ export function HeroSection() {
                   fontFamily: "'Geist Mono', monospace",
                   fontSize: 11, letterSpacing: "0.04em",
                   textTransform: "uppercase",
-                  color: "var(--islamiva-fg-dim)",
+                  color: "var(--islametra-fg-dim)",
                 }}
               >
                 {s.label}

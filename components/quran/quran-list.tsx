@@ -7,6 +7,8 @@ import { Search, BookOpen } from "lucide-react";
 import { useTheme } from "next-themes";
 import { SURAH_LIST } from "@/data/quran-data";
 import { useQuranProgress } from "@/hooks/use-quran-progress";
+import { useLang } from "@/contexts/language-context";
+import { translations } from "@/lib/translations";
 
 type Filter = "all" | "Meccan" | "Medinan";
 
@@ -17,6 +19,8 @@ export function QuranList() {
   const { theme } = useTheme();
   const isLight = mounted && theme === "light";
   const { getProgress, lastRead } = useQuranProgress();
+  const { lang } = useLang();
+  const tq = translations[lang].quranList;
   useEffect(() => { setMounted(true); }, []);
 
   const filtered = useMemo(() => {
@@ -31,7 +35,7 @@ export function QuranList() {
   }, [search, filter]);
 
   return (
-    <div style={{ backgroundColor: "var(--islamiva-bg)", minHeight: "100vh" }}>
+    <div style={{ backgroundColor: "var(--islametra-bg)", minHeight: "100vh" }}>
       {/* Hero */}
       <section
         style={{
@@ -65,8 +69,8 @@ export function QuranList() {
               padding: "6px 14px",
               borderRadius: 9999,
               background: isLight ? "rgba(0,0,0,0.04)" : "rgba(255,255,255,0.03)",
-              border: "1px solid var(--islamiva-line)",
-              color: "var(--islamiva-fg-soft)",
+              border: "1px solid var(--islametra-line)",
+              color: "var(--islametra-fg-soft)",
               fontSize: 11,
               fontWeight: 500,
               fontFamily: "'Geist Mono', monospace",
@@ -76,9 +80,9 @@ export function QuranList() {
             }}
           >
             <span
-              style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--islamiva-emerald)", flexShrink: 0 }}
+              style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--islametra-emerald)", flexShrink: 0 }}
             />
-            114 Surah · 6.236 Ayat
+            {tq.badge}
           </motion.span>
 
           {/* Large Arabic heading */}
@@ -91,7 +95,7 @@ export function QuranList() {
             dir="rtl"
             style={{
               fontSize: "clamp(32px, 5vw, 52px)",
-              color: "var(--islamiva-gold-soft)",
+              color: "var(--islametra-gold-soft)",
               lineHeight: 1.6,
               marginBottom: 12,
               opacity: 0.85,
@@ -110,7 +114,7 @@ export function QuranList() {
               fontSize: "clamp(32px, 4.5vw, 58px)",
               lineHeight: 1.05,
               letterSpacing: "-0.03em",
-              color: "var(--islamiva-fg)",
+              color: "var(--islametra-fg)",
               marginBottom: 20,
             }}
           >
@@ -120,7 +124,7 @@ export function QuranList() {
                 fontFamily: "'Instrument Serif', serif",
                 fontStyle: "italic",
                 fontWeight: 400,
-                color: "var(--islamiva-emerald-soft)",
+                color: "var(--islametra-emerald-soft)",
               }}
             >
               Al-Karim
@@ -133,13 +137,13 @@ export function QuranList() {
             transition={{ delay: 0.12 }}
             style={{
               fontSize: "clamp(15px, 1.8vw, 18px)",
-              color: "var(--islamiva-fg-mute)",
+              color: "var(--islametra-fg-mute)",
               lineHeight: 1.65,
               maxWidth: 480,
               margin: "0 auto",
             }}
           >
-            Baca Al-Quran dengan terjemahan bahasa Indonesia dan audio murottal Mishary al-Afasy.
+            {tq.sub}
           </motion.p>
         </div>
       </section>
@@ -147,7 +151,7 @@ export function QuranList() {
       <div
         style={{
           height: 1,
-          background: "linear-gradient(90deg, transparent, var(--islamiva-line-strong), transparent)",
+          background: "linear-gradient(90deg, transparent, var(--islametra-line-strong), transparent)",
         }}
       />
 
@@ -171,21 +175,21 @@ export function QuranList() {
                 left: 14,
                 top: "50%",
                 transform: "translateY(-50%)",
-                color: "var(--islamiva-fg-dim)",
+                color: "var(--islametra-fg-dim)",
                 pointerEvents: "none",
               }}
             />
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Cari nama surah atau terjemahan..."
+              placeholder={tq.searchPlaceholder}
               style={{
                 width: "100%",
                 padding: "12px 14px 12px 40px",
                 borderRadius: 12,
                 background: isLight ? "rgba(0,0,0,0.04)" : "rgba(255,255,255,0.03)",
-                border: "1px solid var(--islamiva-line)",
-                color: "var(--islamiva-fg)",
+                border: "1px solid var(--islametra-line)",
+                color: "var(--islametra-fg)",
                 fontSize: 14,
                 fontFamily: "'Geist', sans-serif",
                 outline: "none",
@@ -195,7 +199,7 @@ export function QuranList() {
                 e.currentTarget.style.borderColor = "oklch(0.62 0.13 155 / 0.5)";
               }}
               onBlur={(e) => {
-                e.currentTarget.style.borderColor = "var(--islamiva-line)";
+                e.currentTarget.style.borderColor = "var(--islametra-line)";
               }}
             />
           </div>
@@ -225,12 +229,12 @@ export function QuranList() {
                       }
                     : {
                         background: isLight ? "rgba(0,0,0,0.04)" : "rgba(255,255,255,0.03)",
-                        border: "1px solid var(--islamiva-line)",
-                        color: "var(--islamiva-fg-mute)",
+                        border: "1px solid var(--islametra-line)",
+                        color: "var(--islametra-fg-mute)",
                       }),
                 }}
               >
-                {f === "all" ? "Semua" : f === "Meccan" ? "Makkiyah" : "Madaniyah"}
+                {f === "all" ? tq.filterAll : f === "Meccan" ? tq.meccan : tq.medinan}
               </button>
             ))}
             {search || filter !== "all" ? (
@@ -238,7 +242,7 @@ export function QuranList() {
                 style={{
                   padding: "7px 12px",
                   fontSize: 11,
-                  color: "var(--islamiva-fg-dim)",
+                  color: "var(--islametra-fg-dim)",
                   fontFamily: "'Geist Mono', monospace",
                   alignSelf: "center",
                 }}
@@ -266,10 +270,10 @@ export function QuranList() {
             }}
           >
             <div>
-              <p style={{ fontSize: 11, color: "var(--islamiva-gold)", fontFamily: "'Geist Mono', monospace", letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: 2 }}>
-                Lanjutkan membaca
+              <p style={{ fontSize: 11, color: "var(--islametra-gold)", fontFamily: "'Geist Mono', monospace", letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: 2 }}>
+                {tq.continueReading}
               </p>
-              <p style={{ fontSize: 13, fontWeight: 600, color: "var(--islamiva-fg-soft)", fontFamily: "'Geist', sans-serif" }}>
+              <p style={{ fontSize: 13, fontWeight: 600, color: "var(--islametra-fg-soft)", fontFamily: "'Geist', sans-serif" }}>
                 {lastRead.surahName} · Ayat {lastRead.lastAyah}
               </p>
             </div>
@@ -302,8 +306,8 @@ export function QuranList() {
                     padding: "14px 16px",
                     borderRadius: 14,
                     background:
-                      isLight ? "var(--islamiva-bg-1)" : "linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.005)), var(--islamiva-bg-1)",
-                    border: "1px solid var(--islamiva-line)",
+                      isLight ? "var(--islametra-bg-1)" : "linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.005)), var(--islametra-bg-1)",
+                    border: "1px solid var(--islametra-line)",
                   }}
                 >
                   {/* Number */}
@@ -340,7 +344,7 @@ export function QuranList() {
                         style={{
                           fontSize: 13,
                           fontWeight: 600,
-                          color: "var(--islamiva-fg-soft)",
+                          color: "var(--islametra-fg-soft)",
                           fontFamily: "'Geist', sans-serif",
                           letterSpacing: "-0.01em",
                         }}
@@ -363,24 +367,24 @@ export function QuranList() {
                             : {
                                 background: "oklch(0.82 0.08 80 / 0.1)",
                                 border: "1px solid oklch(0.82 0.08 80 / 0.2)",
-                                color: "var(--islamiva-gold-soft)",
+                                color: "var(--islametra-gold-soft)",
                               }),
                         }}
                       >
-                        {surah.revelationType === "Meccan" ? "Makkiyah" : "Madaniyah"}
+                        {surah.revelationType === "Meccan" ? tq.meccan : tq.medinan}
                       </span>
                     </div>
                     <p
                       style={{
                         fontSize: 11,
-                        color: "var(--islamiva-fg-dim)",
+                        color: "var(--islametra-fg-dim)",
                         fontFamily: "'Geist Mono', monospace",
                         overflow: "hidden",
                         textOverflow: "ellipsis",
                         whiteSpace: "nowrap",
                       }}
                     >
-                      {surah.nameTranslation} · {surah.numberOfAyahs} ayat
+                      {surah.nameTranslation} · {surah.numberOfAyahs} {tq.verses}
                     </p>
                   </div>
 
@@ -391,7 +395,7 @@ export function QuranList() {
                     const pct = Math.round((p.lastAyah / p.totalAyahs) * 100);
                     return (
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ height: 2, borderRadius: 999, background: "var(--islamiva-line)", overflow: "hidden", marginTop: 6 }}>
+                        <div style={{ height: 2, borderRadius: 999, background: "var(--islametra-line)", overflow: "hidden", marginTop: 6 }}>
                           <div style={{ height: "100%", width: `${pct}%`, borderRadius: 999, background: "oklch(0.62 0.13 155 / 0.6)", transition: "width 0.3s" }} />
                         </div>
                       </div>
@@ -405,7 +409,7 @@ export function QuranList() {
                     dir="rtl"
                     style={{
                       fontSize: 20,
-                      color: "var(--islamiva-emerald-soft)",
+                      color: "var(--islametra-emerald-soft)",
                       lineHeight: 1.5,
                       flexShrink: 0,
                       opacity: 0.85,
@@ -423,10 +427,10 @@ export function QuranList() {
           <div style={{ textAlign: "center", padding: "60px 0" }}>
             <BookOpen
               size={40}
-              style={{ color: "var(--islamiva-fg-dim)", margin: "0 auto 12px", opacity: 0.4 }}
+              style={{ color: "var(--islametra-fg-dim)", margin: "0 auto 12px", opacity: 0.4 }}
             />
-            <p style={{ color: "var(--islamiva-fg-mute)", fontSize: 14 }}>
-              Surah tidak ditemukan
+            <p style={{ color: "var(--islametra-fg-mute)", fontSize: 14 }}>
+              {tq.notFound}
             </p>
           </div>
         )}

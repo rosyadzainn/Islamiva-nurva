@@ -8,6 +8,8 @@ import { Search, BookOpen, Heart, Scroll, X, ArrowRight, Star, Clock } from "luc
 import { SURAH_LIST } from "@/data/quran-data";
 import { DAILY_DUAS, DOA_CATEGORIES } from "@/data/doa-data";
 import { PROPHETS } from "@/data/prophet-stories";
+import { useLang } from "@/contexts/language-context";
+import { translations } from "@/lib/translations";
 
 interface SearchDialogProps {
   open: boolean;
@@ -39,13 +41,7 @@ const TYPE_COLORS: Record<ResultType, string> = {
   sejarah: "oklch(0.82 0.1 60)",
 };
 
-const TYPE_LABELS: Record<ResultType, string> = {
-  quran: "Al-Quran",
-  doa: "Doa",
-  hadith: "Hadits",
-  story: "Kisah Nabi",
-  sejarah: "Sejarah",
-};
+// TYPE_LABELS is now derived from translations inside the component
 
 // Static sejarah entries for search
 const SEJARAH_ENTRIES = [
@@ -162,16 +158,7 @@ function Highlight({ text, query }: { text: string; query: string }) {
   );
 }
 
-const SUGGESTED = [
-  "Al-Fatihah",
-  "Doa sebelum tidur",
-  "Al-Baqarah",
-  "Doa pagi hari",
-  "Yasin",
-  "Abu Bakar",
-  "Nabi Ibrahim",
-  "Doa makan",
-];
+// SUGGESTED is now derived from translations inside the component
 
 export function SearchDialog({ open, onClose }: SearchDialogProps) {
   const [query, setQuery] = useState("");
@@ -181,6 +168,10 @@ export function SearchDialog({ open, onClose }: SearchDialogProps) {
   const router = useRouter();
   const { theme } = useTheme();
   const isLight = mounted && theme === "light";
+  const { lang } = useLang();
+  const ts = translations[lang].searchDialog;
+  const TYPE_LABELS = ts.typeLabels as Record<ResultType, string>;
+  const SUGGESTED = ts.suggestions;
 
   useEffect(() => { setMounted(true); }, []);
 
@@ -261,8 +252,8 @@ export function SearchDialog({ open, onClose }: SearchDialogProps) {
               style={{
                 backgroundColor: isLight ? "rgba(250,249,246,0.98)" : "rgba(14,18,15,0.98)",
                 borderRadius: 20,
-                boxShadow: "0 40px 100px rgba(0,0,0,0.7), 0 0 0 1px var(--islamiva-line-strong)",
-                border: "1px solid var(--islamiva-line-strong)",
+                boxShadow: "0 40px 100px rgba(0,0,0,0.7), 0 0 0 1px var(--islametra-line-strong)",
+                border: "1px solid var(--islametra-line-strong)",
                 overflow: "hidden",
               }}
             >
@@ -271,28 +262,29 @@ export function SearchDialog({ open, onClose }: SearchDialogProps) {
                 style={{
                   display: "flex", alignItems: "center", gap: 12,
                   padding: "14px 18px",
-                  borderBottom: query || results.length > 0 ? "1px solid var(--islamiva-line)" : "none",
+                  borderBottom: query || results.length > 0 ? "1px solid var(--islametra-line)" : "none",
                 }}
               >
-                <Search size={17} style={{ color: query ? "oklch(0.78 0.13 155)" : "var(--islamiva-fg-dim)", flexShrink: 0, transition: "color 0.2s" }} />
+                <Search size={17} style={{ color: query ? "oklch(0.78 0.13 155)" : "var(--islametra-fg-dim)", flexShrink: 0, transition: "color 0.2s" }} />
                 <input
                   ref={inputRef}
                   value={query}
                   onChange={(e) => { setQuery(e.target.value); setFocused(-1); }}
-                  placeholder="Cari surah, doa, kisah nabi, sejarah..."
+                  placeholder={ts.placeholder}
                   style={{
                     flex: 1, background: "transparent", border: "none", outline: "none",
-                    color: "var(--islamiva-fg)", fontSize: 15,
+                    color: "var(--islametra-fg)", fontSize: 15,
                     fontFamily: "'Geist', sans-serif",
                   }}
                 />
                 {query ? (
                   <button
                     onClick={() => { setQuery(""); setFocused(-1); inputRef.current?.focus(); }}
+                    aria-label="Hapus pencarian"
                     style={{
                       width: 24, height: 24, borderRadius: 6, border: "none",
                       background: isLight ? "rgba(0,0,0,0.06)" : "rgba(255,255,255,0.06)",
-                      color: "var(--islamiva-fg-dim)", cursor: "pointer",
+                      color: "var(--islametra-fg-dim)", cursor: "pointer",
                       display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
                     }}
                   >
@@ -302,8 +294,8 @@ export function SearchDialog({ open, onClose }: SearchDialogProps) {
                   <kbd
                     style={{
                       padding: "3px 8px", fontSize: 10,
-                      color: "var(--islamiva-fg-dim)", background: isLight ? "rgba(0,0,0,0.04)" : "rgba(255,255,255,0.04)",
-                      borderRadius: 6, border: "1px solid var(--islamiva-line)",
+                      color: "var(--islametra-fg-dim)", background: isLight ? "rgba(0,0,0,0.04)" : "rgba(255,255,255,0.04)",
+                      borderRadius: 6, border: "1px solid var(--islametra-line)",
                       fontFamily: "'Geist Mono', monospace", letterSpacing: "0.04em", flexShrink: 0,
                     }}
                   >
@@ -350,15 +342,15 @@ export function SearchDialog({ open, onClose }: SearchDialogProps) {
                             <Icon size={14} style={{ color: TYPE_COLORS[result.type] }} />
                           </div>
                           <div style={{ flex: 1, minWidth: 0 }}>
-                            <p style={{ fontSize: 13, fontWeight: 500, color: "var(--islamiva-fg-soft)", fontFamily: "'Geist', sans-serif", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                            <p style={{ fontSize: 13, fontWeight: 500, color: "var(--islametra-fg-soft)", fontFamily: "'Geist', sans-serif", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                               <Highlight text={result.title} query={query} />
                             </p>
-                            <p style={{ fontSize: 11, color: "var(--islamiva-fg-dim)", fontFamily: "'Geist', sans-serif", marginTop: 1 }}>
+                            <p style={{ fontSize: 11, color: "var(--islametra-fg-dim)", fontFamily: "'Geist', sans-serif", marginTop: 1 }}>
                               <span style={{ color: TYPE_COLORS[result.type], opacity: 0.7, marginRight: 4 }}>{TYPE_LABELS[result.type]}</span>
                               {result.subtitle}
                             </p>
                           </div>
-                          <ArrowRight size={13} style={{ color: "var(--islamiva-fg-dim)", flexShrink: 0, opacity: isFocused ? 1 : 0, transition: "opacity 0.1s" }} />
+                          <ArrowRight size={13} style={{ color: "var(--islametra-fg-dim)", flexShrink: 0, opacity: isFocused ? 1 : 0, transition: "opacity 0.1s" }} />
                         </button>
                       );
                     })}
@@ -373,8 +365,8 @@ export function SearchDialog({ open, onClose }: SearchDialogProps) {
                     style={{ padding: "36px 16px", textAlign: "center" }}
                   >
                     <p style={{ fontSize: 24, marginBottom: 8 }}>🔍</p>
-                    <p style={{ fontSize: 13, color: "var(--islamiva-fg-mute)", fontFamily: "'Geist', sans-serif" }}>
-                      Tidak ada hasil untuk <strong style={{ color: "var(--islamiva-fg-soft)" }}>&ldquo;{query}&rdquo;</strong>
+                    <p style={{ fontSize: 13, color: "var(--islametra-fg-mute)", fontFamily: "'Geist', sans-serif" }}>
+                      {ts.empty} <strong style={{ color: "var(--islametra-fg-soft)" }}>&ldquo;{query}&rdquo;</strong>
                     </p>
                   </motion.div>
                 )}
@@ -386,8 +378,8 @@ export function SearchDialog({ open, onClose }: SearchDialogProps) {
                     animate={{ opacity: 1 }}
                     style={{ padding: "12px 16px 16px" }}
                   >
-                    <p style={{ fontSize: 10, fontFamily: "'Geist Mono', monospace", letterSpacing: "0.07em", textTransform: "uppercase", color: "var(--islamiva-fg-dim)", marginBottom: 10 }}>
-                      Coba cari
+                    <p style={{ fontSize: 10, fontFamily: "'Geist Mono', monospace", letterSpacing: "0.07em", textTransform: "uppercase", color: "var(--islametra-fg-dim)", marginBottom: 10 }}>
+                      {ts.suggested}
                     </p>
                     <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
                       {SUGGESTED.map((s) => (
@@ -397,18 +389,18 @@ export function SearchDialog({ open, onClose }: SearchDialogProps) {
                           style={{
                             padding: "5px 13px", fontSize: 12, borderRadius: 999,
                             background: isLight ? "rgba(0,0,0,0.04)" : "rgba(255,255,255,0.04)",
-                            border: "1px solid var(--islamiva-line)",
-                            color: "var(--islamiva-fg-mute)", cursor: "pointer",
+                            border: "1px solid var(--islametra-line)",
+                            color: "var(--islametra-fg-mute)", cursor: "pointer",
                             fontFamily: "'Geist', sans-serif", transition: "border-color 0.15s, color 0.15s, background 0.15s",
                           }}
                           onMouseEnter={(e) => {
                             e.currentTarget.style.borderColor = "oklch(0.62 0.13 155 / 0.5)";
-                            e.currentTarget.style.color = "var(--islamiva-fg-soft)";
+                            e.currentTarget.style.color = "var(--islametra-fg-soft)";
                             e.currentTarget.style.background = "oklch(0.62 0.13 155 / 0.06)";
                           }}
                           onMouseLeave={(e) => {
-                            e.currentTarget.style.borderColor = "var(--islamiva-line)";
-                            e.currentTarget.style.color = "var(--islamiva-fg-mute)";
+                            e.currentTarget.style.borderColor = "var(--islametra-line)";
+                            e.currentTarget.style.color = "var(--islametra-fg-mute)";
                             e.currentTarget.style.background = isLight ? "rgba(0,0,0,0.04)" : "rgba(255,255,255,0.04)";
                           }}
                         >
@@ -425,21 +417,21 @@ export function SearchDialog({ open, onClose }: SearchDialogProps) {
                 <div
                   style={{
                     padding: "8px 18px",
-                    borderTop: "1px solid var(--islamiva-line)",
+                    borderTop: "1px solid var(--islametra-line)",
                     display: "flex", alignItems: "center", gap: 12,
                   }}
                 >
-                  <span style={{ fontSize: 10, color: "var(--islamiva-fg-dim)", fontFamily: "'Geist Mono', monospace" }}>
-                    ↑↓ navigasi
+                  <span style={{ fontSize: 10, color: "var(--islametra-fg-dim)", fontFamily: "'Geist Mono', monospace" }}>
+                    {ts.navigate}
                   </span>
-                  <span style={{ fontSize: 10, color: "var(--islamiva-fg-dim)", fontFamily: "'Geist Mono', monospace" }}>
-                    ↵ buka
+                  <span style={{ fontSize: 10, color: "var(--islametra-fg-dim)", fontFamily: "'Geist Mono', monospace" }}>
+                    {ts.open}
                   </span>
-                  <span style={{ fontSize: 10, color: "var(--islamiva-fg-dim)", fontFamily: "'Geist Mono', monospace" }}>
-                    ESC tutup
+                  <span style={{ fontSize: 10, color: "var(--islametra-fg-dim)", fontFamily: "'Geist Mono', monospace" }}>
+                    {ts.close}
                   </span>
-                  <span style={{ marginLeft: "auto", fontSize: 10, color: "var(--islamiva-fg-dim)", fontFamily: "'Geist Mono', monospace" }}>
-                    {results.length} hasil
+                  <span style={{ marginLeft: "auto", fontSize: 10, color: "var(--islametra-fg-dim)", fontFamily: "'Geist Mono', monospace" }}>
+                    {results.length} {ts.results}
                   </span>
                 </div>
               )}

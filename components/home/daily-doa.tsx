@@ -6,18 +6,22 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Copy, CheckCheck, ArrowRight } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { DAILY_DUAS } from "@/data/doa-data";
+import { useLang } from "@/contexts/language-context";
+import { translations } from "@/lib/translations";
 
 export function DailyDoa() {
   const [copied, setCopied] = useState(false);
   const [activeIdx, setActiveIdx] = useState(0);
+  const { lang } = useLang();
+  const td = translations[lang].dailyDoa;
   const doa = DAILY_DUAS[activeIdx];
 
   const handleCopy = () => {
     navigator.clipboard.writeText(
-      `${doa.title}\n\n${doa.arabic}\n\n${doa.latin}\n\nArtinya: ${doa.translation}\n\nSumber: ${doa.source}`
+      `${doa.title}\n\n${doa.arabic}\n\n${doa.latin}\n\n${td.meaning} ${doa.translation}\n\nSumber: ${doa.source}`
     );
     setCopied(true);
-    toast.success("Doa berhasil disalin!");
+    toast.success(td.toastCopied);
     setTimeout(() => setCopied(false), 2000);
   };
 
@@ -25,7 +29,7 @@ export function DailyDoa() {
     <section
       className="relative"
       style={{
-        backgroundColor: "var(--islamiva-bg)",
+        backgroundColor: "var(--islametra-bg)",
         padding: "clamp(80px, 12vw, 160px) 0",
       }}
     >
@@ -33,7 +37,7 @@ export function DailyDoa() {
         className="absolute top-0 left-0 right-0 h-px"
         style={{
           background:
-            "linear-gradient(90deg, transparent, var(--islamiva-line-strong), transparent)",
+            "linear-gradient(90deg, transparent, var(--islametra-line-strong), transparent)",
         }}
       />
 
@@ -50,8 +54,8 @@ export function DailyDoa() {
                 letterSpacing: "0.08em",
                 textTransform: "uppercase",
                 background: "rgba(255,255,255,0.03)",
-                border: "1px solid var(--islamiva-line)",
-                color: "var(--islamiva-fg-soft)",
+                border: "1px solid var(--islametra-line)",
+                color: "var(--islametra-fg-soft)",
                 display: "inline-flex",
                 alignItems: "center",
                 gap: 8,
@@ -62,8 +66,8 @@ export function DailyDoa() {
                 marginBottom: 16,
               }}
             >
-              <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--islamiva-emerald)", flexShrink: 0 }} />
-              Amalan Harian
+              <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--islametra-emerald)", flexShrink: 0 }} />
+              {td.badge}
             </motion.span>
             <motion.h2
               initial={{ opacity: 0, y: 8 }}
@@ -76,18 +80,18 @@ export function DailyDoa() {
                 fontSize: "clamp(28px, 3.6vw, 46px)",
                 lineHeight: 1.05,
                 letterSpacing: "-0.03em",
-                color: "var(--islamiva-fg)",
+                color: "var(--islametra-fg)",
               }}
             >
-              Doa Hari Ini
+              {td.title}
             </motion.h2>
           </div>
           <Link
             href="/doa"
             className="hidden sm:flex items-center gap-1.5 text-sm font-medium transition-colors group"
-            style={{ color: "var(--islamiva-fg-mute)", fontFamily: "'Geist', sans-serif" }}
+            style={{ color: "var(--islametra-fg-mute)", fontFamily: "'Geist', sans-serif" }}
           >
-            Semua doa
+            {td.allLink}
             <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>
@@ -113,8 +117,8 @@ export function DailyDoa() {
                     }
                   : {
                       background: "rgba(255,255,255,0.03)",
-                      border: "1px solid var(--islamiva-line)",
-                      color: "var(--islamiva-fg-mute)",
+                      border: "1px solid var(--islametra-line)",
+                      color: "var(--islametra-fg-mute)",
                     }),
               }}
             >
@@ -134,8 +138,8 @@ export function DailyDoa() {
             style={{
               borderRadius: 22,
               background:
-                "linear-gradient(180deg, rgba(255,255,255,0.025), rgba(255,255,255,0.005)), var(--islamiva-bg-1)",
-              border: "1px solid var(--islamiva-line-strong)",
+                "linear-gradient(180deg, rgba(255,255,255,0.025), rgba(255,255,255,0.005)), var(--islametra-bg-1)",
+              border: "1px solid var(--islametra-line-strong)",
               overflow: "hidden",
               boxShadow: "0 30px 80px -30px rgba(0,0,0,0.6)",
             }}
@@ -145,17 +149,17 @@ export function DailyDoa() {
               className="flex items-center justify-between"
               style={{
                 padding: "16px 24px",
-                borderBottom: "1px solid var(--islamiva-line)",
+                borderBottom: "1px solid var(--islametra-line)",
                 background: "linear-gradient(180deg, rgba(255,255,255,0.02), transparent)",
               }}
             >
               <div>
-                <p style={{ fontWeight: 500, fontSize: 14, color: "var(--islamiva-fg)" }}>
+                <p style={{ fontWeight: 500, fontSize: 14, color: "var(--islametra-fg)" }}>
                   {doa.title}
                 </p>
                 <p
                   style={{
-                    fontSize: 11, color: "var(--islamiva-fg-dim)", marginTop: 2,
+                    fontSize: 11, color: "var(--islametra-fg-dim)", marginTop: 2,
                     fontFamily: "'Geist Mono', monospace",
                     letterSpacing: "0.04em", textTransform: "capitalize",
                   }}
@@ -191,7 +195,7 @@ export function DailyDoa() {
                 lang="ar" dir="rtl"
                 style={{
                   fontSize: "clamp(26px, 4vw, 40px)",
-                  color: "var(--islamiva-gold-soft)",
+                  color: "var(--islametra-gold-soft)",
                   lineHeight: 2,
                   opacity: 0.9,
                 }}
@@ -206,7 +210,7 @@ export function DailyDoa() {
                 style={{
                   fontSize: 14, fontStyle: "italic",
                   lineHeight: 1.65,
-                  color: "var(--islamiva-fg-mute)",
+                  color: "var(--islametra-fg-mute)",
                   textAlign: "center",
                 }}
               >
@@ -216,17 +220,17 @@ export function DailyDoa() {
                 style={{
                   padding: 16, borderRadius: 12,
                   background: "rgba(255,255,255,0.03)",
-                  border: "1px solid var(--islamiva-line)",
+                  border: "1px solid var(--islametra-line)",
                 }}
               >
-                <p style={{ fontSize: 14, lineHeight: 1.65, color: "var(--islamiva-fg-soft)" }}>
+                <p style={{ fontSize: 14, lineHeight: 1.65, color: "var(--islametra-fg-soft)" }}>
                   <span
                     style={{
                       fontWeight: 600,
                       color: "oklch(0.78 0.13 155)",
                     }}
                   >
-                    Artinya:{" "}
+                    {td.meaning}{" "}
                   </span>
                   {doa.translation}
                 </p>
@@ -238,7 +242,7 @@ export function DailyDoa() {
               className="flex items-center justify-between"
               style={{
                 padding: "14px 32px",
-                borderTop: "1px solid var(--islamiva-line)",
+                borderTop: "1px solid var(--islametra-line)",
                 background: "rgba(0,0,0,0.15)",
               }}
             >
@@ -248,18 +252,18 @@ export function DailyDoa() {
                 style={{
                   display: "flex", alignItems: "center", gap: 8,
                   fontSize: 13, fontWeight: 500,
-                  color: copied ? "oklch(0.78 0.13 155)" : "var(--islamiva-fg-mute)",
+                  color: copied ? "oklch(0.78 0.13 155)" : "var(--islametra-fg-mute)",
                 }}
               >
                 {copied ? <CheckCheck size={14} /> : <Copy size={14} />}
-                {copied ? "Tersalin!" : "Salin Doa"}
+                {copied ? td.copied : td.copy}
               </button>
               <Link
                 href="/doa"
                 className="transition-colors group"
-                style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 13, color: "var(--islamiva-fg-dim)" }}
+                style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 13, color: "var(--islametra-fg-dim)" }}
               >
-                Lihat semua doa
+                {td.viewAll}
                 <ArrowRight size={13} className="group-hover:translate-x-1 transition-transform" />
               </Link>
             </div>

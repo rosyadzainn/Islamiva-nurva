@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ChevronLeft, Clock, ArrowRight } from "lucide-react";
+import { T } from "@/components/shared/t";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -445,7 +446,7 @@ export default async function SejarahDetailPage({ params }: Props) {
   // Article not found state
   if (!article) {
     return (
-      <div style={{ backgroundColor: "var(--islamiva-bg)", minHeight: "100vh" }}>
+      <div style={{ backgroundColor: "var(--islametra-bg)", minHeight: "100vh" }}>
         <div style={{ maxWidth: 800, margin: "0 auto", padding: "clamp(32px, 5vw, 64px) 28px" }}>
           <Link
             href="/sejarah"
@@ -454,14 +455,14 @@ export default async function SejarahDetailPage({ params }: Props) {
               alignItems: "center",
               gap: 6,
               fontSize: 13,
-              color: "var(--islamiva-fg-dim)",
+              color: "var(--islametra-fg-dim)",
               fontFamily: "'Geist', sans-serif",
               marginBottom: 36,
               textDecoration: "none",
             }}
           >
             <ChevronLeft size={15} />
-            Kembali ke Sejarah Islam
+            <T id="Kembali ke Sejarah Islam" en="Back to Islamic History" />
           </Link>
 
           <div
@@ -469,8 +470,8 @@ export default async function SejarahDetailPage({ params }: Props) {
               textAlign: "center",
               padding: "80px 32px",
               borderRadius: 24,
-              background: "var(--islamiva-card-overlay-sm)",
-              border: "1px solid var(--islamiva-line)",
+              background: "var(--islametra-card-overlay-sm)",
+              border: "1px solid var(--islametra-line)",
             }}
           >
             <div
@@ -493,22 +494,22 @@ export default async function SejarahDetailPage({ params }: Props) {
                 fontSize: 20,
                 fontWeight: 600,
                 fontFamily: "'Geist', sans-serif",
-                color: "var(--islamiva-fg)",
+                color: "var(--islametra-fg)",
                 letterSpacing: "-0.02em",
                 marginBottom: 8,
               }}
             >
-              Artikel Sedang Disiapkan
+              <T id="Artikel Sedang Disiapkan" en="Article Coming Soon" />
             </h1>
             <p
               style={{
                 fontSize: 14,
-                color: "var(--islamiva-fg-mute)",
+                color: "var(--islametra-fg-mute)",
                 marginBottom: 24,
                 lineHeight: 1.6,
               }}
             >
-              Konten untuk artikel ini sedang dalam pengembangan.
+              <T id="Konten untuk artikel ini sedang dalam pengembangan." en="Content for this article is being developed." />
             </p>
             <Link
               href="/sejarah"
@@ -527,7 +528,7 @@ export default async function SejarahDetailPage({ params }: Props) {
                 textDecoration: "none",
               }}
             >
-              Lihat Artikel Lainnya
+              <T id="Lihat Artikel Lainnya" en="View Other Articles" />
               <ArrowRight size={13} />
             </Link>
           </div>
@@ -539,7 +540,7 @@ export default async function SejarahDetailPage({ params }: Props) {
   const related = RELATED_ARTICLES.filter((a) => a.slug !== slug).slice(0, 3);
 
   return (
-    <div style={{ backgroundColor: "var(--islamiva-bg)", minHeight: "100vh" }}>
+    <div style={{ backgroundColor: "var(--islametra-bg)", minHeight: "100vh" }}>
       <div style={{ maxWidth: 800, margin: "0 auto", padding: "clamp(32px, 5vw, 64px) 28px" }}>
 
         {/* Back link */}
@@ -550,7 +551,7 @@ export default async function SejarahDetailPage({ params }: Props) {
             alignItems: "center",
             gap: 6,
             fontSize: 13,
-            color: "var(--islamiva-fg-dim)",
+            color: "var(--islametra-fg-dim)",
             fontFamily: "'Geist', sans-serif",
             marginBottom: 36,
             textDecoration: "none",
@@ -566,8 +567,8 @@ export default async function SejarahDetailPage({ params }: Props) {
             position: "relative",
             padding: "44px 36px",
             borderRadius: 24,
-            background: "var(--islamiva-hero-card-bg)",
-            border: "1px solid var(--islamiva-line-strong)",
+            background: "var(--islametra-hero-card-bg)",
+            border: "1px solid var(--islametra-line-strong)",
             textAlign: "center",
             marginBottom: 40,
             overflow: "hidden",
@@ -594,7 +595,7 @@ export default async function SejarahDetailPage({ params }: Props) {
               inset: 0,
               borderRadius: 24,
               padding: 1,
-              background: "var(--islamiva-shimmer-top)",
+              background: "var(--islametra-shimmer-top)",
               WebkitMask: "linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)",
               WebkitMaskComposite: "xor",
               maskComposite: "exclude",
@@ -635,7 +636,7 @@ export default async function SejarahDetailPage({ params }: Props) {
                 fontSize: "clamp(22px, 3.5vw, 32px)",
                 fontWeight: 600,
                 fontFamily: "'Geist', sans-serif",
-                color: "var(--islamiva-fg)",
+                color: "var(--islametra-fg)",
                 letterSpacing: "-0.02em",
                 marginBottom: 10,
               }}
@@ -647,12 +648,12 @@ export default async function SejarahDetailPage({ params }: Props) {
                 display: "inline-block",
                 fontSize: 12,
                 fontFamily: "'Geist Mono', monospace",
-                color: "var(--islamiva-fg-dim)",
+                color: "var(--islametra-fg-dim)",
                 letterSpacing: "0.04em",
                 padding: "4px 12px",
                 borderRadius: 999,
-                background: "var(--islamiva-card-overlay-md)",
-                border: "1px solid var(--islamiva-line)",
+                background: "var(--islametra-card-overlay-md)",
+                border: "1px solid var(--islametra-line)",
               }}
             >
               {article.period}
@@ -670,7 +671,7 @@ export default async function SejarahDetailPage({ params }: Props) {
                     fontSize: 17,
                     fontWeight: 600,
                     fontFamily: "'Geist', sans-serif",
-                    color: "var(--islamiva-fg-soft)",
+                    color: "var(--islametra-fg-soft)",
                     letterSpacing: "-0.01em",
                     marginBottom: 10,
                     display: "flex",
@@ -695,7 +696,7 @@ export default async function SejarahDetailPage({ params }: Props) {
                 style={{
                   fontSize: 15,
                   lineHeight: 1.85,
-                  color: section.heading ? "var(--islamiva-fg-mute)" : "var(--islamiva-fg-dim)",
+                  color: section.heading ? "var(--islametra-fg-mute)" : "var(--islametra-fg-dim)",
                   fontFamily: "'Geist', sans-serif",
                   fontStyle: !section.heading ? "italic" : "normal",
                   borderLeft: !section.heading
@@ -712,18 +713,18 @@ export default async function SejarahDetailPage({ params }: Props) {
 
         {/* Related articles */}
         {related.length > 0 && (
-          <div style={{ paddingTop: 32, borderTop: "1px solid var(--islamiva-line)" }}>
+          <div style={{ paddingTop: 32, borderTop: "1px solid var(--islametra-line)" }}>
             <p
               style={{
                 fontSize: 11,
                 fontFamily: "'Geist Mono', monospace",
                 letterSpacing: "0.08em",
                 textTransform: "uppercase",
-                color: "var(--islamiva-fg-dim)",
+                color: "var(--islametra-fg-dim)",
                 marginBottom: 16,
               }}
             >
-              Artikel Terkait
+              <T id="Artikel Terkait" en="Related Articles" />
             </p>
             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
               {related.map((a) => (
@@ -739,20 +740,20 @@ export default async function SejarahDetailPage({ params }: Props) {
                       justifyContent: "space-between",
                       padding: "12px 16px",
                       borderRadius: 12,
-                      background: "var(--islamiva-card-overlay-sm)",
-                      border: "1px solid var(--islamiva-line)",
+                      background: "var(--islametra-card-overlay-sm)",
+                      border: "1px solid var(--islametra-line)",
                       transition: "border-color 0.2s, background 0.2s",
                     }}
                   >
                     <div>
-                      <p style={{ fontSize: 13, fontWeight: 500, color: "var(--islamiva-fg-soft)", fontFamily: "'Geist', sans-serif", marginBottom: 2 }}>
+                      <p style={{ fontSize: 13, fontWeight: 500, color: "var(--islametra-fg-soft)", fontFamily: "'Geist', sans-serif", marginBottom: 2 }}>
                         {a.title}
                       </p>
-                      <p style={{ fontSize: 11, color: "var(--islamiva-fg-dim)", fontFamily: "'Geist Mono', monospace" }}>
+                      <p style={{ fontSize: 11, color: "var(--islametra-fg-dim)", fontFamily: "'Geist Mono', monospace" }}>
                         {a.period}
                       </p>
                     </div>
-                    <ArrowRight size={14} style={{ color: "var(--islamiva-fg-dim)", flexShrink: 0 }} />
+                    <ArrowRight size={14} style={{ color: "var(--islametra-fg-dim)", flexShrink: 0 }} />
                   </div>
                 </Link>
               ))}

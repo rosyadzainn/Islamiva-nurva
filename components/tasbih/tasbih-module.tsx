@@ -4,6 +4,8 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { RotateCcw, Check } from "lucide-react";
 import { useTheme } from "next-themes";
+import { useLang } from "@/contexts/language-context";
+import { translations } from "@/lib/translations";
 
 const DHIKR_LIST = [
   {
@@ -57,6 +59,8 @@ export function TasbihModule() {
   const [mounted, setMounted] = useState(false);
   const { theme } = useTheme();
   const isLight = mounted && theme === "light";
+  const { lang } = useLang();
+  const tt = translations[lang].tasbih;
   const celebrateTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const effectiveTarget = showCustom
@@ -114,7 +118,7 @@ export function TasbihModule() {
   return (
     <div
       style={{
-        backgroundColor: "var(--islamiva-bg)",
+        backgroundColor: "var(--islametra-bg)",
         minHeight: "100vh",
         display: "flex",
         flexDirection: "column",
@@ -153,8 +157,8 @@ export function TasbihModule() {
               padding: "6px 14px",
               borderRadius: 9999,
               background: isLight ? "rgba(0,0,0,0.04)" : "rgba(255,255,255,0.03)",
-              border: "1px solid var(--islamiva-line)",
-              color: "var(--islamiva-fg-soft)",
+              border: "1px solid var(--islametra-line)",
+              color: "var(--islametra-fg-soft)",
               fontSize: 11,
               fontWeight: 500,
               fontFamily: "'Geist Mono', monospace",
@@ -168,11 +172,11 @@ export function TasbihModule() {
                 width: 6,
                 height: 6,
                 borderRadius: "50%",
-                background: "var(--islamiva-gold)",
+                background: "var(--islametra-gold)",
                 flexShrink: 0,
               }}
             />
-            Dzikir Digital
+            {tt.badge}
           </motion.div>
           <motion.h1
             initial={{ opacity: 0, y: 8 }}
@@ -184,7 +188,7 @@ export function TasbihModule() {
               fontSize: "clamp(30px, 5vw, 52px)",
               lineHeight: 1.05,
               letterSpacing: "-0.03em",
-              color: "var(--islamiva-fg)",
+              color: "var(--islametra-fg)",
               marginBottom: 12,
             }}
           >
@@ -194,10 +198,10 @@ export function TasbihModule() {
                 fontFamily: "'Instrument Serif', serif",
                 fontStyle: "italic",
                 fontWeight: 400,
-                color: "var(--islamiva-gold)",
+                color: "var(--islametra-gold)",
               }}
             >
-              Digital
+              {tt.titleEm}
             </em>
           </motion.h1>
         </div>
@@ -207,7 +211,7 @@ export function TasbihModule() {
         style={{
           height: 1,
           background:
-            "linear-gradient(90deg, transparent, var(--islamiva-line-strong), transparent)",
+            "linear-gradient(90deg, transparent, var(--islametra-line-strong), transparent)",
         }}
       />
 
@@ -232,7 +236,7 @@ export function TasbihModule() {
           dir="rtl"
           style={{
             fontSize: "clamp(26px, 6vw, 40px)",
-            color: "var(--islamiva-gold-soft)",
+            color: "var(--islametra-gold-soft)",
             lineHeight: 1.8,
             textAlign: "center",
             marginBottom: 6,
@@ -246,13 +250,13 @@ export function TasbihModule() {
           animate={{ opacity: 1 }}
           style={{
             fontSize: 12,
-            color: "var(--islamiva-fg-dim)",
+            color: "var(--islametra-fg-dim)",
             fontFamily: "'Geist', sans-serif",
             fontStyle: "italic",
             marginBottom: 36,
           }}
         >
-          {selectedDhikr.meaning}
+          {tt.dhikrMeanings[selectedDhikr.id as keyof typeof tt.dhikrMeanings]}
         </motion.p>
 
         <div style={{ position: "relative", marginBottom: 24 }}>
@@ -333,12 +337,12 @@ export function TasbihModule() {
                       justifyContent: "center",
                     }}
                   >
-                    <Check size={28} style={{ color: "var(--islamiva-emerald-soft)" }} />
+                    <Check size={28} style={{ color: "var(--islametra-emerald-soft)" }} />
                   </div>
                   <p
                     style={{
                       fontSize: 13,
-                      color: "var(--islamiva-emerald-soft)",
+                      color: "var(--islametra-emerald-soft)",
                       fontFamily: "'Geist', sans-serif",
                       fontWeight: 500,
                     }}
@@ -367,7 +371,7 @@ export function TasbihModule() {
                       fontFamily: "'Geist Mono', monospace",
                       fontSize: "clamp(64px, 15vw, 96px)",
                       fontWeight: 700,
-                      color: "var(--islamiva-fg)",
+                      color: "var(--islametra-fg)",
                       lineHeight: 1,
                       letterSpacing: "-0.04em",
                     }}
@@ -378,7 +382,7 @@ export function TasbihModule() {
                     <span
                       style={{
                         fontSize: 13,
-                        color: "var(--islamiva-fg-dim)",
+                        color: "var(--islametra-fg-dim)",
                         fontFamily: "'Geist Mono', monospace",
                         marginTop: 4,
                       }}
@@ -395,17 +399,17 @@ export function TasbihModule() {
         <p
           style={{
             fontSize: 12,
-            color: "var(--islamiva-fg-dim)",
+            color: "var(--islametra-fg-dim)",
             fontFamily: "'Geist', sans-serif",
             marginBottom: 24,
             textAlign: "center",
           }}
         >
-          Tap lingkaran untuk menghitung &middot; Total sesi:{" "}
+          {tt.tapHint} · {tt.sessionTotal}{" "}
           <span
             style={{
               fontFamily: "'Geist Mono', monospace",
-              color: "var(--islamiva-fg-soft)",
+              color: "var(--islametra-fg-soft)",
             }}
           >
             {sessionTotal}
@@ -425,12 +429,12 @@ export function TasbihModule() {
           <span
             style={{
               fontSize: 11,
-              color: "var(--islamiva-fg-dim)",
+              color: "var(--islametra-fg-dim)",
               fontFamily: "'Geist', sans-serif",
               marginRight: 4,
             }}
           >
-            Target:
+            {tt.target}
           </span>
           {TARGET_OPTIONS.map((t) => (
             <button
@@ -447,13 +451,13 @@ export function TasbihModule() {
                 border:
                   !showCustom && target === t
                     ? "1px solid oklch(0.82 0.08 80 / 0.5)"
-                    : "1px solid var(--islamiva-line)",
+                    : "1px solid var(--islametra-line)",
                 background:
                   !showCustom && target === t
                     ? "oklch(0.82 0.08 80 / 0.1)"
                     : isLight ? "rgba(0,0,0,0.04)" : "rgba(255,255,255,0.03)",
                 color:
-                  !showCustom && target === t ? "var(--islamiva-gold)" : "var(--islamiva-fg-dim)",
+                  !showCustom && target === t ? "var(--islametra-gold)" : "var(--islametra-fg-dim)",
                 fontSize: 12,
                 fontFamily: "'Geist Mono', monospace",
                 cursor: "pointer",
@@ -474,9 +478,9 @@ export function TasbihModule() {
               borderRadius: 8,
               border: showCustom
                 ? "1px solid oklch(0.82 0.08 80 / 0.5)"
-                : "1px solid var(--islamiva-line)",
+                : "1px solid var(--islametra-line)",
               background: showCustom ? "oklch(0.82 0.08 80 / 0.1)" : "rgba(255,255,255,0.03)",
-              color: showCustom ? "var(--islamiva-gold)" : "var(--islamiva-fg-dim)",
+              color: showCustom ? "var(--islametra-gold)" : "var(--islametra-fg-dim)",
               fontSize: 12,
               fontFamily: "'Geist', sans-serif",
               cursor: "pointer",
@@ -490,14 +494,14 @@ export function TasbihModule() {
               type="number"
               value={customTarget}
               onChange={(e) => setCustomTarget(e.target.value)}
-              placeholder="Masukkan angka"
+              placeholder={tt.customPlaceholder}
               min={1}
               style={{
                 padding: "6px 12px",
                 borderRadius: 8,
-                border: "1px solid var(--islamiva-line)",
+                border: "1px solid var(--islametra-line)",
                 background: isLight ? "rgba(0,0,0,0.04)" : "rgba(255,255,255,0.03)",
-                color: "var(--islamiva-fg)",
+                color: "var(--islametra-fg)",
                 fontSize: 12,
                 fontFamily: "'Geist Mono', monospace",
                 outline: "none",
@@ -515,9 +519,9 @@ export function TasbihModule() {
             gap: 6,
             padding: "8px 18px",
             borderRadius: 10,
-            border: "1px solid var(--islamiva-line)",
+            border: "1px solid var(--islametra-line)",
             background: isLight ? "rgba(0,0,0,0.03)" : "rgba(255,255,255,0.02)",
-            color: "var(--islamiva-fg-dim)",
+            color: "var(--islametra-fg-dim)",
             fontSize: 12,
             fontFamily: "'Geist', sans-serif",
             cursor: "pointer",
@@ -533,7 +537,7 @@ export function TasbihModule() {
         style={{
           height: 1,
           background:
-            "linear-gradient(90deg, transparent, var(--islamiva-line-strong), transparent)",
+            "linear-gradient(90deg, transparent, var(--islametra-line-strong), transparent)",
         }}
       />
 
@@ -560,7 +564,7 @@ export function TasbihModule() {
               border:
                 selectedDhikr.id === d.id
                   ? "1px solid oklch(0.82 0.08 80 / 0.45)"
-                  : "1px solid var(--islamiva-line)",
+                  : "1px solid var(--islametra-line)",
               background:
                 selectedDhikr.id === d.id
                   ? "oklch(0.82 0.08 80 / 0.08)"
@@ -578,7 +582,7 @@ export function TasbihModule() {
               style={{
                 fontSize: 15,
                 color:
-                  selectedDhikr.id === d.id ? "var(--islamiva-gold)" : "var(--islamiva-gold-soft)",
+                  selectedDhikr.id === d.id ? "var(--islametra-gold)" : "var(--islametra-gold-soft)",
                 lineHeight: 1.6,
                 marginBottom: 2,
                 opacity: selectedDhikr.id === d.id ? 1 : 0.6,
@@ -590,7 +594,7 @@ export function TasbihModule() {
               style={{
                 fontSize: 10,
                 color:
-                  selectedDhikr.id === d.id ? "var(--islamiva-fg-soft)" : "var(--islamiva-fg-dim)",
+                  selectedDhikr.id === d.id ? "var(--islametra-fg-soft)" : "var(--islametra-fg-dim)",
                 fontFamily: "'Geist', sans-serif",
                 fontWeight: 500,
               }}
