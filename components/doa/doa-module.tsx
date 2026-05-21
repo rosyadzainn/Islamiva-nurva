@@ -3,7 +3,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "next-themes";
-import { Search, Copy, CheckCheck, Heart, ChevronDown, ChevronUp } from "lucide-react";
+import { Search, Copy, CheckCheck, Heart, ChevronDown, ChevronUp, Share2 } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { DAILY_DUAS, DOA_CATEGORIES } from "@/data/doa-data";
 import { useBookmarks } from "@/hooks/use-bookmarks";
@@ -40,6 +40,15 @@ export function DoaModule() {
     setCopiedId(doa.id);
     toast.success(td.toastCopied);
     setTimeout(() => setCopiedId(null), 2000);
+  };
+
+  const handleShare = (doa: (typeof DAILY_DUAS)[0]) => {
+    const text = `${doa.title}\n\n${doa.arabic}\n\n${doa.latin}\n\nArtinya: ${doa.translation}\n\n🤲 Baca di https://www.islametra.com/doa/${doa.slug}`;
+    if (navigator.share) {
+      navigator.share({ text }).catch(() => {});
+    } else {
+      window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank", "noopener,noreferrer");
+    }
   };
 
   const toggleFavorite = async (doa: (typeof DAILY_DUAS)[0]) => {
@@ -492,6 +501,24 @@ export function DoaModule() {
                                 <Copy size={13} />
                               )}
                               {copiedId === doa.id ? td.copied : td.copy}
+                            </button>
+                            <button
+                              onClick={() => handleShare(doa)}
+                              aria-label="Bagikan doa"
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 6,
+                                fontSize: 12,
+                                fontWeight: 500,
+                                color: "var(--islametra-fg-mute)",
+                                background: "none",
+                                border: "none",
+                                cursor: "pointer",
+                                transition: "color 0.2s",
+                              }}
+                            >
+                              <Share2 size={13} />
                             </button>
                           </div>
                         </div>

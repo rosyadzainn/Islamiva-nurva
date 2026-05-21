@@ -137,6 +137,15 @@ export function SurahReader({ surah }: SurahReaderProps) {
     setTimeout(() => setCopiedId(null), 2000);
   };
 
+  const handleShare = (ayah: Ayah) => {
+    const text = `${ayah.text}\n\n${ayah.translation}\n\n(QS. ${surah.name}: ${ayah.number})\n\n📖 Baca di https://www.islametra.com/quran/${surah.number}`;
+    if (navigator.share) {
+      navigator.share({ text }).catch(() => {});
+    } else {
+      window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank", "noopener,noreferrer");
+    }
+  };
+
   const handleBookmark = async (ayah: Ayah) => {
     const added = await toggleBookmark({
       type: "quran",
@@ -609,6 +618,7 @@ export function SurahReader({ surah }: SurahReaderProps) {
                         )}
                       </button>
                       <button
+                        onClick={() => handleShare(ayah)}
                         aria-label="Bagikan ayat"
                         style={{
                           padding: "6px",

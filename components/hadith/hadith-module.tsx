@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import { useTheme } from "next-themes";
 import { useAuth } from "@clerk/nextjs";
-import { Search, Bookmark, Copy, CheckCheck } from "lucide-react";
+import { Search, Bookmark, Copy, CheckCheck, Share2 } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { HADITH_KITAB } from "@/data/hadith-data";
 import { useBookmarks } from "@/hooks/use-bookmarks";
@@ -177,6 +177,16 @@ export function HadithModule() {
     setCopiedId(String(h.number));
     toast.success(th.toastCopied);
     setTimeout(() => setCopiedId(null), 2000);
+  };
+
+  const handleShare = (h: HadithItem) => {
+    const kitabName = HADITH_KITAB.find((k) => k.id === activeKitab)?.name ?? activeKitab;
+    const text = `${h.arab}\n\n${h.id_text}\n\n(HR. ${kitabName}, No. ${h.number})\n\n📚 Baca di https://www.islametra.com/hadith`;
+    if (navigator.share) {
+      navigator.share({ text }).catch(() => {});
+    } else {
+      window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank", "noopener,noreferrer");
+    }
   };
 
   const handleBookmark = async (hadith: HadithItem) => {
@@ -545,6 +555,23 @@ export function HadithModule() {
                           ) : (
                             <Copy size={14} />
                           )}
+                        </button>
+                        <button
+                          onClick={() => handleShare(hadith)}
+                          aria-label="Bagikan hadits"
+                          style={{
+                            padding: "6px",
+                            borderRadius: 8,
+                            border: "none",
+                            background: "none",
+                            color: "var(--islametra-fg-dim)",
+                            cursor: "pointer",
+                            transition: "color 0.2s",
+                            display: "flex",
+                            alignItems: "center",
+                          }}
+                        >
+                          <Share2 size={14} />
                         </button>
                       </div>
                     </div>
