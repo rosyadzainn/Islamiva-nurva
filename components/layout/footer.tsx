@@ -45,16 +45,13 @@ export function Footer() {
               <div
                 style={{
                   width: 32, height: 32, borderRadius: 9,
-                  display: "grid", placeItems: "center",
-                  background:
-                    "radial-gradient(circle at 30% 30%, oklch(0.78 0.12 155) 0%, oklch(0.45 0.11 155) 70%)",
-                  color: "#08110b",
-                  fontSize: 18,
-                  fontFamily: "'Amiri', serif",
-                  fontWeight: 700,
+                  overflow: "hidden",
+                  boxShadow: "0 3px 14px -4px oklch(0.62 0.13 155 / 0.5)",
+                  flexShrink: 0,
                 }}
               >
-                ن
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/icon.svg" alt="Islametra" width={32} height={32} style={{ display: "block" }} />
               </div>
               <span
                 style={{

@@ -81,22 +81,45 @@ export default async function Image() {
             marginBottom: 20,
           }}
         >
-          {/* Logo icon */}
+          {/* Logo icon — crescent + star */}
           <div
             style={{
               width: 64,
               height: 64,
               borderRadius: 18,
-              background:
-                "linear-gradient(135deg, rgba(50,180,90,0.3) 0%, rgba(30,120,60,0.15) 100%)",
-              border: "1px solid rgba(50,180,90,0.35)",
+              background: "linear-gradient(135deg, #22c55e 0%, #14532d 100%)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              fontSize: 32,
+              position: "relative",
+              overflow: "hidden",
             }}
           >
-            ☽
+            {/* Crescent shape using two overlapping circles */}
+            <div
+              style={{
+                width: 30,
+                height: 30,
+                borderRadius: "50%",
+                background: "rgba(255,255,255,0.93)",
+                position: "absolute",
+                top: 14,
+                left: 10,
+                boxShadow: "12px -8px 0 0 #166534",
+              }}
+            />
+            {/* Star */}
+            <div
+              style={{
+                width: 8,
+                height: 8,
+                borderRadius: "50%",
+                background: "rgba(255,255,255,0.9)",
+                position: "absolute",
+                top: 12,
+                right: 12,
+              }}
+            />
           </div>
 
           {/* Brand name */}

@@ -1,10 +1,18 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
   <defs>
-    <radialGradient id="g" cx="30%" cy="30%" r="70%">
-      <stop offset="0%" stop-color="#6ee7a0"/>
-      <stop offset="100%" stop-color="#1a7a40"/>
-    </radialGradient>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#22c55e"/>
+      <stop offset="100%" stop-color="#14532d"/>
+    </linearGradient>
+    <mask id="cm">
+      <rect width="32" height="32" fill="white"/>
+      <circle cx="17.5" cy="13" r="6.8" fill="black"/>
+    </mask>
   </defs>
-  <rect width="32" height="32" rx="8" fill="url(#g)"/>
-  <text x="16" y="23" text-anchor="middle" font-family="serif" font-size="20" fill="#08110b">ن</text>
+  <!-- Background -->
+  <rect width="32" height="32" rx="7.5" fill="url(#bg)"/>
+  <!-- Crescent moon -->
+  <circle cx="13" cy="17" r="7.8" fill="white" opacity="0.93" mask="url(#cm)"/>
+  <!-- Star -->
+  <circle cx="23.5" cy="9.5" r="1.9" fill="white" opacity="0.9"/>
 </svg>
