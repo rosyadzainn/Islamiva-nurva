@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useUser, useClerk } from "@clerk/nextjs";
 import { useLang } from "@/contexts/language-context";
 import { translations } from "@/lib/translations";
@@ -11,15 +11,22 @@ export function AuthButton({ mobile }: { mobile?: boolean }) {
   const { isSignedIn, isLoaded, user } = useUser();
   const { openUserProfile, signOut } = useClerk();
   const [imgError, setImgError] = useState(false);
+  const [loadTimeout, setLoadTimeout] = useState(false);
   const { lang } = useLang();
   const tn = translations[lang].nav;
   const tc = translations[lang].common;
+
+  useEffect(() => {
+    if (isLoaded) return;
+    const t = setTimeout(() => setLoadTimeout(true), 2500);
+    return () => clearTimeout(t);
+  }, [isLoaded]);
 
   const initials = (
     (user?.firstName?.[0] ?? "") + (user?.lastName?.[0] ?? "")
   ).toUpperCase() || user?.emailAddresses?.[0]?.emailAddress?.[0]?.toUpperCase() || "?";
 
-  if (!isLoaded) {
+  if (!isLoaded && !loadTimeout) {
     return mobile ? null : (
       <div
         style={{
