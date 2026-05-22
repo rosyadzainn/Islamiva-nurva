@@ -1,22 +1,28 @@
 "use client";
 
 import Link from "next/link";
-import { UserButton, useUser } from "@clerk/nextjs";
+import { useUser, useClerk } from "@clerk/nextjs";
 import { useLang } from "@/contexts/language-context";
 import { translations } from "@/lib/translations";
+import { LogOut } from "lucide-react";
 
 export function AuthButton({ mobile }: { mobile?: boolean }) {
   const { isSignedIn, isLoaded, user } = useUser();
+  const { openUserProfile, signOut } = useClerk();
   const { lang } = useLang();
   const tn = translations[lang].nav;
   const tc = translations[lang].common;
+
+  const initials = (
+    (user?.firstName?.[0] ?? "") + (user?.lastName?.[0] ?? "")
+  ).toUpperCase() || user?.emailAddresses?.[0]?.emailAddress?.[0]?.toUpperCase() || "?";
 
   if (!isLoaded) {
     return mobile ? null : (
       <div
         style={{
-          width: 30,
-          height: 30,
+          width: 32,
+          height: 32,
           borderRadius: 9999,
           background: "rgba(255,255,255,0.06)",
           border: "1px solid var(--islametra-line)",
@@ -27,6 +33,51 @@ export function AuthButton({ mobile }: { mobile?: boolean }) {
   }
 
   if (isSignedIn) {
+    const avatar = (
+      <button
+        onClick={() => openUserProfile()}
+        aria-label="Buka profil"
+        style={{
+          width: mobile ? 40 : 32,
+          height: mobile ? 40 : 32,
+          borderRadius: "50%",
+          overflow: "hidden",
+          border: "2px solid oklch(0.62 0.13 155 / 0.35)",
+          cursor: "pointer",
+          flexShrink: 0,
+          padding: 0,
+          background: "oklch(0.62 0.13 155 / 0.2)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          transition: "border-color 0.15s ease",
+        }}
+        onMouseEnter={(e) => { e.currentTarget.style.borderColor = "oklch(0.62 0.13 155 / 0.6)"; }}
+        onMouseLeave={(e) => { e.currentTarget.style.borderColor = "oklch(0.62 0.13 155 / 0.35)"; }}
+      >
+        {user?.imageUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={user.imageUrl}
+            alt={user?.firstName ?? "Profil"}
+            style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+          />
+        ) : (
+          <span
+            style={{
+              fontSize: mobile ? 14 : 11,
+              fontWeight: 700,
+              color: "oklch(0.92 0.1 155)",
+              fontFamily: "'Geist', sans-serif",
+              userSelect: "none",
+            }}
+          >
+            {initials}
+          </span>
+        )}
+      </button>
+    );
+
     if (mobile) {
       return (
         <div
@@ -40,16 +91,17 @@ export function AuthButton({ mobile }: { mobile?: boolean }) {
             border: "1px solid oklch(0.62 0.13 155 / 0.2)",
           }}
         >
-          <UserButton
-            appearance={{ elements: { avatarBox: { width: 32, height: 32 } } }}
-          />
-          <div>
+          {avatar}
+          <div style={{ flex: 1, minWidth: 0 }}>
             <p
               style={{
                 fontSize: 13,
                 fontWeight: 500,
                 color: "var(--islametra-fg)",
                 fontFamily: "'Geist', sans-serif",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
               }}
             >
               {user?.firstName ?? user?.emailAddresses?.[0]?.emailAddress?.split("@")[0] ?? tc.guest}
@@ -65,18 +117,38 @@ export function AuthButton({ mobile }: { mobile?: boolean }) {
               ● {tc.loggedIn}
             </p>
           </div>
+          <button
+            onClick={() => signOut()}
+            aria-label="Keluar"
+            style={{
+              width: 32,
+              height: 32,
+              borderRadius: 8,
+              border: "1px solid var(--islametra-line)",
+              background: "rgba(255,255,255,0.04)",
+              color: "var(--islametra-fg-dim)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              flexShrink: 0,
+            }}
+          >
+            <LogOut size={13} />
+          </button>
         </div>
       );
     }
 
     return (
-      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+        {avatar}
         <div
           style={{
             display: "flex",
             alignItems: "center",
-            gap: 6,
-            padding: "4px 10px 4px 6px",
+            gap: 5,
+            padding: "4px 10px",
             borderRadius: 9999,
             background: "oklch(0.62 0.13 155 / 0.1)",
             border: "1px solid oklch(0.62 0.13 155 / 0.2)",
@@ -103,9 +175,6 @@ export function AuthButton({ mobile }: { mobile?: boolean }) {
             {user?.firstName ?? tn.signIn}
           </span>
         </div>
-        <UserButton
-          appearance={{ elements: { avatarBox: { width: 28, height: 28 } } }}
-        />
       </div>
     );
   }
