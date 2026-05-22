@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
 import { useUser, useClerk } from "@clerk/nextjs";
 import { useLang } from "@/contexts/language-context";
 import { translations } from "@/lib/translations";
@@ -9,6 +10,7 @@ import { LogOut } from "lucide-react";
 export function AuthButton({ mobile }: { mobile?: boolean }) {
   const { isSignedIn, isLoaded, user } = useUser();
   const { openUserProfile, signOut } = useClerk();
+  const [imgError, setImgError] = useState(false);
   const { lang } = useLang();
   const tn = translations[lang].nav;
   const tc = translations[lang].common;
@@ -46,7 +48,7 @@ export function AuthButton({ mobile }: { mobile?: boolean }) {
           cursor: "pointer",
           flexShrink: 0,
           padding: 0,
-          background: "oklch(0.62 0.13 155 / 0.2)",
+          background: "oklch(0.45 0.14 155)",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -55,21 +57,23 @@ export function AuthButton({ mobile }: { mobile?: boolean }) {
         onMouseEnter={(e) => { e.currentTarget.style.borderColor = "oklch(0.62 0.13 155 / 0.6)"; }}
         onMouseLeave={(e) => { e.currentTarget.style.borderColor = "oklch(0.62 0.13 155 / 0.35)"; }}
       >
-        {user?.imageUrl ? (
+        {user?.imageUrl && !imgError ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={user.imageUrl}
             alt={user?.firstName ?? "Profil"}
+            onError={() => setImgError(true)}
             style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
           />
         ) : (
           <span
             style={{
-              fontSize: mobile ? 14 : 11,
+              fontSize: mobile ? 14 : 12,
               fontWeight: 700,
-              color: "oklch(0.92 0.1 155)",
+              color: "#fff",
               fontFamily: "'Geist', sans-serif",
               userSelect: "none",
+              lineHeight: 1,
             }}
           >
             {initials}
