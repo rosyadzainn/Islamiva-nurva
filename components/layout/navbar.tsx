@@ -353,7 +353,7 @@ export function Navbar() {
                   borderRadius: 8,
                   overflow: "hidden",
                   flexShrink: 0,
-                  boxShadow: "0 3px 12px -4px oklch(0.62 0.13 155 / 0.6)",
+                  boxShadow: "0 3px 12px -4px rgba(0,0,0,0.5)",
                 }}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}

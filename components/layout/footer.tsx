@@ -46,7 +46,7 @@ export function Footer() {
                 style={{
                   width: 32, height: 32, borderRadius: 9,
                   overflow: "hidden",
-                  boxShadow: "0 3px 14px -4px oklch(0.62 0.13 155 / 0.5)",
+                  boxShadow: "0 3px 14px -4px rgba(0,0,0,0.5)",
                   flexShrink: 0,
                 }}
               >
