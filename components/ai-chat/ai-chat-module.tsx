@@ -657,6 +657,19 @@ export function AiChatModule() {
         }),
       });
 
+      if (res.status === 429) {
+        toast.error("Terlalu banyak pesan. Tunggu sebentar sebelum mengirim lagi.", { duration: 5000 });
+        setSessions((prev) =>
+          prev.map((s) =>
+            s.id === sessionId
+              ? { ...s, messages: s.messages.filter((m) => m.id !== userMessage.id) }
+              : s
+          )
+        );
+        setInput(text);
+        setIsLoading(false);
+        return;
+      }
       if (!res.ok) throw new Error("Failed to get response");
       if (!res.body) throw new Error("No response body");
 

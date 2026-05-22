@@ -85,11 +85,41 @@ export function useBookmarks() {
     if (!isLoaded) return;
 
     if (isSignedIn) {
+      const localBookmarks = loadLocal();
+
       fetch("/api/bookmarks")
         .then((r) => r.json())
-        .then((data: { bookmarks: { type: string; referenceId: string; metadata: unknown; createdAt: string }[] }) => {
-          const parsed = (data.bookmarks ?? []).map(rowToBookmark).filter(Boolean) as Bookmark[];
-          setBookmarks(parsed);
+        .then(async (data: { bookmarks: { type: string; referenceId: string; metadata: unknown; createdAt: string }[] }) => {
+          const dbBookmarks = (data.bookmarks ?? []).map(rowToBookmark).filter(Boolean) as Bookmark[];
+          const dbKeys = new Set(dbBookmarks.map(getKey));
+
+          // Upload local bookmarks that don't exist in DB yet (merge on login)
+          const toUpload = localBookmarks.filter((b) => !dbKeys.has(getKey(b)));
+          if (toUpload.length > 0) {
+            await Promise.allSettled(
+              toUpload.map((bookmark) =>
+                fetch("/api/bookmarks", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    type: TYPE_MAP[bookmark.type],
+                    referenceId: getReferenceId(bookmark),
+                    metadata: getMetadata(bookmark),
+                  }),
+                })
+              )
+            );
+            // Clear localStorage after successful merge
+            localStorage.removeItem(STORAGE_KEY);
+          }
+
+          // Merge: DB bookmarks + newly uploaded local ones
+          const mergedKeys = new Set(dbBookmarks.map(getKey));
+          const merged = [
+            ...dbBookmarks,
+            ...toUpload.filter((b) => !mergedKeys.has(getKey(b))),
+          ];
+          setBookmarks(merged);
           setSynced(true);
         })
         .catch(() => {

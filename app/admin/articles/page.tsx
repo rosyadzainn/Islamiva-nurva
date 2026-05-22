@@ -1,6 +1,7 @@
 import { requireAdmin } from "@/lib/admin-guard";
 import Link from "next/link";
 import { FileText, Plus, Eye, EyeOff } from "lucide-react";
+import { ArticleActions } from "@/components/admin/article-actions";
 
 export const dynamic = "force-dynamic";
 
@@ -49,8 +50,8 @@ export default async function AdminArticlesPage() {
 
       <div style={{ borderRadius: 14, backgroundColor: "var(--islametra-bg)", border: "1px solid var(--islametra-line)", overflow: "hidden" }}>
         {/* Header */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 150px 100px 120px", padding: "12px 20px", borderBottom: "1px solid var(--islametra-line)", background: "rgba(255,255,255,0.02)" }}>
-          {["Judul", "Kategori", "Status", "Dibuat"].map((h) => (
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 150px 100px 120px 80px", padding: "12px 20px", borderBottom: "1px solid var(--islametra-line)", background: "rgba(255,255,255,0.02)" }}>
+          {["Judul", "Kategori", "Status", "Dibuat", "Aksi"].map((h) => (
             <span key={h} style={{ fontSize: 11, fontFamily: "'Geist Mono', monospace", color: "var(--islametra-fg-dim)", letterSpacing: "0.06em", textTransform: "uppercase" }}>{h}</span>
           ))}
         </div>
@@ -81,7 +82,7 @@ export default async function AdminArticlesPage() {
               key={article.id}
               style={{
                 display: "grid",
-                gridTemplateColumns: "1fr 150px 100px 120px",
+                gridTemplateColumns: "1fr 150px 100px 120px 80px",
                 padding: "14px 20px",
                 borderBottom: i < articles.length - 1 ? "1px solid var(--islametra-line)" : "none",
                 alignItems: "center",
@@ -113,6 +114,7 @@ export default async function AdminArticlesPage() {
               <span style={{ fontSize: 11, fontFamily: "'Geist Mono', monospace", color: "var(--islametra-fg-dim)" }}>
                 {new Date(article.createdAt).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "2-digit" })}
               </span>
+              <ArticleActions id={article.id} />
             </div>
           ))
         )}

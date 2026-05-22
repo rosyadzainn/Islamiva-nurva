@@ -708,18 +708,14 @@ export function Navbar() {
                     style={{
                       width: 26,
                       height: 26,
-                      borderRadius: 8,
-                      display: "grid",
-                      placeItems: "center",
-                      background:
-                        "radial-gradient(circle at 30% 30%, oklch(0.78 0.12 155) 0%, oklch(0.45 0.11 155) 70%)",
-                      color: "#08110b",
-                      fontSize: 14,
-                      fontFamily: "'Amiri', serif",
-                      fontWeight: 700,
+                      borderRadius: 7,
+                      overflow: "hidden",
+                      flexShrink: 0,
+                      boxShadow: "0 2px 10px -3px rgba(0,0,0,0.5)",
                     }}
                   >
-                    ن
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src="/icon.svg" alt="Islametra" width={26} height={26} style={{ display: "block" }} />
                   </div>
                   <span
                     style={{
