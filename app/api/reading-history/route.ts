@@ -1,6 +1,15 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 import type { Prisma } from "@prisma/client";
+import { z } from "zod";
+
+const ALLOWED_HISTORY_TYPES = ["quran", "hadith", "doa", "article"] as const;
+
+const HistorySchema = z.object({
+  type: z.enum(ALLOWED_HISTORY_TYPES),
+  referenceId: z.string().min(1).max(128),
+  metadata: z.record(z.string(), z.unknown()).optional(),
+});
 
 async function getDbUser(clerkId: string) {
   const { default: prisma } = await import("@/lib/prisma");
@@ -28,14 +37,9 @@ export async function POST(req: NextRequest) {
   const { userId: clerkId } = await auth();
   if (!clerkId) return NextResponse.json({ ok: false });
 
-  const body = await req.json();
-  const { type, referenceId, metadata } = body as {
-    type: string;
-    referenceId: string;
-    metadata?: Record<string, unknown>;
-  };
-
-  if (!type || !referenceId) return NextResponse.json({ ok: false });
+  const parsed = HistorySchema.safeParse(await req.json());
+  if (!parsed.success) return NextResponse.json({ ok: false });
+  const { type, referenceId, metadata } = parsed.data;
 
   try {
     const { default: prisma } = await import("@/lib/prisma");

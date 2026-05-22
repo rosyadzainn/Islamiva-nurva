@@ -48,10 +48,24 @@ function vibrate(pattern: number | number[]) {
   }
 }
 
+const TASBIH_KEY = "islametra_tasbih";
+
+function loadTasbihState() {
+  if (typeof window === "undefined") return null;
+  try {
+    return JSON.parse(localStorage.getItem(TASBIH_KEY) ?? "null");
+  } catch {
+    return null;
+  }
+}
+
 export function TasbihModule() {
-  const [count, setCount] = useState(0);
-  const [selectedDhikr, setSelectedDhikr] = useState(DHIKR_LIST[0]);
-  const [target, setTarget] = useState(33);
+  const saved = typeof window !== "undefined" ? loadTasbihState() : null;
+  const [count, setCount] = useState<number>(saved?.count ?? 0);
+  const [selectedDhikr, setSelectedDhikr] = useState(
+    DHIKR_LIST.find((d) => d.id === saved?.dhikrId) ?? DHIKR_LIST[0]
+  );
+  const [target, setTarget] = useState<number>(saved?.target ?? 33);
   const [customTarget, setCustomTarget] = useState("");
   const [showCustom, setShowCustom] = useState(false);
   const [sessionTotal, setSessionTotal] = useState(0);
@@ -111,6 +125,13 @@ export function TasbihModule() {
     setCelebrated(false);
     if (celebrateTimeout.current) clearTimeout(celebrateTimeout.current);
   }, [selectedDhikr]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      localStorage.setItem(TASBIH_KEY, JSON.stringify({ count, dhikrId: selectedDhikr.id, target: effectiveTarget }));
+    } catch {}
+  }, [count, selectedDhikr.id, effectiveTarget]);
 
   const circumference = 2 * Math.PI * 110;
   const strokeDashoffset = circumference * (1 - progress);

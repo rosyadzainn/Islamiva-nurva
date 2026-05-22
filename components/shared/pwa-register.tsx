@@ -45,9 +45,13 @@ export function PwaRegister() {
       })
       .catch(() => {});
 
-    // When SW takes control (after reload), ensure page is fresh
+    // Reload once when a new SW takes control — guard against loop
+    let reloadTriggered = false;
     navigator.serviceWorker.addEventListener("controllerchange", () => {
-      window.location.reload();
+      if (!reloadTriggered) {
+        reloadTriggered = true;
+        window.location.reload();
+      }
     });
   }, []);
 

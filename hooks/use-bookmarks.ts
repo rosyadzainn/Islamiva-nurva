@@ -96,7 +96,7 @@ export function useBookmarks() {
           // Upload local bookmarks that don't exist in DB yet (merge on login)
           const toUpload = localBookmarks.filter((b) => !dbKeys.has(getKey(b)));
           if (toUpload.length > 0) {
-            await Promise.allSettled(
+            const results = await Promise.allSettled(
               toUpload.map((bookmark) =>
                 fetch("/api/bookmarks", {
                   method: "POST",
@@ -109,8 +109,9 @@ export function useBookmarks() {
                 })
               )
             );
-            // Clear localStorage after successful merge
-            localStorage.removeItem(STORAGE_KEY);
+            if (results.every((r) => r.status === "fulfilled")) {
+              localStorage.removeItem(STORAGE_KEY);
+            }
           }
 
           // Merge: DB bookmarks + newly uploaded local ones

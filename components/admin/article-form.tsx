@@ -118,6 +118,11 @@ export function ArticleForm({ initial }: { initial?: ArticleData }) {
             <div>
               <label style={labelStyle}>Slug (URL)</label>
               <input value={form.slug} onChange={e => handleChange("slug", e.target.value)} style={inputStyle} placeholder="judul-artikel" />
+              {isEdit && (
+                <p style={{ fontSize: 11, color: "oklch(0.75 0.08 80)", fontFamily: "'Geist', sans-serif", marginTop: 5 }}>
+                  ⚠ Mengubah slug dapat memutus URL artikel yang sudah dipublikasikan.
+                </p>
+              )}
             </div>
           </div>
 

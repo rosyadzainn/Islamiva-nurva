@@ -31,14 +31,26 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   }
 
   if (messages && messages.length > 0) {
-    await prisma.chatMessage.createMany({
-      data: messages.map((m) => ({
-        sessionId: id,
-        role: m.role,
-        content: m.content,
-      })),
-      skipDuplicates: true,
-    });
+    const validMessages = messages
+      .slice(0, 50) // max 50 messages per batch
+      .filter(
+        (m) =>
+          (m.role === "user" || m.role === "assistant") &&
+          typeof m.content === "string" &&
+          m.content.length > 0 &&
+          m.content.length <= 10000
+      );
+
+    if (validMessages.length > 0) {
+      await prisma.chatMessage.createMany({
+        data: validMessages.map((m) => ({
+          sessionId: id,
+          role: m.role,
+          content: m.content,
+        })),
+        skipDuplicates: true,
+      });
+    }
   }
 
   return NextResponse.json({ ok: true });

@@ -1,5 +1,5 @@
-const CACHE_NAME = "islametra-v1";
-const STATIC_CACHE = "islametra-static-v1";
+const CACHE_NAME = "islametra-v2";
+const STATIC_CACHE = "islametra-static-v2";
 
 const PRECACHE_PAGES = ["/", "/quran", "/doa", "/hadith", "/kisah-nabi", "/sejarah", "/jadwal-sholat", "/tasbih", "/zakat"];
 
