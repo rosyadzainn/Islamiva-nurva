@@ -7,6 +7,9 @@ const DEFAULT_SETTINGS = {
   featured_article_slug: "",
 };
 
+const ALLOWED_KEYS = new Set(Object.keys(DEFAULT_SETTINGS));
+const MAX_VALUE_LENGTH = 2000;
+
 export async function GET() {
   const result = await requireAdminApi();
   if (result instanceof NextResponse) return result;
@@ -29,8 +32,19 @@ export async function PATCH(req: NextRequest) {
   const body = await req.json() as Record<string, string>;
   const { default: prisma } = await import("@/lib/prisma");
 
+  const validEntries = Object.entries(body).filter(
+    ([key, value]) =>
+      ALLOWED_KEYS.has(key) &&
+      typeof value === "string" &&
+      value.length <= MAX_VALUE_LENGTH
+  );
+
+  if (validEntries.length === 0) {
+    return NextResponse.json({ error: "No valid settings provided" }, { status: 400 });
+  }
+
   await Promise.all(
-    Object.entries(body).map(([key, value]) =>
+    validEntries.map(([key, value]) =>
       prisma.siteSetting.upsert({
         where: { key },
         create: { key, value },

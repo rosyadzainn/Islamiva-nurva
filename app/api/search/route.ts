@@ -6,7 +6,11 @@ import { PROPHETS } from "@/data/prophet-stories";
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
-  const q = searchParams.get("q")?.toLowerCase().trim();
+  const raw = searchParams.get("q") ?? "";
+  if (raw.length > 100) {
+    return NextResponse.json({ results: [] });
+  }
+  const q = raw.toLowerCase().trim();
 
   if (!q || q.length < 2) {
     return NextResponse.json({ results: [] });

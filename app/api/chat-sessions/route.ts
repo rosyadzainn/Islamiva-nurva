@@ -18,10 +18,12 @@ export async function GET() {
     where: { userId: user.id },
     orderBy: { updatedAt: "desc" },
     take: 50,
-    include: {
-      messages: {
-        orderBy: { createdAt: "asc" },
-      },
+    select: {
+      id: true,
+      title: true,
+      createdAt: true,
+      updatedAt: true,
+      userId: true,
     },
   });
 

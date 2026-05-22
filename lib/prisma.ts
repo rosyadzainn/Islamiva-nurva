@@ -15,6 +15,7 @@ function createPrismaClient() {
 
 export const prisma = globalForPrisma.prisma ?? createPrismaClient();
 
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+// Cache in all non-test environments to avoid multiple PrismaClient instances
+if (process.env.NODE_ENV !== "test") globalForPrisma.prisma = prisma;
 
 export default prisma;

@@ -34,11 +34,15 @@ export async function POST(req: NextRequest) {
 
   let evt: ClerkUserEvent;
   try {
-    evt = wh.verify(payload, {
-      "svix-id": svix_id,
-      "svix-timestamp": svix_timestamp,
-      "svix-signature": svix_signature,
-    }) as ClerkUserEvent;
+    const verifyWithTimeout = Promise.race<ClerkUserEvent>([
+      Promise.resolve(wh.verify(payload, {
+        "svix-id": svix_id,
+        "svix-timestamp": svix_timestamp,
+        "svix-signature": svix_signature,
+      }) as ClerkUserEvent),
+      new Promise<never>((_, reject) => setTimeout(() => reject(new Error("timeout")), 5000)),
+    ]);
+    evt = await verifyWithTimeout;
   } catch {
     return NextResponse.json({ error: "Invalid webhook signature" }, { status: 400 });
   }

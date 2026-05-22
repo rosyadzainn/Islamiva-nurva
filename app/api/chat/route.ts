@@ -29,26 +29,42 @@ Format jawaban:
 - Sertakan referensi bila ada (contoh: QS. Al-Baqarah: 183 atau HR. Bukhari No. 1)`;
 
 const RATE_LIMIT_MAP = new Map<string, { count: number; resetTime: number }>();
+const MAX_REQUESTS = 20;
+const WINDOW_MS = 60_000;
 
-function checkRateLimit(ip: string): boolean {
+function getClientKey(req: NextRequest): string {
+  // Prefer the first IP in x-forwarded-for (before any proxies)
+  const forwarded = req.headers.get("x-forwarded-for");
+  const ip = forwarded ? forwarded.split(",")[0].trim() : null;
+  // Vercel also provides a real IP header
+  const realIp = req.headers.get("x-real-ip");
+  return ip || realIp || "anonymous";
+}
+
+function checkRateLimit(key: string): boolean {
   const now = Date.now();
-  const limit = RATE_LIMIT_MAP.get(ip);
 
-  if (!limit || now > limit.resetTime) {
-    RATE_LIMIT_MAP.set(ip, { count: 1, resetTime: now + 60000 });
-    return true;
+  // Cleanup stale entries to avoid memory leak
+  if (RATE_LIMIT_MAP.size > 5000) {
+    for (const [k, v] of RATE_LIMIT_MAP) {
+      if (now > v.resetTime) RATE_LIMIT_MAP.delete(k);
+    }
   }
 
-  if (limit.count >= 20) return false;
-
-  limit.count++;
+  const entry = RATE_LIMIT_MAP.get(key);
+  if (!entry || now > entry.resetTime) {
+    RATE_LIMIT_MAP.set(key, { count: 1, resetTime: now + WINDOW_MS });
+    return true;
+  }
+  if (entry.count >= MAX_REQUESTS) return false;
+  entry.count++;
   return true;
 }
 
 export async function POST(req: NextRequest) {
-  const ip = req.headers.get("x-forwarded-for") || "anonymous";
+  const clientKey = getClientKey(req);
 
-  if (!checkRateLimit(ip)) {
+  if (!checkRateLimit(clientKey)) {
     return new Response(
       JSON.stringify({ error: "Terlalu banyak permintaan. Coba lagi dalam 1 menit." }),
       { status: 429, headers: { "Content-Type": "application/json" } }
@@ -66,11 +82,11 @@ export async function POST(req: NextRequest) {
     }
 
     const sanitizedMessages = messages
-      .filter((m) => m.role && m.content && typeof m.content === "string")
+      .filter((m) => m.role && m.content && typeof m.content === "string" && m.content.length <= 4000)
       .slice(-20)
       .map((m) => ({
         role: m.role as "user" | "assistant",
-        content: m.content.slice(0, 2000),
+        content: (m.content as string).slice(0, 2000),
       }));
 
     const stream = await openai.chat.completions.create({

@@ -111,6 +111,22 @@ export default function BookmarkPage() {
       <div style={{ height: 1, background: "linear-gradient(90deg, transparent, var(--islametra-line-strong), transparent)" }} />
 
       <section style={{ maxWidth: 860, margin: "0 auto", padding: "clamp(40px, 6vw, 72px) 28px" }}>
+        {!isSignedIn && (
+          <div
+            role="note"
+            style={{
+              display: "flex", alignItems: "flex-start", gap: 12,
+              padding: "14px 18px", borderRadius: 12, marginBottom: 32,
+              background: "oklch(0.82 0.08 80 / 0.07)",
+              border: "1px solid oklch(0.82 0.08 80 / 0.2)",
+            }}
+          >
+            <span style={{ fontSize: 15, flexShrink: 0, marginTop: 1 }}>💡</span>
+            <p style={{ fontSize: 13, color: "var(--islametra-fg-mute)", fontFamily: "'Geist', sans-serif", lineHeight: 1.6, margin: 0 }}>
+              Bookmark kamu saat ini disimpan di perangkat ini saja. <strong style={{ color: "var(--islametra-fg-soft)" }}>Masuk</strong> agar bookmark tersinkronisasi di semua perangkat dan tidak hilang saat cache dihapus.
+            </p>
+          </div>
+        )}
         {total === 0 ? (
           <motion.div
             initial={{ opacity: 0, y: 12 }}

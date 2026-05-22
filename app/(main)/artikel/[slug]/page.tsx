@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { ChevronLeft } from "lucide-react";
+import DOMPurify from "isomorphic-dompurify";
 
 export const dynamic = "force-dynamic";
 
@@ -106,7 +107,7 @@ export default async function ArtikelDetailPage({ params }: { params: Promise<{ 
             .article-content strong { font-weight: 700; }
             .article-content em { font-style: italic; }
           `}</style>
-          <div className="article-content" dangerouslySetInnerHTML={{ __html: article.content }} />
+          <div className="article-content" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(article.content, { USE_PROFILES: { html: true } }) }} />
         </>
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>

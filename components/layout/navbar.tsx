@@ -52,8 +52,17 @@ function BelajarDropdown({ isLight, currentPath, belajarLinks, label }: { isLigh
       style={{ position: "relative" }}
       onMouseEnter={() => setOpen(true)}
       onMouseLeave={() => setOpen(false)}
+      onBlur={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget as Node)) setOpen(false);
+      }}
     >
       <button
+        aria-haspopup="true"
+        aria-expanded={open}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setOpen((v) => !v); }
+          if (e.key === "Escape") setOpen(false);
+        }}
         style={{
           position: "relative",
           display: "inline-flex",

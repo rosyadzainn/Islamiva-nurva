@@ -5,7 +5,15 @@ const PRECACHE_PAGES = ["/", "/quran", "/doa", "/hadith", "/kisah-nabi", "/sejar
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(PRECACHE_PAGES).catch(() => {}))
+    caches.open(CACHE_NAME).then((cache) =>
+      cache.addAll(PRECACHE_PAGES).catch((err) => {
+        console.warn("[SW] Precache partial failure:", err);
+        // Cache pages individually so one failure doesn't block the rest
+        return Promise.allSettled(
+          PRECACHE_PAGES.map((url) => cache.add(url).catch(() => {}))
+        );
+      })
+    )
   );
   self.skipWaiting();
 });

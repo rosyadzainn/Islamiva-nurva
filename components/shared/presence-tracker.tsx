@@ -4,15 +4,9 @@ import { useEffect, useRef, useState } from "react";
 
 const HEARTBEAT_INTERVAL = 30_000;
 
-function getSessionId(): string {
-  const key = "islametra_sid";
-  let sid = localStorage.getItem(key);
-  if (!sid) {
-    sid = crypto.randomUUID();
-    localStorage.setItem(key, sid);
-  }
-  return sid;
-}
+// Session ID lives only for this browser tab — no localStorage persistence.
+// This avoids inflated counts from stale localStorage entries across devices.
+const TAB_SESSION_ID = typeof crypto !== "undefined" ? crypto.randomUUID() : Math.random().toString(36).slice(2);
 
 export function PresenceTracker() {
   const [count, setCount] = useState(0);
@@ -21,7 +15,7 @@ export function PresenceTracker() {
 
   async function heartbeat() {
     try {
-      const sessionId = getSessionId();
+      const sessionId = TAB_SESSION_ID;
       const path = window.location.pathname;
       const res = await fetch("/api/presence", {
         method: "POST",

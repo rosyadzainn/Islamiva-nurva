@@ -140,22 +140,22 @@ export function Footer() {
             <span>Made with care for the ummah</span>
           </div>
           <div className="flex gap-1.5">
-            {["Globe", "Compass", "Play"].map((name) => (
-              <a
-                key={name}
-                href="#"
-                style={{
-                  width: 34, height: 34, borderRadius: 9,
-                  display: "grid", placeItems: "center",
-                  color: "var(--islametra-fg-mute)",
-                  border: "1px solid var(--islametra-line)",
-                  background: isLight ? "rgba(0,0,0,0.02)" : "rgba(255,255,255,0.02)",
-                  fontSize: 13,
-                }}
-              >
-                {name === "Globe" ? "🌐" : name === "Compass" ? "🧭" : "▶"}
-              </a>
-            ))}
+            <a
+              href="https://www.islametra.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Website Islametra"
+              style={{
+                width: 34, height: 34, borderRadius: 9,
+                display: "grid", placeItems: "center",
+                color: "var(--islametra-fg-mute)",
+                border: "1px solid var(--islametra-line)",
+                background: isLight ? "rgba(0,0,0,0.02)" : "rgba(255,255,255,0.02)",
+                fontSize: 13, textDecoration: "none",
+              }}
+            >
+              🌐
+            </a>
           </div>
         </div>
 

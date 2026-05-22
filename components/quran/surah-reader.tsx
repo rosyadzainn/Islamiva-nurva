@@ -82,10 +82,13 @@ export function SurahReader({ surah }: SurahReaderProps) {
       setLoading(true);
       setAyahs([]);
       try {
+        const timeout = (ms: number) => new Promise<never>((_, reject) => setTimeout(() => reject(new Error("timeout")), ms));
+        const fetchWithTimeout = (url: string) => Promise.race([fetch(url), timeout(10000)]);
+
         const [arabicRes, indoRes, latinRes] = await Promise.all([
-          fetch(`${QURAN_API_BASE}/surah/${surah.number}`),
-          fetch(`${QURAN_API_BASE}/surah/${surah.number}/id.indonesian`),
-          fetch(`${QURAN_API_BASE}/surah/${surah.number}/en.transliteration`),
+          fetchWithTimeout(`${QURAN_API_BASE}/surah/${surah.number}`),
+          fetchWithTimeout(`${QURAN_API_BASE}/surah/${surah.number}/id.indonesian`),
+          fetchWithTimeout(`${QURAN_API_BASE}/surah/${surah.number}/en.transliteration`),
         ]);
         const [arabicData, indoData, latinData] = await Promise.all([
           arabicRes.json(),

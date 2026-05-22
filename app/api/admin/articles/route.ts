@@ -13,6 +13,16 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Judul, slug, dan konten wajib diisi." }, { status: 400 });
     }
 
+    if (typeof title === "string" && title.length > 300) {
+      return NextResponse.json({ error: "Judul terlalu panjang (maks 300 karakter)." }, { status: 400 });
+    }
+    if (typeof content === "string" && content.length > 500_000) {
+      return NextResponse.json({ error: "Konten terlalu besar (maks 500KB)." }, { status: 400 });
+    }
+    if (typeof slug === "string" && !/^[a-z0-9-]+$/.test(slug)) {
+      return NextResponse.json({ error: "Slug hanya boleh huruf kecil, angka, dan tanda (-)" }, { status: 400 });
+    }
+
     const { default: prisma } = await import("@/lib/prisma");
     const article = await prisma.article.create({
       data: { title, slug, excerpt: excerpt || null, content, category, published: !!published, seoTitle: seoTitle || null, seoDesc: seoDesc || null },
