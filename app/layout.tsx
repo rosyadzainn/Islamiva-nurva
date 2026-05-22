@@ -6,6 +6,7 @@ import { LanguageProvider } from "@/contexts/language-context";
 import { Toaster } from "react-hot-toast";
 import { GoogleAnalytics } from "@/components/providers/google-analytics";
 import { PwaRegister } from "@/components/shared/pwa-register";
+import { PresenceTracker } from "@/components/shared/presence-tracker";
 import "./globals.css";
 
 const geist = Geist({
@@ -132,6 +133,7 @@ const Inner = ({ children }: { children: React.ReactNode }) => (
       </a>
       <GoogleAnalytics />
       <PwaRegister />
+      <PresenceTracker />
       <ThemeProvider>
         <LanguageProvider>
         {children}

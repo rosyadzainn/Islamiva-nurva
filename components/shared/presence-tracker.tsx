@@ -1,0 +1,96 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+
+const HEARTBEAT_INTERVAL = 30_000;
+
+function getSessionId(): string {
+  const key = "islametra_sid";
+  let sid = localStorage.getItem(key);
+  if (!sid) {
+    sid = crypto.randomUUID();
+    localStorage.setItem(key, sid);
+  }
+  return sid;
+}
+
+export function PresenceTracker() {
+  const [count, setCount] = useState(0);
+  const [visible, setVisible] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  async function heartbeat() {
+    try {
+      const sessionId = getSessionId();
+      const path = window.location.pathname;
+      const res = await fetch("/api/presence", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sessionId, path }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setCount(data.count ?? 0);
+        setVisible(true);
+      }
+    } catch {
+      // silently ignore — non-critical feature
+    }
+  }
+
+  useEffect(() => {
+    heartbeat();
+    timerRef.current = setInterval(heartbeat, HEARTBEAT_INTERVAL);
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, []);
+
+  if (!visible || count === 0) return null;
+
+  return (
+    <div
+      aria-label={`${count} orang sedang online`}
+      style={{
+        position: "fixed",
+        bottom: 24,
+        right: 24,
+        zIndex: 50,
+        display: "flex",
+        alignItems: "center",
+        gap: 6,
+        padding: "6px 12px 6px 9px",
+        borderRadius: 99,
+        background: "rgba(10,12,11,0.82)",
+        border: "1px solid rgba(255,255,255,0.08)",
+        backdropFilter: "blur(12px)",
+        boxShadow: "0 4px 24px -6px rgba(0,0,0,0.5)",
+        fontSize: 12,
+        fontFamily: "'Geist Mono', monospace",
+        color: "var(--islametra-fg-mute)",
+        pointerEvents: "none",
+        userSelect: "none",
+      }}
+    >
+      <span
+        style={{
+          width: 7,
+          height: 7,
+          borderRadius: "50%",
+          background: "oklch(0.72 0.18 145)",
+          boxShadow: "0 0 6px oklch(0.72 0.18 145 / 0.7)",
+          flexShrink: 0,
+          animation: "presence-pulse 2s ease-in-out infinite",
+        }}
+      />
+      <span style={{ color: "var(--islametra-fg-soft)" }}>{count}</span>
+      <span>online</span>
+      <style>{`
+        @keyframes presence-pulse {
+          0%, 100% { opacity: 1; box-shadow: 0 0 6px oklch(0.72 0.18 145 / 0.7); }
+          50% { opacity: 0.6; box-shadow: 0 0 10px oklch(0.72 0.18 145 / 0.4); }
+        }
+      `}</style>
+    </div>
+  );
+}

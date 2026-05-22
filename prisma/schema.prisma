@@ -164,3 +164,11 @@ model IslamicHistory {
 
   @@map("islamic_history")
 }
+
+model Presence {
+  sessionId String   @id
+  path      String   @default("/")
+  updatedAt DateTime @updatedAt
+
+  @@map("presence")
+}
