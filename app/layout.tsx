@@ -164,7 +164,11 @@ export default function RootLayout({
 }>) {
   if (useClerk) {
     return (
-      <ClerkProvider>
+      <ClerkProvider
+        signInUrl="/sign-in"
+        signUpUrl="/sign-up"
+        afterSignOutUrl="/"
+      >
         <Inner>{children}</Inner>
       </ClerkProvider>
     );
