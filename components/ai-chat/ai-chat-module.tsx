@@ -756,8 +756,11 @@ export function AiChatModule() {
   };
 
   const handleCopy = (text: string) => {
-    navigator.clipboard.writeText(text);
-    toast.success(ta.toastCopied);
+    navigator.clipboard.writeText(text).then(() => {
+      toast.success(ta.toastCopied);
+    }).catch(() => {
+      toast.error("Gagal menyalin teks.");
+    });
   };
 
   const handleDeleteSession = (id: string) => {

@@ -7,7 +7,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const { title, slug, excerpt, content, category, published, seoTitle, seoDesc } = body;
+    const { title, slug, excerpt, content, imageUrl, category, published, seoTitle, seoDesc } = body;
 
     if (!title || !content || !slug) {
       return NextResponse.json({ error: "Judul, slug, dan konten wajib diisi." }, { status: 400 });
@@ -25,13 +25,18 @@ export async function POST(req: NextRequest) {
 
     const { default: prisma } = await import("@/lib/prisma");
     const article = await prisma.article.create({
-      data: { title, slug, excerpt: excerpt || null, content, category, published: !!published, seoTitle: seoTitle || null, seoDesc: seoDesc || null },
+      data: {
+        title, slug, excerpt: excerpt || null, content,
+        imageUrl: imageUrl || null,
+        category, published: !!published,
+        seoTitle: seoTitle || null, seoDesc: seoDesc || null,
+      },
     });
 
     return NextResponse.json({ article });
   } catch (err: unknown) {
-    const msg = err instanceof Error ? err.message : "Unknown error";
+    const msg = err instanceof Error ? err.message : "";
     if (msg.includes("Unique constraint")) return NextResponse.json({ error: "Slug sudah digunakan." }, { status: 409 });
-    return NextResponse.json({ error: msg }, { status: 500 });
+    return NextResponse.json({ error: "Gagal menyimpan artikel." }, { status: 500 });
   }
 }

@@ -40,8 +40,8 @@ export default function BookmarkPage() {
     }
   }, [isSignedIn]);
 
-  const handleRemove = (key: string, label: string) => {
-    remove(key);
+  const handleRemove = async (key: string, label: string) => {
+    await remove(key);
     toast.success(`"${label}" ${tb.removed}`);
   };
 

@@ -64,11 +64,11 @@ export async function PATCH(
 
     return NextResponse.json({ article });
   } catch (err: unknown) {
-    const msg = err instanceof Error ? err.message : "Unknown error";
+    const msg = err instanceof Error ? err.message : "";
     if (msg.includes("Unique constraint")) {
       return NextResponse.json({ error: "Slug sudah digunakan." }, { status: 409 });
     }
-    return NextResponse.json({ error: msg }, { status: 500 });
+    return NextResponse.json({ error: "Gagal memperbarui artikel." }, { status: 500 });
   }
 }
 

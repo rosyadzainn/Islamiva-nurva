@@ -23,7 +23,11 @@ export async function GET() {
       title: true,
       createdAt: true,
       updatedAt: true,
-      userId: true,
+      messages: {
+        orderBy: { createdAt: "asc" },
+        take: 100,
+        select: { id: true, role: true, content: true, createdAt: true },
+      },
     },
   });
 
@@ -43,7 +47,7 @@ export async function POST(req: NextRequest) {
 
   const session = await prisma.chatSession.create({
     data: { userId: user.id, title: title ?? "Sesi Baru" },
-    include: { messages: true },
+    select: { id: true, title: true, createdAt: true, updatedAt: true },
   });
 
   return NextResponse.json({ session });

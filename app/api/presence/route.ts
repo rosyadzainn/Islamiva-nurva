@@ -6,7 +6,7 @@ const TIMEOUT_MS = 2 * 60 * 1000; // 2 minutes = "online"
 export async function POST(req: NextRequest) {
   try {
     const { sessionId, path } = await req.json();
-    if (!sessionId || typeof sessionId !== "string") {
+    if (!sessionId || typeof sessionId !== "string" || sessionId.length > 128) {
       return Response.json({ count: 0 });
     }
 
