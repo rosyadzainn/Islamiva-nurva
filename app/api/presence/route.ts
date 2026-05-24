@@ -10,13 +10,18 @@ export async function POST(req: NextRequest) {
       return Response.json({ count: 0 });
     }
 
+    const safePath =
+      path && typeof path === "string" && path.length <= 512 && /^\/[^\s]*$/.test(path)
+        ? path
+        : "/";
+
     const cutoff = new Date(Date.now() - TIMEOUT_MS);
 
     await Promise.all([
       prisma.presence.upsert({
         where: { sessionId },
-        create: { sessionId, path: path || "/" },
-        update: { path: path || "/", updatedAt: new Date() },
+        create: { sessionId, path: safePath },
+        update: { path: safePath, updatedAt: new Date() },
       }),
       prisma.presence.deleteMany({
         where: { updatedAt: { lt: cutoff } },

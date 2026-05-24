@@ -71,8 +71,18 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  let body: { messages?: unknown };
   try {
-    const { messages } = await req.json();
+    body = await req.json();
+  } catch {
+    return new Response(
+      JSON.stringify({ error: "Body tidak valid" }),
+      { status: 400, headers: { "Content-Type": "application/json" } }
+    );
+  }
+
+  try {
+    const { messages } = body;
 
     if (!messages || !Array.isArray(messages) || messages.length === 0) {
       return new Response(
@@ -82,12 +92,26 @@ export async function POST(req: NextRequest) {
     }
 
     const sanitizedMessages = messages
-      .filter((m) => m.role && m.content && typeof m.content === "string" && m.content.length <= 4000)
+      .filter(
+        (m) =>
+          (m.role === "user" || m.role === "assistant") &&
+          m.content &&
+          typeof m.content === "string" &&
+          m.content.length > 0 &&
+          m.content.length <= 4000
+      )
       .slice(-20)
       .map((m) => ({
         role: m.role as "user" | "assistant",
         content: (m.content as string).slice(0, 2000),
       }));
+
+    if (sanitizedMessages.length === 0) {
+      return new Response(
+        JSON.stringify({ error: "Tidak ada pesan yang valid" }),
+        { status: 400, headers: { "Content-Type": "application/json" } }
+      );
+    }
 
     const stream = await openai.chat.completions.create({
       model: "llama-3.3-70b-versatile",

@@ -24,7 +24,20 @@ const SEJARAH_SLUGS = [
   "islam-di-eropa",
 ];
 
-export default function sitemap(): MetadataRoute.Sitemap {
+async function getPublishedArticles(): Promise<{ slug: string; updatedAt: Date }[]> {
+  try {
+    const { default: prisma } = await import("@/lib/prisma");
+    return await prisma.article.findMany({
+      where: { published: true },
+      select: { slug: true, updatedAt: true },
+      orderBy: { updatedAt: "desc" },
+    });
+  } catch {
+    return [];
+  }
+}
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: BASE_URL, changeFrequency: "daily", priority: 1 },
     { url: `${BASE_URL}/quran`, changeFrequency: "weekly", priority: 0.9 },
@@ -32,6 +45,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE_URL}/hadith`, changeFrequency: "weekly", priority: 0.9 },
     { url: `${BASE_URL}/kisah-nabi`, changeFrequency: "monthly", priority: 0.8 },
     { url: `${BASE_URL}/sejarah`, changeFrequency: "monthly", priority: 0.8 },
+    { url: `${BASE_URL}/artikel`, changeFrequency: "weekly", priority: 0.8 },
     { url: `${BASE_URL}/kalender`, changeFrequency: "daily", priority: 0.7 },
     { url: `${BASE_URL}/tasbih`, changeFrequency: "monthly", priority: 0.7 },
     { url: `${BASE_URL}/jadwal-sholat`, changeFrequency: "daily", priority: 0.8 },
@@ -63,5 +77,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.6,
   }));
 
-  return [...staticRoutes, ...quranRoutes, ...doaRoutes, ...kisahRoutes, ...sejarahRoutes];
+  const articles = await getPublishedArticles();
+  const artikelRoutes: MetadataRoute.Sitemap = articles.map((a) => ({
+    url: `${BASE_URL}/artikel/${a.slug}`,
+    lastModified: a.updatedAt,
+    changeFrequency: "monthly",
+    priority: 0.7,
+  }));
+
+  return [...staticRoutes, ...quranRoutes, ...doaRoutes, ...kisahRoutes, ...sejarahRoutes, ...artikelRoutes];
 }
