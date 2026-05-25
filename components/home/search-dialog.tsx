@@ -267,6 +267,7 @@ export function SearchDialog({ open, onClose }: SearchDialogProps) {
               >
                 <Search size={17} style={{ color: query ? "oklch(0.78 0.13 155)" : "var(--islametra-fg-dim)", flexShrink: 0, transition: "color 0.2s" }} />
                 <input
+                  aria-label="Cari konten Islami"
                   ref={inputRef}
                   value={query}
                   onChange={(e) => { setQuery(e.target.value); setFocused(-1); }}

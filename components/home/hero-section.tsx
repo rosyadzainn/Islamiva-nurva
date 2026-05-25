@@ -329,6 +329,8 @@ export function HeroSection() {
           {/* Search / Prompt bar */}
           <form
             onSubmit={handleSearch}
+            role="search"
+            aria-label="Cari konten Islami"
             style={{
               background: isLight
                 ? "rgba(255,255,255,0.82)"
@@ -343,14 +345,17 @@ export function HeroSection() {
                 : "0 1px 0 rgba(255,255,255,0.04) inset, 0 30px 80px -30px rgba(0,0,0,0.7), 0 0 0 6px oklch(0.62 0.13 155 / 0.04)",
             }}
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style={{ color: "var(--islametra-emerald-soft)", flexShrink: 0 }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style={{ color: "var(--islametra-emerald-soft)", flexShrink: 0 }} aria-hidden="true">
               <path d="M12 2L13.5 9.5L21 11L13.5 12.5L12 20L10.5 12.5L3 11L10.5 9.5L12 2Z" fill="currentColor" />
             </svg>
+            <label htmlFor="hero-search" className="sr-only">Cari surah, doa, atau hadits</label>
             <input
-              type="text"
+              id="hero-search"
+              type="search"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder={th.placeholder}
+              aria-label="Cari surah, doa, atau hadits"
               style={{
                 flex: 1, background: "transparent",
                 border: 0, outline: 0,
@@ -384,6 +389,8 @@ export function HeroSection() {
             {th.chips.map((chip) => (
               <button
                 key={chip}
+                type="button"
+                onClick={() => { setQuery(chip); router.push(`/quran?search=${encodeURIComponent(chip)}`); }}
                 className="transition-colors"
                 style={{
                   padding: "8px 14px", borderRadius: 999,

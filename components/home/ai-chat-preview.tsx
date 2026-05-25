@@ -430,6 +430,8 @@ export function AiChatPreview() {
               >
                 <input
                   readOnly
+                  tabIndex={-1}
+                  aria-hidden="true"
                   value={ta.inputPlaceholder}
                   style={{
                     flex: 1, background: "transparent",

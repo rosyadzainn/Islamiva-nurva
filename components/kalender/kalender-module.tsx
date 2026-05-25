@@ -661,6 +661,7 @@ export function KalenderModule() {
                   </label>
                   <input
                     type="date"
+                    aria-label="Tanggal Masehi"
                     value={converterInput}
                     onChange={(e) => {
                       setConverterInput(e.target.value);

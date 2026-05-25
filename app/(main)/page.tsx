@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
+import dynamic from "next/dynamic";
 import { HeroSection } from "@/components/home/hero-section";
-import { FeaturedSurah } from "@/components/home/featured-surah";
-import { DailyDoa } from "@/components/home/daily-doa";
-import { FeaturedHadith } from "@/components/home/featured-hadith";
-import { ModuleGrid } from "@/components/home/module-grid";
-import { AiChatPreview } from "@/components/home/ai-chat-preview";
+
+const ModuleGrid = dynamic(() => import("@/components/home/module-grid").then(m => ({ default: m.ModuleGrid })));
+const FeaturedSurah = dynamic(() => import("@/components/home/featured-surah").then(m => ({ default: m.FeaturedSurah })));
+const DailyDoa = dynamic(() => import("@/components/home/daily-doa").then(m => ({ default: m.DailyDoa })));
+const FeaturedHadith = dynamic(() => import("@/components/home/featured-hadith").then(m => ({ default: m.FeaturedHadith })));
+const AiChatPreview = dynamic(() => import("@/components/home/ai-chat-preview").then(m => ({ default: m.AiChatPreview })));
 
 export const metadata: Metadata = {
   title: "Islametra - Platform Islami Modern",

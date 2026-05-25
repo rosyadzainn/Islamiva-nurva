@@ -180,6 +180,7 @@ export function QuranList() {
               }}
             />
             <input
+              aria-label="Cari surah Al-Quran"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder={tq.searchPlaceholder}

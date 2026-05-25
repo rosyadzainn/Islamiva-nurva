@@ -1168,6 +1168,7 @@ export function AiChatModule() {
             >
               <div style={{ flex: 1 }}>
                 <input
+                  aria-label="Tanya AI Islametra"
                   ref={inputRef}
                   value={input}
                   onChange={(e) => setInput(e.target.value)}

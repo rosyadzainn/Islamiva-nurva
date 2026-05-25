@@ -248,6 +248,7 @@ export function DoaModule() {
             }}
           />
           <input
+            aria-label="Cari doa"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder={td.searchPlaceholder}

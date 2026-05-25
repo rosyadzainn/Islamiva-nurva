@@ -388,6 +388,7 @@ export function HadithModule() {
             }}
           />
           <input
+            aria-label="Cari hadits"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder={th.searchPlaceholder}
