@@ -33,14 +33,14 @@ const amiri = Amiri({
   subsets: ["arabic"],
   weight: ["400", "700"],
   variable: "--font-amiri",
-  display: "swap",
+  display: "optional",
 });
 
 const scheherazade = Scheherazade_New({
   subsets: ["arabic"],
   weight: ["400"],
   variable: "--font-scheherazade",
-  display: "swap",
+  display: "optional",
 });
 
 export const metadata: Metadata = {

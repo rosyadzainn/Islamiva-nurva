@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { ArrowRight } from "lucide-react";
 import { useTheme } from "next-themes";
@@ -11,10 +10,10 @@ import { translations } from "@/lib/translations";
 
 const GEOMETRIC_PATTERN = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160' fill='none' stroke='%23ffffff' stroke-width='0.6' stroke-opacity='0.07'><g transform='translate(80 80)'><polygon points='-30,0 -21,-21 0,-30 21,-21 30,0 21,21 0,30 -21,21'/><polygon points='-30,0 -21,-21 0,-30 21,-21 30,0 21,21 0,30 -21,21' transform='rotate(22.5)'/><circle r='30'/><circle r='15'/></g></svg>")`;
 
-const fadeUp = { initial: { opacity: 0, y: 14 }, animate: { opacity: 1, y: 0 } };
-// slideUp keeps opacity:1 so SSR-rendered content stays visible for LCP measurement
-const slideUp = { initial: { y: 14 }, animate: { y: 0 } };
-const ease = [0.2, 0.8, 0.2, 1] as const;
+const EASE = "cubic-bezier(0.2,0.8,0.2,1)";
+const fadeUp = (delay = 0) => ({ animation: `islametra-fade-up 0.9s ${EASE} ${delay}s both` });
+// slideUp keeps opacity:1 so SSR-rendered H1 (LCP element) stays visible immediately
+const slideUp = (delay = 0) => ({ animation: `islametra-slide-up 0.9s ${EASE} ${delay}s both` });
 
 export function HeroSection() {
   const [query, setQuery] = useState("");
@@ -98,7 +97,7 @@ export function HeroSection() {
         style={{ maxWidth: 1240, margin: "0 auto", padding: "0 28px", textAlign: "center" }}
       >
         {/* Eyebrow */}
-        <motion.div {...fadeUp} transition={{ duration: 0.9, ease }} style={{ marginBottom: 28 }}>
+        <div style={{ marginBottom: 28, ...fadeUp(0) }}>
           <span
             style={{
               display: "inline-flex", alignItems: "center", gap: 8,
@@ -121,30 +120,26 @@ export function HeroSection() {
             />
             {th.badge}
           </span>
-        </motion.div>
+        </div>
 
         {/* Bismillah */}
-        <motion.p
-          {...fadeUp}
-          transition={{ duration: 0.9, delay: 0.1, ease }}
+        <p
           className="font-arabic"
           lang="ar"
           dir="rtl"
           style={{
             fontSize: "clamp(20px, 2vw, 26px)",
             color: "var(--islametra-gold-soft)",
-            opacity: 0.85,
             textAlign: "center",
             marginBottom: 20,
+            ...fadeUp(0.1),
           }}
         >
           بِسْمِ ٱللَّٰهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ
-        </motion.p>
+        </p>
 
         {/* Heading */}
-        <motion.h1
-          {...slideUp}
-          transition={{ duration: 0.9, delay: 0.2, ease }}
+        <h1
           style={{
             fontFamily: "'Geist', sans-serif",
             fontWeight: 500,
@@ -155,6 +150,7 @@ export function HeroSection() {
             margin: "0 auto 24px",
             maxWidth: 900,
             textAlign: "center",
+            ...slideUp(0.2),
           }}
         >
           {th.heading1}{" "}
@@ -175,12 +171,10 @@ export function HeroSection() {
           </em>
           <br />
           {th.heading2}
-        </motion.h1>
+        </h1>
 
         {/* Lede */}
-        <motion.p
-          {...fadeUp}
-          transition={{ duration: 0.9, delay: 0.3, ease }}
+        <p
           style={{
             fontSize: "clamp(16px, 1.35vw, 18px)",
             color: "var(--islametra-fg-mute)",
@@ -188,17 +182,16 @@ export function HeroSection() {
             margin: "0 auto 38px",
             lineHeight: 1.55,
             textAlign: "center",
+            ...fadeUp(0.3),
           }}
         >
           {th.sub}
-        </motion.p>
+        </p>
 
         {/* CTAs */}
-        <motion.div
-          {...fadeUp}
-          transition={{ duration: 0.9, delay: 0.35, ease }}
+        <div
           className="flex items-center justify-center flex-wrap"
-          style={{ gap: 12, marginBottom: 64 }}
+          style={{ gap: 12, marginBottom: 64, ...fadeUp(0.35) }}
         >
           <Link href="/sign-up">
             <button
@@ -233,14 +226,12 @@ export function HeroSection() {
               {th.ctaSecondary}
             </button>
           </Link>
-        </motion.div>
+        </div>
 
         {/* Prompt area with floating glass cards */}
-        <motion.div
-          {...fadeUp}
-          transition={{ duration: 0.9, delay: 0.5, ease }}
+        <div
           className="relative"
-          style={{ maxWidth: 720, margin: "0 auto" }}
+          style={{ maxWidth: 720, margin: "0 auto", ...fadeUp(0.5) }}
         >
           {/* Floating card — left */}
           <div
@@ -404,7 +395,7 @@ export function HeroSection() {
               </button>
             ))}
           </div>
-        </motion.div>
+        </div>
 
         {/* Stats strip */}
         <div
