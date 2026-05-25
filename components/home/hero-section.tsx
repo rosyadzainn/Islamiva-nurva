@@ -12,6 +12,8 @@ import { translations } from "@/lib/translations";
 const GEOMETRIC_PATTERN = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160' fill='none' stroke='%23ffffff' stroke-width='0.6' stroke-opacity='0.07'><g transform='translate(80 80)'><polygon points='-30,0 -21,-21 0,-30 21,-21 30,0 21,21 0,30 -21,21'/><polygon points='-30,0 -21,-21 0,-30 21,-21 30,0 21,21 0,30 -21,21' transform='rotate(22.5)'/><circle r='30'/><circle r='15'/></g></svg>")`;
 
 const fadeUp = { initial: { opacity: 0, y: 14 }, animate: { opacity: 1, y: 0 } };
+// slideUp keeps opacity:1 so SSR-rendered content stays visible for LCP measurement
+const slideUp = { initial: { y: 14 }, animate: { y: 0 } };
 const ease = [0.2, 0.8, 0.2, 1] as const;
 
 export function HeroSection() {
@@ -141,7 +143,7 @@ export function HeroSection() {
 
         {/* Heading */}
         <motion.h1
-          {...fadeUp}
+          {...slideUp}
           transition={{ duration: 0.9, delay: 0.2, ease }}
           style={{
             fontFamily: "'Geist', sans-serif",

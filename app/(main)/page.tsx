@@ -12,6 +12,8 @@ export const metadata: Metadata = {
     "Baca Al-Quran, doa harian, hadits, kisah nabi, dan sejarah Islam. Tanya melalui AI Chat Islami yang cerdas dan ramah.",
 };
 
+export const revalidate = 3600;
+
 export default function HomePage() {
   const jsonLd = {
     "@context": "https://schema.org",
