@@ -26,7 +26,7 @@
   --color-gold-900: #713f12;
 
   /* Fonts */
-  --font-sans: var(--font-poppins), sans-serif;
+  --font-sans: var(--font-geist), sans-serif;
   --font-arabic: var(--font-amiri), var(--font-scheherazade), serif;
 
   /* Custom */

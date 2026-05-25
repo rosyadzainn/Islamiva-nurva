@@ -31,7 +31,7 @@ export function PageHeader({
             {badge}
           </span>
         )}
-        <h1 className="text-3xl sm:text-4xl font-bold font-poppins mb-3">{title}</h1>
+        <h1 className="text-3xl sm:text-4xl font-bold mb-3" style={{ fontFamily: "var(--font-geist), sans-serif" }}>{title}</h1>
         <p className="text-[var(--muted)] max-w-xl mx-auto text-sm sm:text-base leading-relaxed">
           {description}
         </p>

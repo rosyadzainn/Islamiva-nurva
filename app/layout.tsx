@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono, Poppins, Instrument_Serif, Amiri, Scheherazade_New } from "next/font/google";
+import { Geist, Geist_Mono, Instrument_Serif, Amiri, Scheherazade_New } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { LanguageProvider } from "@/contexts/language-context";
@@ -21,13 +21,6 @@ const geistMono = Geist_Mono({
   display: "swap",
 });
 
-const poppins = Poppins({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800"],
-  variable: "--font-poppins",
-  display: "swap",
-});
-
 const instrumentSerif = Instrument_Serif({
   subsets: ["latin"],
   weight: ["400"],
@@ -37,16 +30,15 @@ const instrumentSerif = Instrument_Serif({
 });
 
 const amiri = Amiri({
-  subsets: ["arabic", "latin"],
+  subsets: ["arabic"],
   weight: ["400", "700"],
-  style: ["normal", "italic"],
   variable: "--font-amiri",
   display: "swap",
 });
 
 const scheherazade = Scheherazade_New({
-  subsets: ["arabic", "latin"],
-  weight: ["400", "500", "600", "700"],
+  subsets: ["arabic"],
+  weight: ["400"],
   variable: "--font-scheherazade",
   display: "swap",
 });
@@ -124,9 +116,13 @@ const Inner = ({ children }: { children: React.ReactNode }) => (
   <html
     lang="id"
     suppressHydrationWarning
-    className={`${geist.variable} ${geistMono.variable} ${poppins.variable} ${instrumentSerif.variable} ${amiri.variable} ${scheherazade.variable}`}
+    className={`${geist.variable} ${geistMono.variable} ${instrumentSerif.variable} ${amiri.variable} ${scheherazade.variable}`}
   >
-    <head />
+    <head>
+      <link rel="preconnect" href="https://clerk.islametra.com" />
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+      <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+    </head>
     <body className="min-h-screen antialiased" suppressHydrationWarning>
       <a href="#main-content" className="skip-nav">
         Skip to main content
