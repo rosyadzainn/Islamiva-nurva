@@ -1,7 +1,6 @@
 import { NextRequest } from "next/server";
-import prisma from "@/lib/prisma";
 
-const TIMEOUT_MS = 2 * 60 * 1000; // 2 minutes = "online"
+const TIMEOUT_MS = 2 * 60 * 1000;
 
 export async function POST(req: NextRequest) {
   try {
@@ -16,6 +15,7 @@ export async function POST(req: NextRequest) {
         : "/";
 
     const cutoff = new Date(Date.now() - TIMEOUT_MS);
+    const { default: prisma } = await import("@/lib/prisma");
 
     await Promise.all([
       prisma.presence.upsert({
@@ -41,6 +41,7 @@ export async function POST(req: NextRequest) {
 export async function GET() {
   try {
     const cutoff = new Date(Date.now() - TIMEOUT_MS);
+    const { default: prisma } = await import("@/lib/prisma");
     const count = await prisma.presence.count({
       where: { updatedAt: { gte: cutoff } },
     });
