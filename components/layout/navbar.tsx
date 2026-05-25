@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { AnimatePresence, motion } from "framer-motion";
 import { Search, Moon, Sun, X, Sparkles, BookOpen, Heart, BookMarked, Clock, Star, Bookmark, ChevronDown, Calculator } from "lucide-react";
 import { useTheme } from "next-themes";
 import { SearchDialog } from "@/components/home/search-dialog";
@@ -116,18 +115,14 @@ function BelajarDropdown({ isLight, currentPath, belajarLinks, label }: { isLigh
         )}
       </button>
 
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ opacity: 0, y: 4 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 4 }}
-            transition={{ duration: 0.13 }}
+      {open && (
+          <div
             style={{
               position: "absolute",
               top: "calc(100% + 6px)",
               left: "50%",
               transform: "translateX(-50%)",
+              animation: "islametra-fade-up 0.13s ease both",
               minWidth: 168,
               borderRadius: 12,
               background: isLight ? "rgba(250,249,246,0.99)" : "rgba(13,17,14,0.98)",
@@ -189,9 +184,8 @@ function BelajarDropdown({ isLight, currentPath, belajarLinks, label }: { isLigh
                 </Link>
               );
             })}
-          </motion.div>
+          </div>
         )}
-      </AnimatePresence>
     </div>
   );
 }
@@ -627,40 +621,24 @@ export function Navbar() {
                 aria-label="Toggle menu"
                 aria-expanded={mobileOpen}
               >
-                <AnimatePresence mode="wait" initial={false}>
-                  <motion.div
-                    key={mobileOpen ? "close" : "open"}
-                    initial={{ opacity: 0, rotate: mobileOpen ? -45 : 45 }}
-                    animate={{ opacity: 1, rotate: 0 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.15 }}
-                  >
-                    {mobileOpen ? <X size={17} /> : (
+                  {mobileOpen ? <X size={17} /> : (
                       <svg width="17" height="17" viewBox="0 0 17 17" fill="none">
                         <rect x="2" y="4.5" width="13" height="1.5" rx="0.75" fill="currentColor" />
                         <rect x="2" y="8" width="9" height="1.5" rx="0.75" fill="currentColor" />
                         <rect x="2" y="11.5" width="11" height="1.5" rx="0.75" fill="currentColor" />
                       </svg>
                     )}
-                  </motion.div>
-                </AnimatePresence>
               </button>
             </div>
           </div>
         </div>
       </header>
 
-      {/* Mobile drawer overlay */}
-      <AnimatePresence>
-        {mobileOpen && (
-          <>
+      {/* Mobile drawer overlay — always-mounted, CSS transitions */}
+      <>
             {/* Backdrop */}
-            <motion.div
-              key="backdrop"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
+            <div
+              aria-hidden="true"
               onClick={() => setMobileOpen(false)}
               style={{
                 position: "fixed",
@@ -669,16 +647,15 @@ export function Navbar() {
                 background: "rgba(0,0,0,0.5)",
                 backdropFilter: "blur(4px)",
                 WebkitBackdropFilter: "blur(4px)",
+                opacity: mobileOpen ? 1 : 0,
+                pointerEvents: mobileOpen ? "auto" : "none",
+                transition: "opacity 0.2s ease",
               }}
             />
 
             {/* Drawer panel */}
-            <motion.div
-              key="drawer"
-              initial={{ x: "100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "100%" }}
-              transition={{ type: "spring", stiffness: 320, damping: 34 }}
+            <div
+              aria-hidden={!mobileOpen}
               style={{
                 position: "fixed",
                 top: 0,
@@ -691,6 +668,9 @@ export function Navbar() {
                 backdropFilter: "blur(24px)",
                 display: "flex",
                 flexDirection: "column",
+                transform: mobileOpen ? "translateX(0)" : "translateX(100%)",
+                transition: "transform 0.28s cubic-bezier(0.2,0.8,0.2,1)",
+                visibility: mobileOpen ? "visible" : "hidden",
               }}
             >
               {/* Drawer header */}
@@ -755,11 +735,8 @@ export function Navbar() {
                   const Icon = link.icon;
                   const isBelajarDivider = i === 4;
                   return (
-                    <motion.div
+                    <div
                       key={link.href}
-                      initial={{ opacity: 0, x: 20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: i * 0.04, duration: 0.2 }}
                     >
                       {isBelajarDivider && (
                         <div
@@ -837,7 +814,7 @@ export function Navbar() {
                           />
                         )}
                       </Link>
-                    </motion.div>
+                    </div>
                   );
                 })}
               </nav>
@@ -891,10 +868,8 @@ export function Navbar() {
                   </span>
                 </button>
               </div>
-            </motion.div>
+            </div>
           </>
-        )}
-      </AnimatePresence>
 
       <SearchDialog open={searchOpen} onClose={() => setSearchOpen(false)} />
     </>
