@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   description:
     "Kumpulan hadits shahih dari Bukhari, Muslim, Tirmidzi, Abu Dawud, Nasai, dan Ibnu Majah dengan terjemahan bahasa Indonesia.",
   keywords: ["hadits", "hadith", "bukhari", "muslim", "hadits shahih", "hadits indonesia"],
+  alternates: { canonical: "/hadith" },
   openGraph: {
     title: "Hadits Shahih — Islametra",
     description: "Hadits shahih dari 6 kitab: Bukhari, Muslim, Tirmidzi, Abu Dawud, Nasai, dan Ibnu Majah.",

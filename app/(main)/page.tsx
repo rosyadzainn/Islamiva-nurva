@@ -12,6 +12,7 @@ export const metadata: Metadata = {
   title: "Islametra - Platform Islami Modern",
   description:
     "Baca Al-Quran, doa harian, hadits, kisah nabi, dan sejarah Islam. Tanya melalui AI Chat Islami yang cerdas dan ramah.",
+  alternates: { canonical: "/" },
 };
 
 export const revalidate = 3600;

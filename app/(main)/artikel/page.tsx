@@ -3,8 +3,17 @@ import { BookOpen } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Artikel Islam",
-  description: "Kumpulan artikel sejarah dan pengetahuan Islam.",
+  title: "Artikel Islam — Pengetahuan, Sejarah & Kajian Islami | Islametra",
+  description:
+    "Kumpulan artikel Islam terpercaya: sejarah peradaban Islam, akidah, fiqh, kisah inspiratif, dan ilmu pengetahuan Islam yang informatif.",
+  keywords: ["artikel islam", "sejarah islam", "pengetahuan islam", "artikel islami", "kajian islam", "islametra"],
+  alternates: { canonical: "/artikel" },
+  openGraph: {
+    title: "Artikel Islam — Islametra",
+    description: "Kumpulan artikel Islam terpercaya: sejarah, akidah, fiqh, dan ilmu pengetahuan Islam.",
+    url: "https://www.islametra.com/artikel",
+    type: "website",
+  },
 };
 
 async function getArticles() {

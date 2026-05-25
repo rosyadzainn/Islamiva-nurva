@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   description:
     "Pelajari sejarah Islam dari Khulafaur Rasyidin, Dinasti Umayyah, Abbasiyah, Utsmani, hingga tokoh-tokoh ulama besar seperti Al-Ghazali, Ibnu Sina, dan Ibnu Khaldun.",
   keywords: ["sejarah islam", "khulafaur rasyidin", "dinasti islam", "peradaban islam", "ulama islam"],
+  alternates: { canonical: "/sejarah" },
   openGraph: {
     title: "Sejarah Islam — Islametra",
     description: "Dari Khulafaur Rasyidin hingga tokoh ulama besar: pelajari sejarah peradaban Islam.",

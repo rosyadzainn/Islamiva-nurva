@@ -6,6 +6,7 @@ import { RotateCcw, Check } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useLang } from "@/contexts/language-context";
 import { translations } from "@/lib/translations";
+import { trackEvent } from "@/lib/analytics";
 
 const DHIKR_LIST = [
   {
@@ -76,6 +77,7 @@ export function TasbihModule() {
   const { lang } = useLang();
   const tt = translations[lang].tasbih;
   const celebrateTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const sessionStartedRef = useRef(false);
 
   const effectiveTarget = showCustom
     ? parseInt(customTarget) || 0
@@ -85,8 +87,11 @@ export function TasbihModule() {
 
   const handleTap = useCallback(() => {
     if (celebrated) return;
-
     vibrate(30);
+    if (!sessionStartedRef.current) {
+      sessionStartedRef.current = true;
+      trackEvent("tasbih_start", { dhikr: selectedDhikr.id });
+    }
     setCount((prev) => {
       const next = prev + 1;
       setSessionTotal((t) => t + 1);
@@ -103,7 +108,7 @@ export function TasbihModule() {
 
       return next;
     });
-  }, [celebrated, effectiveTarget]);
+  }, [celebrated, effectiveTarget, selectedDhikr.id]);
 
   const handleReset = useCallback(() => {
     vibrate(20);
@@ -123,6 +128,7 @@ export function TasbihModule() {
   useEffect(() => {
     setCount(0);
     setCelebrated(false);
+    sessionStartedRef.current = false;
     if (celebrateTimeout.current) clearTimeout(celebrateTimeout.current);
   }, [selectedDhikr]);
 

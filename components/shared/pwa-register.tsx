@@ -2,9 +2,14 @@
 
 import { useEffect } from "react";
 import { toast } from "react-hot-toast";
+import { trackEvent } from "@/lib/analytics";
 
 export function PwaRegister() {
   useEffect(() => {
+    window.addEventListener("appinstalled", () => {
+      trackEvent("pwa_install_click");
+    });
+
     if (!("serviceWorker" in navigator)) return;
 
     navigator.serviceWorker

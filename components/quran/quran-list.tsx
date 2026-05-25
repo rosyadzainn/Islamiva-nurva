@@ -2,7 +2,6 @@
 
 import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
 import { Search, BookOpen } from "lucide-react";
 import { useTheme } from "next-themes";
 import { SURAH_LIST } from "@/data/quran-data";
@@ -59,9 +58,7 @@ export function QuranList() {
           }}
         />
         <div style={{ position: "relative", maxWidth: 700, margin: "0 auto" }}>
-          <motion.span
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
+          <span
             style={{
               display: "inline-flex",
               alignItems: "center",
@@ -83,13 +80,10 @@ export function QuranList() {
               style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--islametra-emerald)", flexShrink: 0 }}
             />
             {tq.badge}
-          </motion.span>
+          </span>
 
           {/* Large Arabic heading */}
-          <motion.p
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.03 }}
+          <p
             className="font-arabic"
             lang="ar"
             dir="rtl"
@@ -102,12 +96,9 @@ export function QuranList() {
             }}
           >
             القرآن الكريم
-          </motion.p>
+          </p>
 
-          <motion.h1
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.07 }}
+          <h1
             style={{
               fontFamily: "'Geist', sans-serif",
               fontWeight: 500,
@@ -129,12 +120,9 @@ export function QuranList() {
             >
               Al-Karim
             </em>
-          </motion.h1>
+          </h1>
 
-          <motion.p
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.12 }}
+          <p
             style={{
               fontSize: "clamp(15px, 1.8vw, 18px)",
               color: "var(--islametra-fg-mute)",
@@ -144,7 +132,7 @@ export function QuranList() {
             }}
           >
             {tq.sub}
-          </motion.p>
+          </p>
         </div>
       </section>
 
@@ -254,33 +242,34 @@ export function QuranList() {
           </div>
         </div>
 
-        {/* Last read banner */}
-        {lastRead && (
-          <Link
-            href={`/quran/${lastRead.surahNumber}`}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              padding: "12px 18px",
-              borderRadius: 12,
-              background: "oklch(0.82 0.08 80 / 0.08)",
-              border: "1px solid oklch(0.82 0.08 80 / 0.2)",
-              marginBottom: 20,
-              textDecoration: "none",
-            }}
-          >
-            <div>
-              <p style={{ fontSize: 11, color: "var(--islametra-gold)", fontFamily: "'Geist Mono', monospace", letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: 2 }}>
-                {tq.continueReading}
-              </p>
-              <p style={{ fontSize: 13, fontWeight: 600, color: "var(--islametra-fg-soft)", fontFamily: "'Geist', sans-serif" }}>
-                {lastRead.surahName} · Ayat {lastRead.lastAyah}
-              </p>
-            </div>
-            <span style={{ fontSize: 18 }}>📖</span>
-          </Link>
-        )}
+        {/* Last read banner — fixed height to prevent CLS */}
+        <div style={{ height: mounted && lastRead ? "auto" : 0, overflow: "hidden", marginBottom: mounted && lastRead ? 20 : 0, transition: "none" }}>
+          {mounted && lastRead && (
+            <Link
+              href={`/quran/${lastRead.surahNumber}`}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                padding: "12px 18px",
+                borderRadius: 12,
+                background: "oklch(0.82 0.08 80 / 0.08)",
+                border: "1px solid oklch(0.82 0.08 80 / 0.2)",
+                textDecoration: "none",
+              }}
+            >
+              <div>
+                <p style={{ fontSize: 11, color: "var(--islametra-gold)", fontFamily: "'Geist Mono', monospace", letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: 2 }}>
+                  {tq.continueReading}
+                </p>
+                <p style={{ fontSize: 13, fontWeight: 600, color: "var(--islametra-fg-soft)", fontFamily: "'Geist', sans-serif" }}>
+                  {lastRead.surahName} · Ayat {lastRead.lastAyah}
+                </p>
+              </div>
+              <span style={{ fontSize: 18 }}>📖</span>
+            </Link>
+          )}
+        </div>
 
         {/* Surah list */}
         <div
@@ -290,13 +279,8 @@ export function QuranList() {
             gap: 10,
           }}
         >
-          {filtered.map((surah, i) => (
-            <motion.div
-              key={surah.number}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: Math.min(i * 0.012, 0.3) }}
-            >
+          {filtered.map((surah) => (
+            <div key={surah.number}>
               <Link href={`/quran/${surah.number}`} className="block group">
                 <div
                   className="transition-all duration-200 hover:-translate-y-0.5"
@@ -420,7 +404,7 @@ export function QuranList() {
                   </p>
                 </div>
               </Link>
-            </motion.div>
+            </div>
           ))}
         </div>
 

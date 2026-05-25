@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { ChevronLeft } from "lucide-react";
 import DOMPurify from "isomorphic-dompurify";
+import { ContentViewTracker } from "@/components/shared/content-view-tracker";
 
 export const dynamic = "force-dynamic";
 
@@ -24,6 +25,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return {
     title: article.seoTitle ?? article.title,
     description: article.seoDesc ?? article.excerpt ?? undefined,
+    alternates: { canonical: `/artikel/${article.slug}` },
   };
 }
 
@@ -32,8 +34,23 @@ export default async function ArtikelDetailPage({ params }: { params: Promise<{ 
   const article = await getArticle(slug);
   if (!article) notFound();
 
+  const articleJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: article.seoTitle ?? article.title,
+    description: article.seoDesc ?? article.excerpt ?? undefined,
+    url: `https://www.islametra.com/artikel/${article.slug}`,
+    datePublished: article.createdAt.toISOString(),
+    dateModified: article.updatedAt.toISOString(),
+    image: article.imageUrl ?? undefined,
+    publisher: { "@type": "Organization", name: "Islametra", url: "https://www.islametra.com" },
+  };
+
   return (
-    <div style={{ maxWidth: 720, margin: "0 auto", padding: "40px 16px" }}>
+    <>
+      <ContentViewTracker event="article_open" params={{ type: "artikel", slug: article.slug }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }} />
+      <div style={{ maxWidth: 720, margin: "0 auto", padding: "40px 16px" }}>
       {/* Back */}
       <Link
         href="/artikel"
@@ -134,5 +151,6 @@ export default async function ArtikelDetailPage({ params }: { params: Promise<{ 
         </div>
       )}
     </div>
+    </>
   );
 }

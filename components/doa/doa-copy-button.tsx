@@ -5,6 +5,7 @@ import { Copy, CheckCheck } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { useLang } from "@/contexts/language-context";
 import { translations } from "@/lib/translations";
+import { trackEvent } from "@/lib/analytics";
 
 interface Props {
   arabic: string;
@@ -22,6 +23,7 @@ export function DoaCopyButton({ arabic, latin, translation, source }: Props) {
     navigator.clipboard.writeText(
       `${arabic}\n\n${latin}\n\n${translation}${source ? `\n\n(${source})` : ""}`
     );
+    trackEvent("doa_copy");
     setCopied(true);
     toast.success(td.toastCopied);
     setTimeout(() => setCopied(false), 2000);

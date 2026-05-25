@@ -18,6 +18,7 @@ import {
 import { toast } from "react-hot-toast";
 import { useLang } from "@/contexts/language-context";
 import { translations } from "@/lib/translations";
+import { trackEvent } from "@/lib/analytics";
 
 interface Message {
   id: string;
@@ -637,6 +638,7 @@ export function AiChatModule() {
     );
     setInput("");
     setIsLoading(true);
+    trackEvent("ai_chat_message_sent", { is_first_message: isFirstMessage });
 
     // Update session title in DB on first message
     if (isSignedIn && sessionId && newTitle) {
@@ -723,6 +725,8 @@ export function AiChatModule() {
           }
         }
       }
+
+      if (aiContent) trackEvent("ai_chat_response_received");
 
       // Save both messages to DB after stream completes
       if (isSignedIn && sessionId && aiContent) {

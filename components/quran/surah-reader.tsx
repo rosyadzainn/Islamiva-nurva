@@ -21,6 +21,7 @@ import type { Surah, Ayah } from "@/types";
 import { SURAH_LIST } from "@/data/quran-data";
 import { useBookmarks } from "@/hooks/use-bookmarks";
 import { useQuranProgress } from "@/hooks/use-quran-progress";
+import { trackEvent } from "@/lib/analytics";
 
 interface SurahReaderProps {
   surah: Surah;
@@ -108,6 +109,7 @@ export function SurahReader({ surah }: SurahReaderProps) {
             })
           );
           setAyahs(combined);
+          trackEvent("quran_surah_open", { surah_id: surah.number, surah_name: surah.name });
           if (isSignedIn) {
             fetch("/api/reading-history", {
               method: "POST",
@@ -158,6 +160,7 @@ export function SurahReader({ surah }: SurahReaderProps) {
       ayahText: ayah.text,
       createdAt: new Date().toISOString(),
     });
+    if (added) trackEvent("bookmark_add", { content_type: "quran" });
     toast.success(added ? "Ayat di-bookmark!" : "Bookmark dihapus");
     saveProgress(surah.number, ayah.number, ayahs.length, surah.name);
   };
@@ -178,6 +181,7 @@ export function SurahReader({ surah }: SurahReaderProps) {
       setAudio(newAudio);
       setPlayingId(ayah.number);
       saveProgress(surah.number, ayah.number, ayahs.length, surah.name);
+      trackEvent("quran_audio_play", { surah_id: surah.number, surah_name: surah.name, ayah_number: ayah.number });
     }
   };
 

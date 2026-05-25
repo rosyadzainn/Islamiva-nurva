@@ -6,6 +6,7 @@ import { useUser, useClerk } from "@clerk/nextjs";
 import { useLang } from "@/contexts/language-context";
 import { translations } from "@/lib/translations";
 import { LogOut } from "lucide-react";
+import { trackEvent } from "@/lib/analytics";
 
 export function AuthButton({ mobile }: { mobile?: boolean }) {
   const { isSignedIn, isLoaded, user } = useUser();
@@ -21,6 +22,16 @@ export function AuthButton({ mobile }: { mobile?: boolean }) {
     const t = setTimeout(() => setLoadTimeout(true), 2500);
     return () => clearTimeout(t);
   }, [isLoaded]);
+
+  useEffect(() => {
+    if (!isSignedIn || !user?.createdAt) return;
+    const ageMs = Date.now() - new Date(user.createdAt).getTime();
+    const key = `st_${user.id}`;
+    if (ageMs < 5 * 60 * 1000 && !sessionStorage.getItem(key)) {
+      sessionStorage.setItem(key, "1");
+      trackEvent("sign_up_completed");
+    }
+  }, [isSignedIn, user]);
 
   const initials = (
     (user?.firstName?.[0] ?? "") + (user?.lastName?.[0] ?? "")

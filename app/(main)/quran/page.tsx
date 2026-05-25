@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   description:
     "Baca Al-Quran online lengkap 114 surah dengan terjemahan bahasa Indonesia dan audio murottal.",
   keywords: ["alquran online", "baca quran", "quran indonesia", "terjemahan quran", "quran digital"],
+  alternates: { canonical: "/quran" },
   openGraph: {
     title: "Al-Quran Online — Islametra",
     description: "Baca Al-Quran online lengkap 114 surah dengan terjemahan bahasa Indonesia.",

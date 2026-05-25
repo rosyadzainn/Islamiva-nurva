@@ -7,6 +7,7 @@ import { ArrowRight } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useLang } from "@/contexts/language-context";
 import { translations } from "@/lib/translations";
+import { trackEvent } from "@/lib/analytics";
 
 const GEOMETRIC_PATTERN = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160' fill='none' stroke='%23ffffff' stroke-width='0.6' stroke-opacity='0.07'><g transform='translate(80 80)'><polygon points='-30,0 -21,-21 0,-30 21,-21 30,0 21,21 0,30 -21,21'/><polygon points='-30,0 -21,-21 0,-30 21,-21 30,0 21,21 0,30 -21,21' transform='rotate(22.5)'/><circle r='30'/><circle r='15'/></g></svg>")`;
 
@@ -195,6 +196,7 @@ export function HeroSection() {
         >
           <Link href="/sign-up">
             <button
+              onClick={() => trackEvent("cta_signup_click")}
               className="inline-flex items-center gap-2 transition-transform hover:-translate-y-px active:scale-95"
               style={{
                 height: 50, padding: "0 22px",

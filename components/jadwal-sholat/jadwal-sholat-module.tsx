@@ -6,6 +6,7 @@ import { MapPin, RefreshCw, Clock, AlertCircle, Bell, BellOff } from "lucide-rea
 import { useTheme } from "next-themes";
 import { useLang } from "@/contexts/language-context";
 import { translations } from "@/lib/translations";
+import { trackEvent } from "@/lib/analytics";
 
 interface PrayerTimes {
   Fajr: string;
@@ -180,6 +181,7 @@ export function JadwalSholatModule() {
       const locationJson = await locationRes.json();
       if (timingJson.code === 200 && timingJson.data) {
         setTimings(timingJson.data);
+        trackEvent("prayer_times_viewed");
       } else {
         setError(tp.errors.fetchFail);
       }

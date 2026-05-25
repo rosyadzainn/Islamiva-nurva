@@ -112,6 +112,15 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
+const orgJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "Islametra",
+  url: "https://www.islametra.com",
+  logo: "https://www.islametra.com/icon.svg",
+  description: "Platform Islami modern untuk membaca Al-Quran, doa harian, hadits, kisah nabi, sejarah Islam, dan tanya jawab AI Islami.",
+};
+
 const Inner = ({ children }: { children: React.ReactNode }) => (
   <html
     lang="id"
@@ -122,6 +131,7 @@ const Inner = ({ children }: { children: React.ReactNode }) => (
       <link rel="preconnect" href="https://clerk.islametra.com" />
       <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }} />
     </head>
     <body className="min-h-screen antialiased" suppressHydrationWarning>
       <a href="#main-content" className="skip-nav">

@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   description:
     "Kisah lengkap 25 nabi dan rasul dalam Islam: Nabi Adam, Ibrahim, Musa, Isa, Muhammad dan lainnya. Belajar dari perjuangan dan keimanan para nabi.",
   keywords: ["kisah nabi", "25 nabi", "sejarah nabi", "nabi muhammad", "nabi ibrahim", "nabi musa"],
+  alternates: { canonical: "/kisah-nabi" },
   openGraph: {
     title: "Kisah Para Nabi — Islametra",
     description: "Kisah lengkap 25 nabi dan rasul dalam Islam dengan narasi yang mendalam.",

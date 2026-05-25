@@ -3,6 +3,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "next-themes";
+// motion used only for expand/collapse animation on doa items
 import { Search, Copy, CheckCheck, Heart, ChevronDown, ChevronUp, Share2 } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { DAILY_DUAS, DOA_CATEGORIES } from "@/data/doa-data";
@@ -87,9 +88,7 @@ export function DoaModule() {
           }}
         />
         <div style={{ position: "relative", maxWidth: 700, margin: "0 auto" }}>
-          <motion.span
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
+          <span
             style={{
               display: "inline-flex",
               alignItems: "center",
@@ -111,11 +110,8 @@ export function DoaModule() {
               style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--islametra-emerald)", flexShrink: 0 }}
             />
             {td.badge}
-          </motion.span>
-          <motion.h1
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.05 }}
+          </span>
+          <h1
             style={{
               fontFamily: "'Geist', sans-serif",
               fontWeight: 500,
@@ -137,11 +133,8 @@ export function DoaModule() {
             >
               {td.titleEm}
             </em>
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
+          </h1>
+          <p
             style={{
               fontSize: "clamp(15px, 1.8vw, 18px)",
               color: "var(--islametra-fg-mute)",
@@ -151,7 +144,7 @@ export function DoaModule() {
             }}
           >
             {td.sub}
-          </motion.p>
+          </p>
         </div>
       </section>
 
@@ -284,12 +277,8 @@ export function DoaModule() {
                 DOA_CATEGORIES.find((c) => c.id === doa.category)?.icon || "🤲";
 
               return (
-                <motion.div
+                <div
                   key={doa.id}
-                  layout
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
                   style={{
                     borderRadius: 16,
                     background:
@@ -526,7 +515,7 @@ export function DoaModule() {
                       </motion.div>
                     )}
                   </AnimatePresence>
-                </motion.div>
+                </div>
               );
             })}
           </AnimatePresence>

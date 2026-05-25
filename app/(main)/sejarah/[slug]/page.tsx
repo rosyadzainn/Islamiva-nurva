@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ChevronLeft, Clock, ArrowRight } from "lucide-react";
+import { ContentViewTracker } from "@/components/shared/content-view-tracker";
 import { T } from "@/components/shared/t";
 
 interface Props {
@@ -439,6 +440,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     keywords: article
       ? [article.title.toLowerCase(), "sejarah islam", article.category.toLowerCase(), "islametra"]
       : ["sejarah islam", "peradaban islam"],
+    alternates: article ? { canonical: `/sejarah/${slug}` } : undefined,
     openGraph: article
       ? {
           title: `${article.title} — Sejarah Islam`,
@@ -552,16 +554,28 @@ export default async function SejarahDetailPage({ params }: Props) {
 
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Islametra", item: "https://www.islametra.com" },
-      { "@type": "ListItem", position: 2, name: "Sejarah Islam", item: "https://www.islametra.com/sejarah" },
-      { "@type": "ListItem", position: 3, name: article.title, item: `https://www.islametra.com/sejarah/${slug}` },
+    "@graph": [
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Islametra", item: "https://www.islametra.com" },
+          { "@type": "ListItem", position: 2, name: "Sejarah Islam", item: "https://www.islametra.com/sejarah" },
+          { "@type": "ListItem", position: 3, name: article.title, item: `https://www.islametra.com/sejarah/${slug}` },
+        ],
+      },
+      {
+        "@type": "Article",
+        headline: article.title,
+        description: article.sections[0]?.text?.slice(0, 160),
+        url: `https://www.islametra.com/sejarah/${slug}`,
+        publisher: { "@type": "Organization", name: "Islametra", url: "https://www.islametra.com" },
+      },
     ],
   };
 
   return (
     <div style={{ backgroundColor: "var(--islametra-bg)", minHeight: "100vh" }}>
+      <ContentViewTracker event="article_open" params={{ type: "sejarah", slug: slug }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <div style={{ maxWidth: 800, margin: "0 auto", padding: "clamp(32px, 5vw, 64px) 28px" }}>
 

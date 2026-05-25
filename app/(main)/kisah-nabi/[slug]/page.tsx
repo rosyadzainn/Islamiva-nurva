@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { PROPHETS } from "@/data/prophet-stories";
+import { ContentViewTracker } from "@/components/shared/content-view-tracker";
 import { ChevronLeft, ChevronRight, Star } from "lucide-react";
 import { T } from "@/components/shared/t";
 
@@ -532,6 +533,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: `Kisah Nabi ${prophet.prophetName} AS — Islametra`,
     description: prophet.excerpt,
     keywords: [`nabi ${prophet.prophetName.toLowerCase()}`, "kisah nabi", "kisah para nabi", "25 nabi", "islametra"],
+    alternates: { canonical: `/kisah-nabi/${slug}` },
     openGraph: {
       title: `Kisah Nabi ${prophet.prophetName} AS`,
       description: prophet.excerpt,
@@ -567,6 +569,7 @@ export default async function ProphetStoryPage({ params }: Props) {
 
   return (
     <div style={{ backgroundColor: "var(--islametra-bg)", minHeight: "100vh" }}>
+      <ContentViewTracker event="article_open" params={{ type: "kisah-nabi", slug: slug }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <div style={{ maxWidth: 800, margin: "0 auto", padding: "clamp(32px, 5vw, 64px) 28px" }}>
 

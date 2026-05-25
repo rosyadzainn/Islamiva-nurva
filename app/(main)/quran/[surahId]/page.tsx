@@ -20,6 +20,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: `Surah ${surah.name} (${surah.number}) — Al-Quran Online | Islametra`,
     description: `Baca Surah ${surah.name} (${surah.nameTranslation}) dengan ${surah.numberOfAyahs} ayat beserta terjemahan bahasa Indonesia.`,
     keywords: [`surah ${surah.name.toLowerCase()}`, `surah ke-${surah.number}`, "al-quran online", "baca quran", "terjemahan quran indonesia", "quran digital"],
+    alternates: { canonical: `/quran/${surah.number}` },
     openGraph: {
       title: `Surah ${surah.name} — Al-Quran Online`,
       description: `Baca Surah ${surah.name} (${surah.nameTranslation}) · ${surah.numberOfAyahs} ayat · Terjemahan Indonesia`,

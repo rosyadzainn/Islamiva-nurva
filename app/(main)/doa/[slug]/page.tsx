@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ChevronLeft, ArrowRight, BookOpen } from "lucide-react";
 import { DAILY_DUAS, DOA_CATEGORIES } from "@/data/doa-data";
 import { DoaCopyButton } from "@/components/doa/doa-copy-button";
+import { ContentViewTracker } from "@/components/shared/content-view-tracker";
 import { T } from "@/components/shared/t";
 
 interface Props {
@@ -24,6 +25,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     keywords: doa
       ? [doa.title.toLowerCase(), "doa islam", "doa sehari-hari", "doa arab latin terjemahan"]
       : ["doa islam", "doa sehari-hari"],
+    alternates: doa ? { canonical: `/doa/${doa.slug}` } : undefined,
     openGraph: doa
       ? {
           title: `${doa.title} — Doa Islam`,
@@ -81,6 +83,7 @@ export default async function DoaDetailPage({ params }: Props) {
 
   return (
     <div style={{ backgroundColor: "var(--islametra-bg)", minHeight: "100vh" }}>
+      <ContentViewTracker event="doa_open" params={{ doa_slug: doa.slug }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <div style={{ maxWidth: 760, margin: "0 auto", padding: "clamp(32px, 5vw, 64px) 28px" }}>
 
