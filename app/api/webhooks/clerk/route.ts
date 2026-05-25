@@ -62,6 +62,8 @@ export async function POST(req: NextRequest) {
 
     const { default: prisma } = await import("@/lib/prisma");
 
+    const isNew = !(await prisma.user.findUnique({ where: { clerkId: data.id }, select: { id: true } }));
+
     await prisma.user.upsert({
       where: { clerkId: data.id },
       update: { email: primaryEmail, name, imageUrl: data.image_url ?? null },
@@ -72,6 +74,11 @@ export async function POST(req: NextRequest) {
         imageUrl: data.image_url ?? null,
       },
     });
+
+    if (isNew && type === "user.created") {
+      const { sendNewUserNotification } = await import("@/lib/email");
+      await sendNewUserNotification({ name, email: primaryEmail, clerkId: data.id }).catch(() => {});
+    }
   }
 
   if (type === "user.deleted") {

@@ -440,9 +440,10 @@ export function AiChatPreview() {
                   }}
                 />
                 <div style={{ display: "flex", gap: 4 }}>
-                  {[Plus, Mic].map((Icon, i) => (
+                  {([["Plus", Plus], ["Mic", Mic]] as const).map(([label, Icon]) => (
                     <button
-                      key={i}
+                      key={label}
+                      aria-label={label === "Plus" ? "Lampirkan" : "Rekam suara"}
                       style={{
                         width: 36, height: 36, borderRadius: 10,
                         display: "grid", placeItems: "center",
@@ -454,6 +455,7 @@ export function AiChatPreview() {
                   ))}
                 </div>
                 <button
+                  aria-label="Kirim pesan"
                   style={{
                     width: 40, height: 40, borderRadius: 12,
                     display: "grid", placeItems: "center",

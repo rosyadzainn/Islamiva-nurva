@@ -317,6 +317,7 @@ export function TasbihModule() {
 
           <button
             onClick={handleTap}
+            aria-label={`Tasbih — ketuk untuk menghitung, saat ini ${count}`}
             style={{
               position: "absolute",
               inset: 0,
@@ -513,6 +514,7 @@ export function TasbihModule() {
           {showCustom && (
             <input
               type="number"
+              aria-label="Target hitungan kustom"
               value={customTarget}
               onChange={(e) => setCustomTarget(e.target.value)}
               placeholder={tt.customPlaceholder}

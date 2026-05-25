@@ -359,6 +359,7 @@ export function HeroSection() {
             />
             <button
               type="submit"
+              aria-label="Cari"
               style={{
                 width: 40, height: 40, flexShrink: 0,
                 borderRadius: 12,

@@ -584,7 +584,7 @@ export function Navbar() {
                     e.currentTarget.style.color = "var(--islametra-fg-mute)";
                     e.currentTarget.style.borderColor = "var(--islametra-line)";
                   }}
-                  aria-label="Toggle language"
+                  aria-label={lang === "id" ? "ID / EN — ganti bahasa ke Inggris" : "ID / EN — switch to Indonesian"}
                 >
                   <span style={{ opacity: lang === "id" ? 1 : 0.4 }}>ID</span>
                   <span style={{ opacity: 0.3 }}>/</span>

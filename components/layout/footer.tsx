@@ -81,7 +81,7 @@ export function Footer() {
           {/* Link cols */}
           {tf.cols.map((col) => (
             <div key={col.title}>
-              <h4
+              <p
                 style={{
                   fontFamily: "'Geist Mono', monospace",
                   fontSize: 11,
@@ -93,7 +93,7 @@ export function Footer() {
                 }}
               >
                 {col.title}
-              </h4>
+              </p>
               <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 10 }}>
                 {col.links.map((l) => (
                   <li key={l.label}>
